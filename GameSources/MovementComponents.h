@@ -30,5 +30,40 @@ namespace basecross{
 		void SetSpeed(float speed);
 	};
 
+	class BCSprite : public GameObject {
+		wstring m_TexKey;
+
+		bool m_IsAnimation;
+		float m_AnimationChangeTime;
+		float m_AnimationTimer;
+
+		int m_UseIndex;
+		int m_Index;
+
+		Vec2 m_cutUV;
+		vector<vector<Vec2>> m_AnimationUV;
+		
+		vector<VertexPositionColorTexture> m_Vertices;
+		shared_ptr<PCTSpriteDraw> m_Draw;
+		shared_ptr<Transform> m_Transform;
+	public:
+		BCSprite(const shared_ptr<Stage>& ptr,wstring& texKey) : BCSprite(ptr,texKey,{1,1},1) {}
+		BCSprite(const shared_ptr<Stage>& ptr, wstring& texKey,Vec2 cutUV,const int useIndex ,float changeTime ,const bool isAnimation = true) : 
+			GameObject(ptr),
+			m_TexKey(texKey),
+			m_cutUV(cutUV),
+			m_Index(0), m_UseIndex(useIndex), 
+			m_IsAnimation(isAnimation),
+			m_AnimationChangeTime(changeTime),m_AnimationTimer(0.0f)
+			{}
+		virtual ~BCSprite(){}
+
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+		void Animation();
+		void UpdateUV(vector<Vec2> uv);
+	};
+
 }
 //end basecross
