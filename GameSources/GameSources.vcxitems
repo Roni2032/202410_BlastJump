@@ -14,9 +14,14 @@
     <ProjectCapability Include="SourceItemsFromImports" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)FloorBlock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageK.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
@@ -24,9 +29,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)FloorBlock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageK.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />

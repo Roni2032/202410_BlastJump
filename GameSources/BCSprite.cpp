@@ -1,6 +1,6 @@
 /*!
-@file MovementComponents.cpp
-@brief 移動用コンポーネント
+@file BCSprite.cpp
+@brief スプライト
 */
 
 #include "stdafx.h"
@@ -21,8 +21,8 @@ namespace basecross{
 				);
 			}
 		}
-		if (m_UseIndex == -1) {
-			m_UseIndex = m_cutUV.x * m_cutUV.y;
+		if (m_UseIndex == -1 || m_UseIndex < m_AnimationUV.size()) {
+			m_UseIndex = m_AnimationUV.size();
 		}
 		m_Vertices = { 
 			{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
