@@ -30,8 +30,6 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
-			//ビューとライトの作成
-			CreateViewLight();
 		}
 		catch (...) {
 			throw;

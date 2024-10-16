@@ -33,7 +33,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h">
       <Filter>Headers</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MovementComponents.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h">
       <Filter>Components</Filter>
     </ClInclude>
   </ItemGroup>
@@ -59,7 +59,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MovementComponents.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp">
       <Filter>Components</Filter>
     </ClCompile>
   </ItemGroup>
