@@ -1,6 +1,6 @@
 /*!
-@file Character.h
-@brief キャラクターなど
+@file FloorBlock.h
+@brief 地面など
 */
 
 #pragma once

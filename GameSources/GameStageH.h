@@ -11,13 +11,13 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
-	class GameStage : public Stage {
+	class GameStageH : public Stage {
 		//ビューの作成
 		void CreateViewLight();
 	public:
 		//構築と破棄
-		GameStage() :Stage() {}
-		virtual ~GameStage() {}
+		GameStageH() :Stage() {}
+		virtual ~GameStageH() {}
 		//初期化
 		virtual void OnCreate()override;
 	};
