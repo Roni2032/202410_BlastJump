@@ -19,6 +19,8 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)FloorBlock.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageK.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
@@ -32,6 +34,8 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)FloorBlock.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageK.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
