@@ -1,6 +1,6 @@
 /*!
-@file MovementComponents.h
-@brief 移動用
+@file BCSprite.h
+@brief スプライト
 */
 
 #pragma once
