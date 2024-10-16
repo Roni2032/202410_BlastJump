@@ -1,6 +1,6 @@
 /*!
-@file Character.cpp
-@brief キャラクターなど実体
+@file FloorBlock.cpp
+@brief 地面の実体
 */
 
 #include "stdafx.h"
