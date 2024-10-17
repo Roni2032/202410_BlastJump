@@ -13,7 +13,8 @@ namespace basecross{
 
 		AddComponent<CollisionSphere>();
 
-		AddComponent<Gravity>();
+		auto gravity = AddComponent<Gravity>();
+		gravity->StartJump(m_ThrowVelocity);
 		GetComponent<Transform>()->SetPosition(0, 5, 0);
 	}
 

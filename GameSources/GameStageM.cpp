@@ -12,8 +12,8 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStageM::CreateViewLight() {
-		const Vec3 eye(0.0f, 5.0f, -5.0f);
-		const Vec3 at(0.0f,0.0f,0.0f);
+		const Vec3 eye(0.0f, 2.0f, -10.0f);
+		const Vec3 at(0.0f,2.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<Camera>();
@@ -29,19 +29,28 @@ namespace basecross {
 	void GameStageM::CreateResource() {
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
-		wstring texPath = path + L"Texture/";
+		wstring texPath = path + L"UITex/";
+
+		wstring strPath = texPath + L"TimerNum.png";
+		app->RegisterTexture(L"NUMBER_TEX", strPath);
 	}
 
 	void GameStageM::OnCreate() {
 		try {
 			CreateViewLight();
-			AddGameObject<Bomb>();
+			CreateResource();
+
+			AddGameObject<Bomb>(Vec3(10,0,0));
 
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
 					AddGameObject<FloorBlock>(Vec3(-2.5f + j, 0, -2.5f + i));
 				}
 			}
+
+			//数値表示
+			//shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
+			//num->UpdateNumber(1432);
 		}
 		catch (...) {
 			throw;
