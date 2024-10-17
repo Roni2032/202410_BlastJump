@@ -104,5 +104,49 @@ namespace basecross{
 	void BCSprite::SetUseIndex(int useIndex) {
 
 	}
+
+
+	void BCNumber::OnCreate() {
+		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
+		
+		m_Numbers.reserve(m_DisplayDigit);
+		for (int i = 0; i < m_DisplayDigit; i++) {
+			shared_ptr<BCSprite> number = ObjectFactory::Create<BCSprite>(GetStage(), L"NUMBER_TEX", m_Pos, Vec2(m_Size.x / m_DisplayDigit, m_Size.y));
+			int singleDigit = m_DisplayNumber / digits % 10;
+			
+			number->UpdateUV(GetUV(singleDigit));
+			digits /= 10;
+			m_Numbers.push_back(number);
+		}
+		auto trans = GetComponent<Transform>();
+		trans->SetPosition(0,0,0);
+	}
+
+	void BCNumber::OnUpdate() {
+		
+	}
+
+	vector<Vec2> BCNumber::GetUV(int displayDigit) {
+		float uvX = 1.0f / m_DisplayDigit;
+
+		vector<Vec2> uv = {
+				{uvX * displayDigit,0.0f},
+				{uvX * (displayDigit + 1),0.0f},
+				{uvX * displayDigit,1.0f},
+				{uvX * (displayDigit + 1),1.0f}
+		};
+
+		return uv;
+	}
+
+	void BCNumber::UpdateNumber(int number) {
+		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
+		for (auto& sprite : m_Numbers) {
+			int singleDigit = m_DisplayNumber / digits % 10;
+
+			sprite->UpdateUV(GetUV(singleDigit));
+			digits /= 10;
+		}
+	}
 }
 //end basecross
