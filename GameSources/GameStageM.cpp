@@ -26,7 +26,11 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting();
 	}
 
-
+	void GameStageM::CreateResource() {
+		auto& app = App::GetApp();
+		wstring path = app->GetDataDirWString();
+		wstring texPath = path + L"Texture/";
+	}
 
 	void GameStageM::OnCreate() {
 		try {
