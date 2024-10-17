@@ -13,11 +13,14 @@ namespace basecross{
 
 		float m_ExplodeRange;
 		float m_ExplodePower;
+
+		Vec3 m_ThrowVelocity;
 	public:
-		Bomb(const shared_ptr<Stage>& ptr) : 
+		Bomb(const shared_ptr<Stage>& ptr,Vec3 velocity) : 
 			GameObject(ptr),
 			m_ExplodeTime(2.0f),m_ExplodeTimer(0.0f),
-			m_ExplodeRange(3.0f),m_ExplodePower(3.0f)
+			m_ExplodeRange(3.0f),m_ExplodePower(3.0f),
+			m_ThrowVelocity(velocity)
 		{}
 		virtual ~Bomb(){}
 
