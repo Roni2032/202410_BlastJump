@@ -40,17 +40,20 @@ namespace basecross {
 			CreateViewLight();
 			CreateResource();
 
-			AddGameObject<Bomb>(Vec3(10,0,0));
+			AddGameObject<Bomb>(Vec3(0, 5, 0),1.0f,1.0f);
+			AddGameObject<Bomb>(Vec3(1, 1, 0),3.0f,3.0f,3.0f,Vec3(0,9,0));
 
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
-					AddGameObject<FloorBlock>(Vec3(-2.5f + j, 0, -2.5f + i));
+					//AddGameObject<FloorBlock>(Vec3(-2.5f + j, 0, -2.5f + i));
 				}
 			}
 
 			//êîílï\é¶
-			//shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
-			//num->UpdateNumber(1432);
+			shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
+			num->UpdateNumber(1432);
+
+			
 		}
 		catch (...) {
 			throw;
