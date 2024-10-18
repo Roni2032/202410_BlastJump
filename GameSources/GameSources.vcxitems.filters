@@ -54,7 +54,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h">
       <Filter>Bomb</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)FloorBlock.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h">
       <Filter>Floor</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h">
@@ -95,7 +95,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp">
       <Filter>Bomb</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)FloorBlock.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp">
       <Filter>Floor</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp">
