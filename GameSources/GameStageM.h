@@ -11,19 +11,15 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
-	class GameStage : public Stage {
-		vector<vector<int>> m_Map;
-		wstring m_MapName;
-		CsvFile m_CsvMap;
+	class GameStageM : public Stage {
 		//ビューの作成
 		void CreateViewLight();
 		void CreateResource();
-		void CreateMap();
-
+		int m_A;
 	public:
 		//構築と破棄
-		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName) {}
-		virtual ~GameStage() {}
+		GameStageM(int a) :Stage(),m_A(a) {}
+		virtual ~GameStageM() {}
 		//初期化
 		virtual void OnCreate()override;
 	};

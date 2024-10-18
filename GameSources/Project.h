@@ -5,13 +5,20 @@
 
 #pragma once
 
+#include <Effekseer.h>
+#include <EffekseerRendererDX11.h>
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "GameStage.h"
+#include "GameStageM.h"
+#include "GameStageH.h"
+#include "GameStageK.h"
+
 #include "Character.h"
 #include "Player.h"
 #include "BCSprite.h"
-
+#include "Bomb.h"
+#include "Blocks.h"
 

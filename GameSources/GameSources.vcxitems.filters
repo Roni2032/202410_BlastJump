@@ -10,6 +10,21 @@
     <Filter Include="Components">
       <UniqueIdentifier>{ee3f8e90-691b-4ae1-a907-e656f3b39049}</UniqueIdentifier>
     </Filter>
+    <Filter Include="workMunakata">
+      <UniqueIdentifier>{2c6d31ff-9e40-4ea9-b1f8-6f324ff51b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="workKobayashi">
+      <UniqueIdentifier>{b31cc5b2-199a-42fe-8448-1ea34d6b6942}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="workHashimoto">
+      <UniqueIdentifier>{07c42c35-dd0c-4088-8b34-059d822494f8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Floor">
+      <UniqueIdentifier>{ea270f3f-4822-4be1-ac49-8a3389e29a2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Bomb">
+      <UniqueIdentifier>{8d47161f-77d3-48b8-86d0-c3a941a322b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
@@ -36,6 +51,21 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h">
       <Filter>Components</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h">
+      <Filter>Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h">
+      <Filter>Floor</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h">
+      <Filter>workHashimoto</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageK.h">
+      <Filter>workKobayashi</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h">
+      <Filter>workMunakata</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -61,6 +91,21 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp">
       <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp">
+      <Filter>Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp">
+      <Filter>Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp">
+      <Filter>workHashimoto</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageK.cpp">
+      <Filter>workKobayashi</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp">
+      <Filter>workMunakata</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

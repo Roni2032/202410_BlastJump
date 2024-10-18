@@ -1,6 +1,6 @@
 /*!
-@file MovementComponents.h
-@brief 移動用
+@file BCSprite.h
+@brief スプライト
 */
 
 #pragma once
@@ -8,6 +8,11 @@
 
 namespace basecross{
 
+	//----------------------------------------------------------
+	//
+	//	画像表示クラス						
+	//																																
+	//----------------------------------------------------------
 	class BCSprite : public GameObject {
 		wstring m_TexKey;
 		Vec2 m_Size;
@@ -53,5 +58,38 @@ namespace basecross{
 		
 	};
 
+
+	//----------------------------------------------------------
+	//																																
+	//	数値表示クラス																												
+	//																																
+	//----------------------------------------------------------
+	class BCNumber : public GameObject {
+		vector<shared_ptr<BCSprite>> m_Numbers;
+		int m_CutNum;
+		int m_DisplayNumber;
+		int m_DisplayDigit;
+
+		wstring m_TexKey;
+		Vec3 m_Pos;
+		Vec2 m_Size;
+
+		vector<Vec2> GetUV(int displayDigit);
+	public:
+		BCNumber(const shared_ptr<Stage>& ptr,const wstring& texKey) : BCNumber(ptr,texKey,Vec3(0,0,0),Vec2(200,100),8){}
+		BCNumber(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,int displayDigit) : BCNumber(ptr, texKey, pos, size, displayDigit,10) {}
+		BCNumber(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size, int displayDigit,int cutNum) : 
+			GameObject(ptr) ,
+			m_TexKey(texKey),
+			m_Pos(pos),m_Size(size),
+			m_DisplayDigit(displayDigit),m_DisplayNumber(0), m_CutNum(cutNum)
+		{}
+		virtual ~BCNumber(){}
+
+		virtual void OnCreate();
+		virtual void OnUpdate();
+		
+		void UpdateNumber(int number);
+	};
 }
 //end basecross
