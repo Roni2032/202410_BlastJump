@@ -8,7 +8,7 @@
 
 namespace basecross{
 	void Block::OnCreate() {
-		if (m_TexKey == L"") {
+		if (m_TexKey == L"" || m_TexKey == L"null") {
 			auto drawComp = AddComponent<BcPNTStaticDraw>();
 			drawComp->SetMeshResource(L"DEFAULT_CUBE");
 			drawComp->SetTextureResource(L"TEST_TEX");
