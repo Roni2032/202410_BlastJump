@@ -26,6 +26,19 @@ namespace basecross {
 		PtrMultiLight->SetDefaultLighting();
 	}
 
+	void GameStage::OnCreate() {
+		try {
+			CreateViewLight();
+			CreateResource();
+			CreateMap();
+
+			AddGameObject<Bomb>(Vec3(-3, 10, 0), 2.0f, 1.0f);
+		}
+		catch (...) {
+			throw;
+		}
+	}
+
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
@@ -42,7 +55,7 @@ namespace basecross {
 		vector<wstring> cells;
 		Vec2 startPos;
 		
-		for (int y = 1; y < mapVec.size(); y++) {
+		for (int y = 2; y < mapVec.size(); y++) {
 			cells.clear();
 			vector<int> cow;
 			Util::WStrToTokenVector(cells, mapVec[y], L',');
@@ -60,9 +73,52 @@ namespace basecross {
 			m_Map.push_back(cow);
 		}
 		Vec2 mapSize = Vec2(cells.size(), mapVec.size());
-		cells.clear();
-		Util::WStrToTokenVector(cells, mapVec[0], L',');
-		
+		CreateWall(startPos, mapSize, mapVec[0]);
+		//cells.clear();
+		//Util::WStrToTokenVector(cells, mapVec[0], L',');
+		//
+		//Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
+		////è„
+		//AddGameObject<Block>(cells[0], Vec3(center.x - 0.5f, startPos.y + 1, 0), Vec3(mapSize.x + 2, 1, 1));
+		////â∫
+		//AddGameObject<Block>(cells[0], Vec3(center.x - 0.5f, startPos.y - mapSize.y, 0), Vec3(mapSize.x + 2, 1, 1));
+		////âE
+		//AddGameObject<Block>(cells[0], Vec3(startPos.x + mapSize.x, center.y + 0.5f, 0), Vec3(1, mapSize.y, 1));
+		////ç∂
+		//AddGameObject<Block>(cells[0], Vec3(startPos.x - 1, center.y + 0.5f, 0), Vec3(1, mapSize.y, 1));
+
+		GetStageInfo(mapVec[1]);
+		/*cells.clear();
+		Util::WStrToTokenVector(cells, mapVec[1], L',');
+
+		int index = 0;
+		while (true) {
+			vector<wstring> strNum;
+			wstring key = cells[index];
+			index++;
+
+			if (key == L"null") {
+				break;
+			}
+			else if (key == L"scroll") {
+				Util::WStrToTokenVector(strNum, cells[index], L'-');
+				if (strNum.size() == 2) {
+					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), stoi(strNum[1])));
+				}
+				else {
+					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), 1000));
+				}
+			}
+			else if (key == L"bomb") {
+				m_BombNum = stoi(cells[index]);
+			}
+		}*/
+	}
+
+	void GameStage::CreateWall(Vec2 startPos, Vec2 mapSize, const wstring& texKey) {
+		vector<wstring> cells;
+		Util::WStrToTokenVector(cells, texKey, L',');
+
 		Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
 		//è„
 		AddGameObject<Block>(cells[0], Vec3(center.x - 0.5f, startPos.y + 1, 0), Vec3(mapSize.x + 2, 1, 1));
@@ -73,16 +129,40 @@ namespace basecross {
 		//ç∂
 		AddGameObject<Block>(cells[0], Vec3(startPos.x - 1, center.y + 0.5f, 0), Vec3(1, mapSize.y, 1));
 	}
-	void GameStage::OnCreate() {
-		try {
-			CreateViewLight();
-			CreateResource();
-			CreateMap();
+	
+	void GameStage::GetStageInfo(const wstring& strVec) {
+		vector<wstring> cells;
+		Util::WStrToTokenVector(cells, strVec, L',');
 
-			AddGameObject<Bomb>(Vec3(-3, 10, 0), 2.0f, 1.0f);
-		}
-		catch (...) {
-			throw;
+		int index = 0;
+		while (true) {
+			vector<wstring> strNum;
+			wstring key = cells[index];
+			index++;
+			if (index >= cells.size()) {
+				break;
+			}
+
+			if (key == L"null") {
+				break;
+			}
+			if (!all_of(cells[index].cbegin(), cells[index].cend(), isdigit)) {
+				continue;
+			}
+			if (key == L"scroll") {
+				Util::WStrToTokenVector(strNum, cells[index], L'-');
+				if (strNum.size() == 2) {
+					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), stoi(strNum[1])));
+				}
+				else {
+					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), 1000));
+				}
+			}
+			else if (key == L"bomb") {
+				m_BombNum = stoi(cells[index]);
+			}
+
+			
 		}
 	}
 
