@@ -37,6 +37,9 @@ namespace basecross {
 
 		strPath = texPath + L"gole1.png";
 		app->RegisterTexture(L"GOAL_TEX", strPath);
+
+		strPath = texPath + L"Particle02.png";
+		app->RegisterTexture(L"EXPLODE_TEX", strPath);
 	}
 
 	void GameStageM::OnCreate() {
@@ -55,10 +58,10 @@ namespace basecross {
 
 			//êîílï\é¶
 			shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
-			//num->UpdateNumber(1432);
+			num->UpdateNumber(rand() % 1000);
 
 			AddGameObject<BCSprite>(L"GOAL_TEX", Vec3(0, 0, 0), Vec2(300, 300), Vec2(5,18), 1.0f / 90.0f, 91);
-			//AddGameObject<BCSprite>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100));
+			AddGameObject<BombEffect>(false,1.0f,0.0f)->InsertFire(Vec3(0, 0, 0));
 		}
 		catch (...) {
 			throw;
