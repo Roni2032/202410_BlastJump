@@ -22,3 +22,4 @@
 #include "Bomb.h"
 #include "Blocks.h"
 
+#include "Effects.h"

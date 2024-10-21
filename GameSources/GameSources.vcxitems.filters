@@ -25,6 +25,9 @@
     <Filter Include="Bomb">
       <UniqueIdentifier>{8d47161f-77d3-48b8-86d0-c3a941a322b9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Effect">
+      <UniqueIdentifier>{a77c9166-596d-4b22-a2c1-89a294bbdddd}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
@@ -66,6 +69,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h">
       <Filter>workMunakata</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Effects.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -106,6 +112,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp">
       <Filter>workMunakata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Effects.cpp">
+      <Filter>Effect</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
