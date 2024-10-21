@@ -17,6 +17,7 @@ namespace basecross{
 		Col4 m_Color;
 		Scope m_VelocityScope;
 		Scope m_StartPosScope;
+		
 
 		Effect() : Effect(L"",0,0.0f,{1,1,1},{1,1,1,1},{{0,0,0},{1,1,1}},{{0,0,0},{1,1,1}}) {}
 		Effect(const wstring& texKey,int insertParticles,float drawTime,Vec3 localScale,Col4 color, Scope randStart, Scope randVelocity) :
@@ -29,16 +30,35 @@ namespace basecross{
 	};
 	class DefaultEffect : public MultiParticle {
 		bool m_IsTracking;
+
+		float m_AlphaStart;
+		float m_AlphaEnd;
 	protected:
 		vector<Effect> m_Effects;
 		virtual void AddEffects();
 	public:
 		//ç\ízÇ∆îjä¸
-		DefaultEffect(shared_ptr<Stage>& ptr,bool isTracking):MultiParticle(ptr),m_IsTracking(isTracking){}
+		DefaultEffect(shared_ptr<Stage>& ptr,bool isTracking, const float start = 1.0f, const float end = 1.0f):
+			MultiParticle(ptr),m_IsTracking(isTracking),
+			m_AlphaStart(start),
+			m_AlphaEnd(end)
+		{}
 		virtual ~DefaultEffect() {}
 		//èâä˙âª
 		virtual void OnCreate() override;
+		virtual void OnUpdate() override;
 		void InsertFire(const Vec3& Pos);
+	};
+
+
+	class BombEffect : public DefaultEffect {
+	protected:
+		virtual void AddEffects()override;
+	public:
+		BombEffect(shared_ptr<Stage>& ptr, bool isTracking, const float start = 1.0f, const float end = 1.0f) :
+			DefaultEffect(ptr,isTracking,start,end)
+		{}
+		virtual ~BombEffect() {}
 	};
 }
 //end basecross

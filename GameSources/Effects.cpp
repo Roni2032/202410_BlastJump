@@ -12,13 +12,31 @@ namespace basecross{
 		SetAddType(true);
 		AddEffects();
 	}
+	void DefaultEffect::OnUpdate() {
+		MultiParticle::OnUpdate();
+
+		float ElapsedTime = App::GetApp()->GetElapsedTime();
+		for (auto& particle : GetParticleVec()) {
+			for (auto& sprite : particle->GetParticleSpriteVec()) {
+				sprite.m_Color.w += ElapsedTime * (m_AlphaEnd - m_AlphaStart) / particle->GetMaxTime();
+			}
+		}
+	}
 	void DefaultEffect::AddEffects() {
 		Effect testEffect = {
 			L"NUMBER_TEX",
 			32,1.0f,
 			Vec3(1,1,1),Col4(1,1,1,1),
 			Scope(Vec3(-1,-1,-1),Vec3(1,1,1)),
-			Scope(Vec3(-5,-5,-5),Vec3(5,5,5))
+			Scope(Vec3(-1,-1,-1),Vec3(1,1,1))
+		};
+		m_Effects.push_back(testEffect);
+		testEffect = {
+			L"GOAL_TEX",
+			32,1.0f,
+			Vec3(1,1,1),Col4(1,1,1,1),
+			Scope(Vec3(-1,-1,-1),Vec3(1,1,1)),
+			Scope(Vec3(-1,-1,-1),Vec3(1,1,1))
 		};
 
 		m_Effects.push_back(testEffect);
@@ -46,6 +64,25 @@ namespace basecross{
 				rParticleSprite.m_Color = effect.m_Color;
 			}
 		}
+	}
+
+	void BombEffect::AddEffects() {
+		Effect testEffect = {
+			L"EXPLODE_TEX",
+			128,0.5f,
+			Vec3(1,1,1),Col4(1.0f,0.376f,0.149f,1.0f),
+			Scope(Vec3(0,0,0),Vec3(0,0,0)),
+			Scope(Vec3(-3.0f,-3.0f,-3.0f),Vec3(3.0f,3.0f,3.0f))
+		};
+		m_Effects.push_back(testEffect);
+		testEffect = {
+			L"EXPLODE_TEX",
+			128,0.5f,
+			Vec3(1,1,1),Col4(1.0f,1.0f,1.0f,1.0f),
+			Scope(Vec3(0,0,0),Vec3(0,0,0)),
+			Scope(Vec3(-2,-2,-2),Vec3(2,2,2))
+		};
+		m_Effects.push_back(testEffect);
 	}
 }
 //end basecross
