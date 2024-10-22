@@ -5,8 +5,6 @@
 
 #pragma once
 
-#include <Effekseer.h>
-#include <EffekseerRendererDX11.h>
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
@@ -18,6 +16,7 @@
 
 #include "Character.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "BCSprite.h"
 #include "Bomb.h"
 #include "Blocks.h"

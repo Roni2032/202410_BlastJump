@@ -66,6 +66,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h">
       <Filter>workMunakata</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
+      <Filter>workHashimoto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -106,6 +109,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp">
       <Filter>workMunakata</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
+      <Filter>workHashimoto</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
