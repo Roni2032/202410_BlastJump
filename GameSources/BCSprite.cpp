@@ -108,10 +108,10 @@ namespace basecross{
 
 	void BCNumber::OnCreate() {
 		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
-		
+		float sizeX = m_Size.x / m_DisplayDigit;
 		m_Numbers.reserve(m_DisplayDigit);
 		for (int i = 0; i < m_DisplayDigit; i++) {
-			shared_ptr<BCSprite> number = ObjectFactory::Create<BCSprite>(GetStage(), L"NUMBER_TEX", m_Pos, Vec2(m_Size.x / m_DisplayDigit, m_Size.y));
+			shared_ptr<BCSprite> number = GetStage()->AddGameObject<BCSprite>(m_TexKey, Vec3(m_Pos.x + i * sizeX,m_Pos.y,m_Pos.z), Vec2(sizeX, m_Size.y));//ObjectFactory::Create<BCSprite>(GetStage(), m_TexKey, Vec3(0,0,0)/*m_Pos + i * sizeX*/, Vec2(sizeX, m_Size.y));
 			int singleDigit = m_DisplayNumber / digits % 10;
 			
 			number->UpdateUV(GetUV(singleDigit));
@@ -127,7 +127,7 @@ namespace basecross{
 	}
 
 	vector<Vec2> BCNumber::GetUV(int displayDigit) {
-		float uvX = 1.0f / m_DisplayDigit;
+		float uvX = 1.0f / m_CutNum;
 
 		vector<Vec2> uv = {
 				{uvX * displayDigit,0.0f},
@@ -140,6 +140,7 @@ namespace basecross{
 	}
 
 	void BCNumber::UpdateNumber(int number) {
+		m_DisplayNumber = number;
 		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
 		for (auto& sprite : m_Numbers) {
 			int singleDigit = m_DisplayNumber / digits % 10;

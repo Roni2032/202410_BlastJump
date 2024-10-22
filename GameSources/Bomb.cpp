@@ -13,8 +13,9 @@ namespace basecross{
 
 		AddComponent<CollisionSphere>();
 
-		AddComponent<Gravity>();
-		GetComponent<Transform>()->SetPosition(0, 5, 0);
+		auto gravity = AddComponent<Gravity>();
+		gravity->StartJump(m_ThrowVelocity);
+		GetComponent<Transform>()->SetPosition(m_Pos);
 	}
 
 	void Bomb::OnUpdate() {
@@ -39,6 +40,7 @@ namespace basecross{
 
 	void ExplodeCollider::OnCreate() {
 		auto col = AddComponent<CollisionSphere>();
+		col->SetAfterCollision(AfterCollision::None);
 		auto trans = GetComponent<Transform>();
 
 		trans->SetPosition(m_Pos);
@@ -54,6 +56,21 @@ namespace basecross{
 	void ExplodeCollider::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Floor")) {
 			GetStage()->RemoveGameObject<FloorBlock>(Other);
+		}
+		auto gravity = Other->GetComponent<Gravity>(false);
+		if (gravity != nullptr) {
+			float range = m_Bomb->GetRange();
+			Vec3 otherPos = Other->GetComponent<Transform>()->GetPosition();
+			Vec3 ExplodeCorePos = GetComponent<Transform>()->GetPosition();
+
+			Vec3 diff = otherPos - ExplodeCorePos;
+
+			float distance = sqrtf(pow(diff.x, 2) + pow(diff.y, 2));
+			float reboundRate = distance / range;
+			if (reboundRate < m_MinReboundRate) {
+				reboundRate = m_MinReboundRate;
+			}
+			gravity->StartJump(diff.normalize() * reboundRate * m_Bomb->GetPower());
 		}
 	}
 }

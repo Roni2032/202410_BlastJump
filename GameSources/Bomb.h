@@ -13,11 +13,28 @@ namespace basecross{
 
 		float m_ExplodeRange;
 		float m_ExplodePower;
+
+		Vec3 m_ThrowVelocity;
+		Vec3 m_Pos;
+		//shared_ptr<>
 	public:
-		Bomb(const shared_ptr<Stage>& ptr) : 
+		Bomb(const shared_ptr<Stage>& ptr,Vec3 pos) : 
+			Bomb(ptr,pos,1.0f)
+		{}
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime) :
+			Bomb(ptr,pos,explodeTime,3.0f)
+		{}
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime,float explodeRange) :
+			Bomb(ptr,pos,explodeTime,explodeRange,10.0f)
+		{}
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime, float explodeRange,float explodePower) :
+			Bomb(ptr,pos,explodeTime,explodeRange,explodePower,Vec3(0,0,0))
+		{}
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime, float explodeRange, float explodePower, Vec3 velocity) :
 			GameObject(ptr),
-			m_ExplodeTime(2.0f),m_ExplodeTimer(0.0f),
-			m_ExplodeRange(3.0f),m_ExplodePower(3.0f)
+			m_ExplodeTime(explodeTime), m_ExplodeTimer(0.0f),
+			m_ExplodeRange(explodeRange), m_ExplodePower(explodePower),
+			m_Pos(pos), m_ThrowVelocity(velocity)
 		{}
 		virtual ~Bomb(){}
 
@@ -39,11 +56,13 @@ namespace basecross{
 		shared_ptr<Bomb> m_Bomb;
 		Vec3 m_Pos;
 		int m_Tick;
+
+		float m_MinReboundRate;
 	public:
 		ExplodeCollider(const shared_ptr<Stage>& ptr,Vec3 pos,const shared_ptr<Bomb>& bomb):
 			GameObject(ptr),
 			m_Pos(pos),
-			m_Bomb(bomb),
+			m_Bomb(bomb), m_MinReboundRate(0.5f),
 			m_Tick(0)
 		{}
 

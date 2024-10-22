@@ -15,12 +15,14 @@ namespace basecross {
 		//ƒrƒ…[‚Ìì¬
 		void CreateResource();
 		void CreateViewLight();
+		void CreateResource();
 	public:
 		//\’z‚Æ”jŠü
 		GameStageM() :Stage() {}
 		virtual ~GameStageM() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
+
 	};
 
 
