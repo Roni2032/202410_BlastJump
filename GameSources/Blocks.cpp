@@ -37,5 +37,12 @@ namespace basecross{
 	void FloorBlock::Start() {
 		AddTag(L"Floor");
 	}
+	void FloorBlock::HitExplode(int explodeLevel) {
+		m_Durability -= explodeLevel;
+
+		if (m_Durability <= 0) {
+			GetStage()->RemoveGameObject<FloorBlock>(GetThis<FloorBlock>());
+		}
+	}
 }
 //end basecross

@@ -33,6 +33,7 @@ namespace basecross{
 	};
 
 	class FloorBlock : public Block {
+		int m_Durability;
 	public:
 		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos) :
 			FloorBlock(ptr, texKey, pos, Vec3(1, 1, 1))
@@ -41,11 +42,12 @@ namespace basecross{
 			FloorBlock(ptr, texKey, pos, scale, Vec3(0, 0, 0))
 		{}
 		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec3 scale, Vec3 rot) :
-			Block(ptr, texKey, pos, scale, rot)
+			Block(ptr, texKey, pos, scale, rot),m_Durability(3)
 		{}
 		virtual ~FloorBlock() {}
 
 		virtual void Start()override;
+		void HitExplode(int explodeLevel);
 	};
 }
 //end basecross
