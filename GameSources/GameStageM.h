@@ -13,6 +13,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class GameStageM : public Stage {
 		//ƒrƒ…[‚Ìì¬
+		void CreateResource();
 		void CreateViewLight();
 	public:
 		//\’z‚Æ”jŠü
