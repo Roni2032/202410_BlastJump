@@ -8,7 +8,7 @@
 
 namespace basecross{
 	void Block::OnCreate() {
-		if (m_TexKey == L"") {
+		if (m_TexKey == L"" || m_TexKey == L"null") {
 			auto drawComp = AddComponent<BcPNTStaticDraw>();
 			drawComp->SetMeshResource(L"DEFAULT_CUBE");
 			drawComp->SetTextureResource(L"TEST_TEX");
@@ -36,6 +36,13 @@ namespace basecross{
 
 	void FloorBlock::Start() {
 		AddTag(L"Floor");
+	}
+	void FloorBlock::HitExplode(int explodeLevel) {
+		m_Durability -= explodeLevel;
+
+		if (m_Durability <= 0) {
+			GetStage()->RemoveGameObject<FloorBlock>(GetThis<FloorBlock>());
+		}
 	}
 }
 //end basecross

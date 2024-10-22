@@ -21,4 +21,5 @@
 #include "BCSprite.h"
 #include "Bomb.h"
 #include "Blocks.h"
-
+#include "MyCamera.h"
+#include "Effects.h"

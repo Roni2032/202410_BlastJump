@@ -32,7 +32,7 @@ namespace basecross{
 		shared_ptr<PCTSpriteDraw> m_Draw;
 		shared_ptr<Transform> m_Transform;
 	public:
-		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size) : BCSprite(ptr,texKey,pos,size,{1,1},1) {}
+		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size) : BCSprite(ptr,texKey,pos,size,{1,1},1,-1,false) {}
 		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,Vec2 cutUV,const float changeTime = 0.5f,const int useIndex = -1,const bool isAnimation = true) :
 			GameObject(ptr),
 			m_TexKey(texKey),
@@ -82,7 +82,7 @@ namespace basecross{
 			GameObject(ptr) ,
 			m_TexKey(texKey),
 			m_Pos(pos),m_Size(size),
-			m_DisplayDigit(displayDigit),m_DisplayNumber(0), m_CutNum(cutNum)
+			m_DisplayDigit(displayDigit),m_DisplayNumber(1234), m_CutNum(cutNum)
 		{}
 		virtual ~BCNumber(){}
 
