@@ -16,8 +16,6 @@ namespace basecross{
 		auto gravity = AddComponent<BCGravity>();
 		gravity->Jump(m_ThrowVelocity);
 
-		/*auto gravity = AddComponent<Gravity>();
-		gravity->StartJump(m_ThrowVelocity);*/
 		GetComponent<Transform>()->SetPosition(m_Pos);
 	}
 
@@ -41,8 +39,15 @@ namespace basecross{
 		GetStage()->RemoveGameObject<Bomb>(GetThis<Bomb>());
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		auto otherTrans = Other->GetComponent<Transform>();
 		if (Other->FindTag(L"Stage")) {
 			//RemoveComponent<Gravity>();
+		}
+
+		if (otherTrans->GetPosition().y - otherTrans->GetScale().y >= GetComponent<Transform>()->GetPosition().y) {
+			auto gravity = GetComponent<BCGravity>();
+			Vec3 velo = gravity->GetVelocity();
+			gravity->SetVelocity(Vec3(velo.x, 0, velo.z));
 		}
 	}
 
@@ -63,13 +68,16 @@ namespace basecross{
 		m_Tick++;
 	}
 	void ExplodeCollider::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		auto otherTrans = Other->GetComponent<Transform>();
 		if (Other->FindTag(L"Floor")) {
-			GetStage()->RemoveGameObject<FloorBlock>(Other);
+			int block = GetTypeStage<GameStage>()->GetBlock(otherTrans->GetPosition());
+			GetTypeStage<GameStage>()->DestroyBlock(otherTrans->GetPosition(), Other);
+			//GetStage()->RemoveGameObject<FloorBlock>(Other);
 		}
-		auto gravity = Other->GetComponent<Gravity>(false);
+		auto gravity = Other->GetComponent<BCGravity>(false);
 		if (gravity != nullptr) {
 			float range = m_Bomb->GetRange();
-			Vec3 otherPos = Other->GetComponent<Transform>()->GetPosition();
+			Vec3 otherPos = otherTrans->GetPosition();
 			Vec3 ExplodeCorePos = GetComponent<Transform>()->GetPosition();
 
 			Vec3 diff = otherPos - ExplodeCorePos;
@@ -79,8 +87,10 @@ namespace basecross{
 			if (reboundRate < m_MinReboundRate) {
 				reboundRate = m_MinReboundRate;
 			}
-			gravity->StartJump(diff.normalize() * reboundRate * m_Bomb->GetPower());
+			gravity->Jump(diff.normalize() * reboundRate * m_Bomb->GetPower());
 		}
+
+		
 	}
 }
 //end basecross
