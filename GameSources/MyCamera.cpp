@@ -19,14 +19,20 @@ namespace basecross{
 		auto playerTransform = m_player.lock();
 		if (playerTransform != nullptr) {
 			Vec3 playerPos = playerTransform->GetPosition();
-			at.y = playerPos.y;
+			if (playerPos.y > m_HighY) {
+				at.y = playerPos.y;
 
-			eye.y = playerPos.y;
+				eye.y = playerPos.y;
+			}
+			if (playerPos.y - m_HighY < -8.0f) {
+				//ƒvƒŒƒCƒ„[‚ÌŽ€–Sˆ—
+			}
 		}
 		
 		SetEye(eye);
 		SetAt(at);
 
+		
 	}
 
 	void MyCamera::SetPlayer(weak_ptr<GameObject>& player) {
