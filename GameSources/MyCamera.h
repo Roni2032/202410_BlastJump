@@ -9,9 +9,10 @@
 namespace basecross{
 
 	class MyCamera : public Camera {
+		float m_HighY;
 		weak_ptr<Transform> m_player;
 	public:
-		MyCamera():Camera(){}
+		MyCamera():Camera(),m_HighY(0){}
 		virtual ~MyCamera(){}
 
 		virtual void OnCreate()override;

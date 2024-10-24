@@ -13,8 +13,11 @@ namespace basecross{
 
 		AddComponent<CollisionSphere>();
 
-		auto gravity = AddComponent<Gravity>();
-		gravity->StartJump(m_ThrowVelocity);
+		auto gravity = AddComponent<BCGravity>();
+		gravity->Jump(m_ThrowVelocity);
+
+		/*auto gravity = AddComponent<Gravity>();
+		gravity->StartJump(m_ThrowVelocity);*/
 		GetComponent<Transform>()->SetPosition(m_Pos);
 	}
 
@@ -29,11 +32,17 @@ namespace basecross{
 
 	void Bomb::Explode() {
 		GetStage()->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(), GetThis<Bomb>());
+		
+
+		auto particle = GetStage()->GetSharedGameObject<ExplodeParticle>(L"EXPLODE_PCL",false);
+		if (particle != nullptr) {
+			particle->Shot(GetComponent<Transform>()->GetPosition());
+		}
 		GetStage()->RemoveGameObject<Bomb>(GetThis<Bomb>());
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Stage")) {
-			RemoveComponent<Gravity>();
+			//RemoveComponent<Gravity>();
 		}
 	}
 

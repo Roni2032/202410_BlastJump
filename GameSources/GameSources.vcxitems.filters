@@ -28,6 +28,9 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{a77c9166-596d-4b22-a2c1-89a294bbdddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Camera">
+      <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
@@ -69,8 +72,17 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h">
       <Filter>workMunakata</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Effects.h">
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCGravity.h">
+      <Filter>Components</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h">
       <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Particles.h">
+      <Filter>Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
+      <Filter>Camera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -113,8 +125,17 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp">
       <Filter>workMunakata</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Effects.cpp">
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCGravity.cpp">
+      <Filter>Components</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp">
       <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Particles.cpp">
+      <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp">
+      <Filter>Camera</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
