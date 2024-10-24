@@ -22,6 +22,13 @@ namespace basecross{
 		void Jump(Vec3 jumpSpeed) {
 			m_Velocity = jumpSpeed;
 		}
+
+		Vec3 GetVelocity() {
+			return m_Velocity;
+		}
+		void SetVelocity(Vec3 velocity) {
+			m_Velocity = velocity;
+		}
 	};
 }
 //end basecross
