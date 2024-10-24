@@ -7,13 +7,13 @@
 #include "Project.h"
 
 namespace basecross {
-
+	class Block;
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(0.0f, 5.5f, -30.0f);
-		const Vec3 at(0.0f,10.5f,0.0f);
+		const Vec3 eye(0.0f, 6.0f, -15.0f);
+		const Vec3 at(0.0f,6.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>();
@@ -36,6 +36,7 @@ namespace basecross {
 
 			auto explodeParticle = AddGameObject<ExplodeParticle>(bomb->GetComponent<Transform>());
 			SetSharedGameObject(L"EXPLODE_PCL", explodeParticle);
+
 		}
 		catch (...) {
 			throw;
@@ -58,6 +59,7 @@ namespace basecross {
 	void GameStage::CreateMap() {
 		
 		auto& mapVec = m_CsvMap.GetCsvVec();
+		GetStageInfo(mapVec[0]);
 		auto walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
 		vector<wstring> cells;
 		Vec2 startPos;
@@ -66,8 +68,10 @@ namespace basecross {
 			cells.clear();
 			vector<int> cow;
 			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
-			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 1);
-			
+			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
+			if (y == 0) {
+				m_MapLeftTop = startPos;
+			}
 			for (int x = 0; x < cells.size(); x++) {
 				int cell = stoi(cells[x]);
 				switch (cell) {
@@ -88,10 +92,10 @@ namespace basecross {
 		walls->SetStartPos(startPos);
 		walls->DrawMap();
 		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
-		CreateWallCollider(startPos, mapSize, mapVec[0]);
+		CreateWallCollider(startPos, mapSize);
 		
 
-		GetStageInfo(mapVec[0]);
+		
 		/*cells.clear();
 		Util::WStrToTokenVector(cells, mapVec[1], L',');
 
@@ -119,9 +123,7 @@ namespace basecross {
 		}*/
 	}
 
-	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize, const wstring& texKey) {
-		vector<wstring> cells;
-		Util::WStrToTokenVector(cells, texKey, L',');
+	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize) {
 
 		Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
 		//上
@@ -168,5 +170,22 @@ namespace basecross {
 		}
 	}
 
+
+	Vec3 GameStage::GetMapIndex(Vec3 pos) {
+		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x, m_MapLeftTop.y - pos.y, 0);
+		return mapPos.floor(0);
+	}
+	int GameStage::GetBlock(Vec3 pos) {
+		Vec3 mapPos = GetMapIndex(pos);
+		
+		return m_Map[mapPos.y][mapPos.x];
+	}
+
+	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
+		Vec3 mapPos = GetMapIndex(pos);
+		m_Map[mapPos.y][mapPos.x] = 0;
+
+		RemoveGameObject<GameObject>(block);
+	}
 }
 //end basecross
