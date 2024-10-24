@@ -29,7 +29,7 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
-		void CreateWall(Vec2 startPos, Vec2 mapSize, const wstring& texKey);
+		void CreateWallCollider(Vec2 startPos, Vec2 mapSize, const wstring& texKey);
 		void GetStageInfo(const wstring& strVec);
 	public:
 		//ç\ízÇ∆îjä¸
