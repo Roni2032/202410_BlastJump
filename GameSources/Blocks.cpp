@@ -16,6 +16,8 @@ namespace basecross{
 		for (int i = 0; i < m_SizeY; i++) {
 			m_Maps.push_back({});
 		}
+
+		
 	}
 	void InstanceBlock::AddBlock(int y, int cell) {
 		if (y >= m_SizeY) return;
@@ -50,6 +52,7 @@ namespace basecross{
 
 		auto col = AddComponent<CollisionObb>();
 		col->SetFixed(true);
+		col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
@@ -66,6 +69,7 @@ namespace basecross{
 
 	void FloorBlock::Start() {
 		AddTag(L"Floor");
+		CheckDurability();
 	}
 	void FloorBlock::Update() {
 
@@ -73,8 +77,22 @@ namespace basecross{
 	void FloorBlock::HitExplode(int damage) {
 		m_Durability -= damage;
 
+		CheckDurability();
 		if (m_Durability <= 0) {
-			GetStage()->RemoveGameObject<FloorBlock>(GetThis<FloorBlock>());
+			GetTypeStage<GameStage>()->DestroyBlock(GetComponent<Transform>()->GetPosition(), GetThis<GameObject>());
+		}
+	}
+
+	void FloorBlock::CheckDurability() {
+		auto drawComp = GetComponent<BcPNTStaticDraw>();
+		if (m_Durability < 33) {
+			drawComp->SetTextureResource(L"TEST33_TEX");
+		}
+		else if (m_Durability < 66) {
+			drawComp->SetTextureResource(L"TEST66_TEX");
+		}
+		else {
+			drawComp->SetTextureResource(L"TEST100_TEX");
 		}
 	}
 }

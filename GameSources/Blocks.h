@@ -70,6 +70,8 @@ namespace basecross{
 		virtual void Start()override;
 		virtual void Update() override;
 		void HitExplode(int damage);
+
+		void CheckDurability();
 	};
 }
 //end basecross

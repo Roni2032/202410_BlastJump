@@ -53,16 +53,13 @@ namespace basecross{
 
 			m_TotalTime += elapsed;
 			if (m_TotalTime > m_MaxTime) {
-				m_IsActive = false;
+				SetActive(false);
 			}
 
 			if (m_Color.w <= 1.0f && m_Color.w >= 0.0f) {
 				m_Color.w += elapsed * (m_Alpha.m_Low - m_Alpha.m_High) / m_MaxTime;
 				SetColor(m_Color);
 			}
-		}
-		if (m_Draw->GetDrawActive() && !m_IsActive) {
-			SetActive(m_IsActive);
 		}
 	}
 	void BCParticleSprite::StartParticle(const Vec3 pos) {
@@ -113,7 +110,6 @@ namespace basecross{
 		vector<shared_ptr<BCParticleSprite>> particleSprite;
 		for (int i = 0; i < num; i++) {
 			auto particle = GetStage()->AddGameObject<BCParticleSprite>(key);
-			//particle->SetTexture(key);
 			particleSprite.push_back(particle);
 			m_ParticleSprites.push_back(particle);
 		}

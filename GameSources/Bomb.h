@@ -16,7 +16,7 @@ namespace basecross{
 
 		Vec3 m_ThrowVelocity;
 		Vec3 m_Pos;
-		//shared_ptr<>
+		shared_ptr<GameStage> m_GameStage;
 	public:
 		Bomb(const shared_ptr<Stage>& ptr,Vec3 pos) : 
 			Bomb(ptr,pos, Vec3(0, 0, 0), 1.0f)
