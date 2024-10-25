@@ -37,11 +37,18 @@ namespace basecross{
 		//現在の状態を保持するスマートポインタ
 		shared_ptr<PlayerState> m_State;
 
+		KEYBOARD_STATE m_KeyState;
+
 		shared_ptr<basecross::Transform> m_Transform;
 		Vec3 m_Pos = Vec3(0.0f);
 		shared_ptr<basecross::BcPNTStaticDraw> m_Draw;
 		Col4 m_ColBlack = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 		Col4 m_TestCol = Col4(0.0f, 0.0f, 0.0f, 1.0f);
+
+		float m_WalkSpeed = 0.1f;
+
+		bool m_IsBombCreate = false;
+		Vec3 m_BombVec = Vec3(0.0f);
 
 	public:
 		// コンストラクタ：初期状態を受け取り設定する
@@ -66,6 +73,37 @@ namespace basecross{
 			m_State->PlayerUpdate(player);  //状態クラスに処理を委譲
 		}
 
+		enum KeyState
+		{
+			keyPush = 0,
+			keyPressed,
+			keyUp,
+		};
+
+		bool InputKey(int keyState ,int keyCord)
+		{
+			switch (keyState)
+			{
+			case 1:
+
+				return m_KeyState.m_bPressedKeyTbl[keyCord];
+
+				break;
+
+			case 2:
+
+				return m_KeyState.m_bUpKeyTbl[keyCord];
+
+				break;
+
+			default:
+
+				return m_KeyState.m_bPushKeyTbl[keyCord];
+
+				break;
+			}
+		}
+
 		Vec3 GetPlayerPos()
 		{
 			return m_Pos;
@@ -73,6 +111,29 @@ namespace basecross{
 		void SetPlayerPos(Vec3 pos)
 		{
 			m_Pos = pos;
+		}
+
+		float GetWalkSpeed()
+		{
+			return m_WalkSpeed;
+		}
+
+		bool GetIsBombCreate()
+		{
+			return  m_IsBombCreate;
+		}
+		void SetIsBombCreate(bool b)
+		{
+			m_IsBombCreate = b;
+		}
+
+		Vec3 GetBombVec()
+		{
+			return m_BombVec;
+		}
+		void SetBombVec(Vec3 vec)
+		{
+			m_BombVec = vec;
 		}
 
 		virtual void OnCreate() override;
@@ -85,15 +146,12 @@ namespace basecross{
 	{
 	public:
 		//立ち状態での入力処理
-		void HandleInput(shared_ptr<Player> player) override
-		{
-
-		}
+		void HandleInput(shared_ptr<Player> player) override;
 
 		//立ち状態での更新処理
 		void PlayerUpdate(shared_ptr<Player> player) override
 		{
-
+			player->SetIsBombCreate(false);
 		}
 
 		wstring GetStateName() override
@@ -119,14 +177,13 @@ namespace basecross{
 		PlayerStateWalk(float walkSpeed) : m_WalkSpeed(walkSpeed) {}
 
 		//歩き状態での入力処理
-		void HandleInput(shared_ptr<Player> player) override
-		{
-
-		}
+		void HandleInput(shared_ptr<Player> player) override;
 
 		//歩き状態での更新処理
 		void PlayerUpdate(shared_ptr<Player> player) override
 		{
+			player->SetIsBombCreate(false);
+
 			m_Pos = player->GetPlayerPos();
 			m_Pos.x += m_WalkSpeed;
 			player->SetPlayerPos(m_Pos);
@@ -146,14 +203,13 @@ namespace basecross{
 	//投げている状態
 	class PlayerStateThrow : public PlayerState
 	{
-
 		shared_ptr<basecross::Stage> m_Stage;
-		bool m_IsCreate = false;
 
 	public:
 		//投げ状態での入力処理
 		void HandleInput(shared_ptr<Player> player) override
 		{
+
 		}
 
 		//投げ状態での更新処理

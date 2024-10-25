@@ -28,15 +28,15 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{a77c9166-596d-4b22-a2c1-89a294bbdddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{51c2cff9-5a5c-45e9-8cb4-251227419deb}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h">
@@ -72,15 +72,15 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Effects.h">
       <Filter>Effect</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp">
@@ -115,6 +115,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Effects.cpp">
       <Filter>Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

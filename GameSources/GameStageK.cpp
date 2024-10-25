@@ -43,7 +43,7 @@ namespace basecross {
 			Vec3 floorPos = Vec3(-5.0f, -1.5f, 0.0f);
 			for (int i = 0; i < 10; i++)
 			{
-				AddGameObject<FloorBlockTex>(floorPos, L"DIAMOND_TX");
+				AddGameObject<Block>(L"DIAMOND_TX", floorPos);
 				floorPos.x += 1.0f;
 			}
 			AddGameObject<Player>(make_shared<PlayerStateIdle>());

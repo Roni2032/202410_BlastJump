@@ -11,7 +11,7 @@ namespace basecross{
 		if (m_TexKey == L"" || m_TexKey == L"null") {
 			auto drawComp = AddComponent<BcPNTStaticDraw>();
 			drawComp->SetMeshResource(L"DEFAULT_CUBE");
-			drawComp->SetTextureResource(L"TEST_TEX");
+			drawComp->SetTextureResource(L"DIAMOND_TX");
 			drawComp->SetDiffuse(Col4(1, 1, 1, 1));
 		}
 		else {

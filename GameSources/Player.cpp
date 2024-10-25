@@ -8,11 +8,6 @@
 
 namespace basecross{
 
-	/*Player::Player(const shared_ptr<Stage>& ptr, std::unique_ptr<PlayerState> initialState) :
-		GameObject(ptr),
-		state(std::make_unique<PlayerStateIdle>())
-	{}*/
-
 	void Player::OnCreate()
 	{
 		//‰ŠúˆÊ’u‚È‚Ç‚ÌÝ’è
@@ -26,38 +21,19 @@ namespace basecross{
 		m_Draw->SetMeshResource(L"DEFAULT_SPHERE");
 		//•¶Žš—ñ‚ð‚Â‚¯‚é
 		auto ptrString = AddComponent<StringSprite>();
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 36.0f));
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 66.0f));
 		ptrString->SetBackColor(m_ColBlack);
 		ptrString->GetFontSize();
-		//auto gravPtr = AddComponent<Gravity>();
-		//gravPtr->SetGravityVerocity(Vec3(0.0f, -9.8f, 0.0f));
 	}
 
 	void Player::OnUpdate()
 	{
 		DrawString();
 
-		auto KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+		m_KeyState = App::GetApp()->GetInputDevice().GetKeyState();
 		m_Transform = GetComponent<Transform>();
 
-		if (KeyState.m_bPushKeyTbl[VK_RIGHT])
-		{
-			SetState(make_shared<PlayerStateWalk>(0.1f));
-		}
-		if (KeyState.m_bPushKeyTbl[VK_LEFT])
-		{
-			SetState(make_shared<PlayerStateWalk>(-0.1f));
-		}
-		if (KeyState.m_bPushKeyTbl[0x58])
-		{
-			SetState(make_shared<PlayerStateThrow>());
-		}
-
-		if (KeyState.m_bUpKeyTbl[VK_RIGHT] || KeyState.m_bUpKeyTbl[VK_LEFT])
-		{
-			SetState(make_shared<PlayerStateIdle>());
-		}
-
+		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
 
 		m_Transform->SetPosition(m_Pos);
@@ -85,16 +61,79 @@ namespace basecross{
 		ptrString->SetDrawActive(true);
 	}
 
+	void PlayerStateIdle::HandleInput(shared_ptr<Player> player)
+	{
+
+		float m_WalkSpeed = player->GetWalkSpeed();
+
+		if (player->InputKey(player->keyPressed, VK_RIGHT) || player->InputKey(player->keyPush, VK_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(m_WalkSpeed));
+		}
+		if (player->InputKey(player->keyPressed, VK_LEFT) || player->InputKey(player->keyPush, VK_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
+		}
+
+		if (player->InputKey(player->keyPressed, 0x58))
+		{
+			player->SetState(make_shared<PlayerStateThrow>());
+		}
+
+	}
+
+	void PlayerStateWalk::HandleInput(shared_ptr<Player> player)
+	{
+		if (player->InputKey(player->keyPressed, 0x58))
+		{
+			player->SetState(make_shared<PlayerStateThrow>());
+		}
+
+		if (player->InputKey(player->keyUp, VK_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+		if (player->InputKey(player->keyUp, VK_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+
+	}
+
 	void PlayerStateThrow::PlayerUpdate(shared_ptr<Player> player) 
 	{
-		
-		if (m_IsCreate == false)
-		{
-			m_Stage = player->GetStage();
-			m_Stage->AddGameObject<Bomb>();
+		Vec3 m_Pos;
 
-			m_IsCreate = true;
+		float m_WalkSpeed = player->GetWalkSpeed();
+
+		bool m_IsBombCreate = player->GetIsBombCreate();
+		Vec3 m_BombVec = player->GetBombVec();
+		float m_BombShotSpeed = 8.0f;
+
+		if (player->InputKey(player->keyPush, VK_RIGHT)) m_BombVec.x = m_BombShotSpeed;
+		if (player->InputKey(player->keyPush, VK_LEFT)) m_BombVec.x = -m_BombShotSpeed;
+		if (player->InputKey(player->keyPush, VK_UP)) m_BombVec.y = m_BombShotSpeed;
+		if (player->InputKey(player->keyPush, VK_DOWN)) m_BombVec.y = -m_BombShotSpeed;
+
+		if (m_IsBombCreate == false)
+		{
+			m_Pos = player->GetPlayerPos();
+
+			m_Stage = player->GetStage();
+			m_Stage->AddGameObject<Bomb>(m_Pos, 3.0f, 3.0f, 3.0f, m_BombVec);
+
+			player->SetIsBombCreate(true);
 		}		
+
+		if (player->InputKey(player->keyPush, VK_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(m_WalkSpeed));
+		}
+		if (player->InputKey(player->keyPush, VK_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
+		}
+		player->SetState(make_shared<PlayerStateIdle>());
 	}
 
 }

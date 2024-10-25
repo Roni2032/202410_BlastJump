@@ -5,8 +5,8 @@
 
 #pragma once
 
-#include <Effekseer.h>
-#include <EffekseerRendererDX11.h>
+//#include <Effekseer.h>
+//#include <EffekseerRendererDX11.h>
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
