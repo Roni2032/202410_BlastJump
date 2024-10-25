@@ -12,8 +12,8 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(0.0f, 6.0f, -15.0f);
-		const Vec3 at(0.0f,6.0f,0.0f);
+		const Vec3 eye(-0.5f, 6.0f, -15.0f);
+		const Vec3 at(-0.5f,6.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>();
@@ -31,11 +31,13 @@ namespace basecross {
 			CreateViewLight();
 			CreateResource();
 			CreateMap();
+			CreateParticle();
+			LoadMap();
 
-			auto bomb = AddGameObject<Bomb>(Vec3(-3, 2, 0),Vec3(1.0f,10.0f,0.0f), 1.0f );
+			auto bomb = AddGameObject<Bomb>(Vec3(-3, 10, 0),Vec3(0.0f,0.0f,0.0f), 3.0f );
 
-			auto explodeParticle = AddGameObject<ExplodeParticle>(bomb->GetComponent<Transform>());
-			SetSharedGameObject(L"EXPLODE_PCL", explodeParticle);
+			m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 
 		}
 		catch (...) {
@@ -43,6 +45,18 @@ namespace basecross {
 		}
 	}
 
+	void GameStage::OnUpdate() {
+		auto elapsedTime = App::GetApp()->GetElapsedTime();
+		m_MainTimer += elapsedTime;
+		int minute = m_MainTimer / 60.0f;
+		int second = m_MainTimer - 60.0f * minute;
+
+		m_TimerSprite[1]->UpdateNumber(minute);
+		m_TimerSprite[0]->UpdateNumber(second);
+
+
+		LoadMap();
+	}
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
@@ -50,8 +64,13 @@ namespace basecross {
 		wstring mapPath = path + L"Maps/";
 		wstring texPath = path + L"Texture/";
 		app->RegisterTexture(L"TEST_TEX", texPath + L"TestTex_wall.jpg");
+		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
+		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
+		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
+
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
+		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -74,11 +93,7 @@ namespace basecross {
 			}
 			for (int x = 0; x < cells.size(); x++) {
 				int cell = stoi(cells[x]);
-				switch (cell) {
-				case 1:
-					AddGameObject<FloorBlock>(L"TEST_TEX",Vec3(startPos.x + x, startPos.y - y, 0));
-					break;
-				}
+				
 				if (cell == 2) {
 					walls->AddBlock(y, cell);
 				}
@@ -89,40 +104,81 @@ namespace basecross {
 			}
 			m_Map.push_back(cow);
 		}
-		walls->SetStartPos(startPos);
+		walls->SetStartPos((Vec2)m_MapLeftTop);
 		walls->DrawMap();
 		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
 		CreateWallCollider(startPos, mapSize);
 		
-
-		
-		/*cells.clear();
-		Util::WStrToTokenVector(cells, mapVec[1], L',');
-
-		int index = 0;
-		while (true) {
-			vector<wstring> strNum;
-			wstring key = cells[index];
-			index++;
-
-			if (key == L"null") {
-				break;
-			}
-			else if (key == L"scroll") {
-				Util::WStrToTokenVector(strNum, cells[index], L'-');
-				if (strNum.size() == 2) {
-					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), stoi(strNum[1])));
-				}
-				else {
-					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), 1000));
-				}
-			}
-			else if (key == L"bomb") {
-				m_BombNum = stoi(cells[index]);
-			}
-		}*/
 	}
 
+	shared_ptr<Block> GameStage::CreateBlock(int blockNum, Vec3 pos) {
+		shared_ptr<Block> obj;
+		switch (blockNum) {
+		case 1:
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos);
+			break;
+		}
+
+		return obj;
+	}
+	void GameStage::LoadMap() {
+		auto camera = GetView()->GetTargetCamera();
+		float atY = camera->GetAt().y;
+
+		if (m_LoadedMaxHeight == 0) {
+			for (int i = 0; i <= atY + 10; i++) {
+				if (i >= m_Map.size()) {
+					break;
+				}
+				int y;
+				y = m_Map.size() - i - 1;
+				int sizeX = m_Map[y].size();
+				for (int x = 0; x < sizeX; x++) {
+					int size = m_Map[y].size();
+					Vec2 startPos = Vec2(size / -2, m_Map.size());
+					auto obj = CreateBlock(m_Map[y][x], Vec3(startPos.x + x, startPos.y - y, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+					if (obj != nullptr) {
+						m_LoadedStageObjects.push_back(obj);
+					}
+				}
+			}
+
+			m_LoadedMaxHeight = atY + 10;
+			return;
+		}
+
+		//新しくマップをロード
+		if (m_LoadedMaxHeight < static_cast<int>(atY) + 10) {
+			m_LoadedMaxHeight = atY + 10;
+			if (m_LoadedMaxHeight >= m_Map.size()) {
+				return;
+			}
+			int loadedIndex = m_Map.size() - 1 - m_LoadedMaxHeight;
+			for (int x = 0; x < m_Map[loadedIndex].size(); x++) {
+				int size = m_Map[loadedIndex].size();
+				Vec2 startPos = Vec2(size / -2 , m_Map.size() - 2);
+				auto obj = CreateBlock(m_Map[loadedIndex][x], Vec3(startPos.x + x, startPos.y - loadedIndex, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+				if (obj != nullptr) {
+					m_LoadedStageObjects.push_back(obj);
+				}
+			}
+		}
+		//ロードしない場合はここで終了
+		else {
+			return;
+		}
+		//範囲外に入ったブロックを削除
+		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
+			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
+			float y = objTrans->GetPosition().y;
+
+			if (y < static_cast<int>(atY) - 10) {
+				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
+				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
+			}
+		}
+		
+	}
 	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize) {
 
 		Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
@@ -131,9 +187,9 @@ namespace basecross {
 		//下
 		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y - mapSize.y + 1, 0), Vec3(mapSize.x, 1, 1));
 		//右
-		AddGameObject<Block>(L"", Vec3(startPos.x + mapSize.x - 1, center.y + 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
+		AddGameObject<Block>(L"", Vec3(startPos.x + mapSize.x - 1, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
 		//左
-		AddGameObject<Block>(L"", Vec3(startPos.x, center.y + 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
+		AddGameObject<Block>(L"", Vec3(startPos.x, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
 	}
 	
 	void GameStage::GetStageInfo(const wstring& strVec) {
@@ -169,8 +225,20 @@ namespace basecross {
 			}
 		}
 	}
+	void GameStage::CreateParticle() {
+		auto explodeParticle = AddGameObject<ExplodeParticle>();
+		SetSharedGameObject(L"EXPLODE_PCL", explodeParticle);
 
+		auto blockDestroyParticle = AddGameObject<BlockDestroyParticle>();
+		SetSharedGameObject(L"DESTROY_BLOCK_PCL", blockDestroyParticle);
+	}
 
+	void GameStage::PlayParticle(const wstring& key, Vec3 pos) {
+		auto particle = GetSharedGameObject<ExplodeParticle>(key, false);
+		if (particle != nullptr) {
+			particle->Shot(pos);
+		}
+	}
 	Vec3 GameStage::GetMapIndex(Vec3 pos) {
 		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x, m_MapLeftTop.y - pos.y, 0);
 		return mapPos.floor(0);
@@ -184,7 +252,8 @@ namespace basecross {
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
 		Vec3 mapPos = GetMapIndex(pos);
 		m_Map[mapPos.y][mapPos.x] = 0;
-
+		PlayParticle(L"DESTROY_BLOCK_PCL", block->GetComponent<Transform>()->GetPosition());
+		
 		RemoveGameObject<GameObject>(block);
 	}
 }

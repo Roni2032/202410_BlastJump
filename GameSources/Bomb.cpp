@@ -17,6 +17,8 @@ namespace basecross{
 		gravity->Jump(m_ThrowVelocity);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
+
+		m_GameStage = GetTypeStage<GameStage>();
 	}
 
 	void Bomb::OnUpdate() {
@@ -29,14 +31,11 @@ namespace basecross{
 	}
 
 	void Bomb::Explode() {
-		GetStage()->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(), GetThis<Bomb>());
+		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(), GetThis<Bomb>());
 		
-
-		auto particle = GetStage()->GetSharedGameObject<ExplodeParticle>(L"EXPLODE_PCL",false);
-		if (particle != nullptr) {
-			particle->Shot(GetComponent<Transform>()->GetPosition());
-		}
-		GetStage()->RemoveGameObject<Bomb>(GetThis<Bomb>());
+		m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetPosition());
+		
+		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto otherTrans = Other->GetComponent<Transform>();
@@ -55,6 +54,7 @@ namespace basecross{
 	void ExplodeCollider::OnCreate() {
 		auto col = AddComponent<CollisionSphere>();
 		col->SetAfterCollision(AfterCollision::None);
+		col->SetDrawActive(true);
 		auto trans = GetComponent<Transform>();
 
 		trans->SetPosition(m_Pos);
@@ -62,17 +62,18 @@ namespace basecross{
 		trans->SetScale(Vec3(range,range,range));
 	}
 	void ExplodeCollider::OnUpdate() {
-		if (m_Tick > 2) {
-			GetStage()->RemoveGameObject<ExplodeCollider>(GetThis<ExplodeCollider>());
-		}
-		m_Tick++;
+		GetStage()->RemoveGameObject<ExplodeCollider>(GetThis<ExplodeCollider>());
 	}
 	void ExplodeCollider::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto otherTrans = Other->GetComponent<Transform>();
 		if (Other->FindTag(L"Floor")) {
-			int block = GetTypeStage<GameStage>()->GetBlock(otherTrans->GetPosition());
-			GetTypeStage<GameStage>()->DestroyBlock(otherTrans->GetPosition(), Other);
-			//GetStage()->RemoveGameObject<FloorBlock>(Other);
+			auto block = static_pointer_cast<FloorBlock>(Other);
+			if (block != nullptr) {
+				block->HitExplode(40);
+			}
+			//int block = GetTypeStage<GameStage>()->GetBlock(otherTrans->GetPosition());
+			//GetTypeStage<GameStage>()->DestroyBlock(otherTrans->GetPosition(), Other);
+			
 		}
 		auto gravity = Other->GetComponent<BCGravity>(false);
 		if (gravity != nullptr) {
