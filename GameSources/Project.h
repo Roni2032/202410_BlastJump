@@ -22,4 +22,6 @@
 #include "Bomb.h"
 #include "Blocks.h"
 #include "MyCamera.h"
-#include "Effects.h"
+#include "BCParticle.h"
+#include "Particles.h"
+#include "BCGravity.h"
