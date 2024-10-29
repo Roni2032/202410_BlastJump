@@ -28,6 +28,9 @@
     <Filter Include="Effect">
       <UniqueIdentifier>{a77c9166-596d-4b22-a2c1-89a294bbdddd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{51c2cff9-5a5c-45e9-8cb4-251227419deb}</UniqueIdentifier>
+	</Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
     </Filter>
@@ -40,9 +43,6 @@
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h">
@@ -81,11 +81,16 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h">
       <Filter>Effect</Filter>
     </ClInclude>
+
+    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
+      <Filter>Player</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Particles.h">
       <Filter>Effect</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
       <Filter>Camera</Filter>
+
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h">
       <Filter>Goal/CheckPoint</Filter>
@@ -96,9 +101,6 @@
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp">
@@ -136,6 +138,10 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp">
       <Filter>Effect</Filter>
+    </ClCompile>
+
+    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
+      <Filter>Player</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Particles.cpp">
       <Filter>Effect</Filter>

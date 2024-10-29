@@ -18,7 +18,7 @@ namespace basecross{
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
 
-		m_GameStage = GetTypeStage<GameStage>();
+		m_GameStage = GetTypeStage<GameStageK>();
 	}
 
 	void Bomb::OnUpdate() {
@@ -33,7 +33,7 @@ namespace basecross{
 	void Bomb::Explode() {
 		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(),m_ExplodeStatus);
 		
-		m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetPosition());
+		//m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetPosition());
 		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 	}
