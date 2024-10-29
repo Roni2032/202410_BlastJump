@@ -5,6 +5,7 @@
 
 #pragma once
 #include "stdafx.h"
+#include "BCGravity.h"
 
 namespace basecross{
 
@@ -38,6 +39,7 @@ namespace basecross{
 		shared_ptr<PlayerState> m_State;
 
 		KEYBOARD_STATE m_KeyState;
+		//CONTROLER_STATE m_Controler;
 
 		shared_ptr<basecross::Transform> m_Transform;
 		Vec3 m_Pos = Vec3(0.0f);
@@ -45,7 +47,13 @@ namespace basecross{
 		Col4 m_ColBlack = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 		Col4 m_TestCol = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 
+		shared_ptr<basecross::CollisionSphere> m_Collision;
+
+		shared_ptr<BCGravity> m_Grav;
+
 		float m_WalkSpeed = 0.1f;
+
+		Vec3 m_JumpPower = Vec3(0.0f, 5.0f, 0.0f);
 
 		bool m_IsBombCreate = false;
 		Vec3 m_BombVec = Vec3(0.0f);
@@ -117,6 +125,20 @@ namespace basecross{
 		{
 			return m_WalkSpeed;
 		}
+
+		Vec3 GetJumpPower()
+		{
+			return m_JumpPower;
+		}
+		void PlayerJump(Vec3 velocity)
+		{
+			m_Grav->Jump(velocity);
+		}
+		float GetVerticalVelocity()
+		{
+			return m_Grav->GetVelocity().y;
+		}
+		const float m_PlayerNormalGravity = -9.8f;
 
 		bool GetIsBombCreate()
 		{

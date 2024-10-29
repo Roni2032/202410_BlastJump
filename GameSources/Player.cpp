@@ -11,27 +11,33 @@ namespace basecross{
 	void Player::OnCreate()
 	{
 		//初期位置などの設定
-		auto ptr = AddComponent<Transform>();
-		ptr->SetScale(0.25f, 0.25f, 0.25f);	//直径25センチの球体
-		ptr->SetRotation(0.0f, 0.0f, 0.0f);
-		ptr->SetPosition(Vec3(0, 0.0f, 0));
+		m_Transform = GetComponent<Transform>();
+		m_Transform->SetScale(0.25f, 0.25f, 0.25f);	//直径25センチの球体
+		m_Transform->SetRotation(0.0f, 0.0f, 0.0f);
+		m_Transform->SetPosition(Vec3(0, 0.0f, 0));
 		//描画コンポーネントの設定
 		m_Draw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
 		m_Draw->SetMeshResource(L"DEFAULT_SPHERE");
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 66.0f));
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 120.0f));
 		ptrString->SetBackColor(m_ColBlack);
 		ptrString->GetFontSize();
+
+		m_Grav = AddComponent<BCGravity>();
+
+		//各パフォーマンスを得る
+		m_Collision = AddComponent<CollisionSphere>();
+		m_Collision->SetDrawActive(true);
 	}
 
 	void Player::OnUpdate()
 	{
 		DrawString();
+		m_Pos = m_Transform->GetPosition();
 
 		m_KeyState = App::GetApp()->GetInputDevice().GetKeyState();
-		m_Transform = GetComponent<Transform>();
 
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
@@ -51,9 +57,19 @@ namespace basecross{
 		positionStr += L"Z=" + Util::FloatToWStr(pos.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
 		wstring stateName;
-		stateName += m_State->GetStateName();
+		stateName = m_State->GetStateName() + L"\n";
 
-		wstring str = positionStr + stateName;
+		auto gravity = m_Grav->GetVelocity();
+		wstring gravityStr(L"Gravity:\t");
+		gravityStr += L"GX=" + Util::FloatToWStr(gravity.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L",\t";
+		gravityStr += L"GY=" + Util::FloatToWStr(gravity.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L",\t";
+		gravityStr += L"GZ=" + Util::FloatToWStr(gravity.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+
+		auto collision = m_Collision->FindExcludeCollisionTag(L"Stage");
+		wstring collisionStr(L"Collision:\t");
+		collisionStr += L"CO=" + Util::FloatToWStr(collision, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+
+		wstring str = positionStr + stateName + gravityStr + collisionStr;
 
 		//文字列コンポーネントの取得
 		auto ptrString = GetComponent<StringSprite>();
@@ -80,6 +96,10 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateThrow>());
 		}
 
+		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		{
+			player->PlayerJump(player->GetJumpPower());
+		}
 	}
 
 	void PlayerStateWalk::HandleInput(shared_ptr<Player> player)
@@ -98,6 +118,10 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateIdle>());
 		}
 
+		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		{
+			player->PlayerJump(player->GetJumpPower());
+		}
 	}
 
 	void PlayerStateThrow::PlayerUpdate(shared_ptr<Player> player) 
@@ -120,7 +144,7 @@ namespace basecross{
 			m_Pos = player->GetPlayerPos();
 
 			m_Stage = player->GetStage();
-			m_Stage->AddGameObject<Bomb>(m_Pos, 3.0f, 3.0f, 3.0f, m_BombVec);
+			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 3.0f);
 
 			player->SetIsBombCreate(true);
 		}		
