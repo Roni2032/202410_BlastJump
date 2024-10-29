@@ -60,6 +60,27 @@ namespace basecross{
 				m_Color.w += elapsed * (m_Alpha.m_Low - m_Alpha.m_High) / m_MaxTime;
 				SetColor(m_Color);
 			}
+
+			//------------------------------------------------------------------
+			//	スプライトをビルボード化
+			//------------------------------------------------------------------
+			
+			//Vec3 cameraPos = m_Camera->GetEye();
+			//Vec3 spritePos = m_Trans->GetPosition();
+			//
+			//Vec3 diff = cameraPos - spritePos;
+			//diff = diff.normalize();
+			//float radXZ = atan2f(diff.z, diff.x);
+			//float radXY = atan2f(diff.y, diff.x);
+			//Vec3 sideVec = Vec3(cos(radXZ + XM_PI / 2.0f), 0.0f, sin(radXZ + XM_PI / 2.0f));
+
+			//Quat q = m_Trans->GetQuaternion().rotationY(radXZ);
+			////Quat q = (Quat)XMQuaternionRotationAxis(diff,radXZ);
+
+			////
+			//////Quat q2 = (Quat)XMQuaternionRotationAxis(sideVec, radXY);
+
+			//m_Trans->SetQuaternion(q);
 		}
 	}
 	void BCParticleSprite::StartParticle(const Vec3 pos) {
@@ -105,6 +126,7 @@ namespace basecross{
 
 	void BCParticle::OnCreate() {
 		AddParticleData();
+		
 	}
 	vector<shared_ptr<BCParticleSprite>> BCParticle::AddParticle(int num, const wstring& key) {
 		vector<shared_ptr<BCParticleSprite>> particleSprite;
@@ -116,9 +138,7 @@ namespace basecross{
 
 		return particleSprite;
 	}
-	void BCParticle::AddParticleData() {
-		
-	}
+	
 	void BCParticle::Shot(const Vec3 pos) {
 		auto particles = GetAllParticle();
 		for (auto& particle : particles) {

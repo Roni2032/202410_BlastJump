@@ -82,7 +82,7 @@ namespace basecross{
 		vector<shared_ptr<BCParticleSprite>> GetAllParticle() {
 			return m_ParticleSprites;
 		}
-		virtual void AddParticleData();
+		virtual void AddParticleData(){}
 		void Shot(const Vec3 pos = Vec3(0,0,0));
 
 		void SetParent(shared_ptr<Transform>& parent) {
