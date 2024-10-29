@@ -38,6 +38,7 @@ namespace basecross{
 		m_Pos = m_Transform->GetPosition();
 
 		m_KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+		m_Controler = App::GetApp()->GetInputDevice().GetControlerVec();
 
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
@@ -91,7 +92,21 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
 		}
 
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_DPAD_RIGHT) || player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(m_WalkSpeed));
+		}
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_DPAD_LEFT) || player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
+		}
+
 		if (player->InputKey(player->keyPressed, 0x58))
+		{
+			player->SetState(make_shared<PlayerStateThrow>());
+		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_X))
 		{
 			player->SetState(make_shared<PlayerStateThrow>());
 		}
@@ -100,11 +115,21 @@ namespace basecross{
 		{
 			player->PlayerJump(player->GetJumpPower());
 		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		{
+			player->PlayerJump(player->GetJumpPower());
+		}
 	}
 
 	void PlayerStateWalk::HandleInput(shared_ptr<Player> player)
 	{
 		if (player->InputKey(player->keyPressed, 0x58))
+		{
+			player->SetState(make_shared<PlayerStateThrow>());
+		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_X))
 		{
 			player->SetState(make_shared<PlayerStateThrow>());
 		}
@@ -118,7 +143,21 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateIdle>());
 		}
 
+		if (player->InputButton(0, player->b_Up, XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+		if (player->InputButton(0, player->b_Up, XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+
 		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		{
+			player->PlayerJump(player->GetJumpPower());
+		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
 		{
 			player->PlayerJump(player->GetJumpPower());
 		}
@@ -139,6 +178,11 @@ namespace basecross{
 		if (player->InputKey(player->keyPush, VK_UP)) m_BombVec.y = m_BombShotSpeed;
 		if (player->InputKey(player->keyPush, VK_DOWN)) m_BombVec.y = -m_BombShotSpeed;
 
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_RIGHT)) m_BombVec.x = m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_LEFT)) m_BombVec.x = -m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_UP)) m_BombVec.y = m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = -m_BombShotSpeed;
+
 		if (m_IsBombCreate == false)
 		{
 			m_Pos = player->GetPlayerPos();
@@ -149,14 +193,6 @@ namespace basecross{
 			player->SetIsBombCreate(true);
 		}		
 
-		if (player->InputKey(player->keyPush, VK_RIGHT))
-		{
-			player->SetState(make_shared<PlayerStateWalk>(m_WalkSpeed));
-		}
-		if (player->InputKey(player->keyPush, VK_LEFT))
-		{
-			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
-		}
 		player->SetState(make_shared<PlayerStateIdle>());
 	}
 

@@ -39,7 +39,7 @@ namespace basecross{
 		shared_ptr<PlayerState> m_State;
 
 		KEYBOARD_STATE m_KeyState;
-		//CONTROLER_STATE m_Controler;
+		vector <basecross::CONTROLER_STATE> m_Controler;
 
 		shared_ptr<basecross::Transform> m_Transform;
 		Vec3 m_Pos = Vec3(0.0f);
@@ -88,6 +88,13 @@ namespace basecross{
 			keyUp,
 		};
 
+		enum ButtonState
+		{
+			b_Push = 0,
+			b_Pressed,
+			b_Up,
+		};
+
 		bool InputKey(int keyState ,int keyCord)
 		{
 			switch (keyState)
@@ -112,51 +119,48 @@ namespace basecross{
 			}
 		}
 
-		Vec3 GetPlayerPos()
+		bool InputButton(int useControler, int buttonState, int button)
 		{
-			return m_Pos;
-		}
-		void SetPlayerPos(Vec3 pos)
-		{
-			m_Pos = pos;
+			if (m_Controler[useControler].bConnected)
+			{
+				switch (buttonState)
+				{
+				case 1:
+
+					return m_Controler[useControler].wPressedButtons & button;
+
+					break;
+
+				case 2:
+
+					return m_Controler[useControler].wReleasedButtons & button;
+
+					break;
+
+				default:
+
+					return m_Controler[useControler].wButtons & button;
+
+					break;
+				}
+			}
 		}
 
-		float GetWalkSpeed()
-		{
-			return m_WalkSpeed;
-		}
+		Vec3 GetPlayerPos() { return m_Pos; }
+		void SetPlayerPos(Vec3 pos) { m_Pos = pos; }
 
-		Vec3 GetJumpPower()
-		{
-			return m_JumpPower;
-		}
-		void PlayerJump(Vec3 velocity)
-		{
-			m_Grav->Jump(velocity);
-		}
-		float GetVerticalVelocity()
-		{
-			return m_Grav->GetVelocity().y;
-		}
+		float GetWalkSpeed() { return m_WalkSpeed; }
+
+		Vec3 GetJumpPower() { return m_JumpPower; }
+		void PlayerJump(Vec3 velocity) { m_Grav->Jump(velocity); }
+		float GetVerticalVelocity() { return m_Grav->GetVelocity().y; }
 		const float m_PlayerNormalGravity = -9.8f;
 
-		bool GetIsBombCreate()
-		{
-			return  m_IsBombCreate;
-		}
-		void SetIsBombCreate(bool b)
-		{
-			m_IsBombCreate = b;
-		}
+		bool GetIsBombCreate() { return  m_IsBombCreate; }
+		void SetIsBombCreate(bool b) { m_IsBombCreate = b; }
 
-		Vec3 GetBombVec()
-		{
-			return m_BombVec;
-		}
-		void SetBombVec(Vec3 vec)
-		{
-			m_BombVec = vec;
-		}
+		Vec3 GetBombVec() { return m_BombVec; }
+		void SetBombVec(Vec3 vec) { m_BombVec = vec; }
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
