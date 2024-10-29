@@ -29,10 +29,23 @@ namespace basecross {
 	void GameStageM::CreateResource() {
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
-		wstring texPath = path + L"UITex/";
+		wstring uiPath = path + L"UITex/";
+		wstring texPath = path + L"Texture/";
 
-		wstring strPath = texPath + L"TimerNum.png";
+		wstring strPath = uiPath + L"TimerNum.png";
 		app->RegisterTexture(L"NUMBER_TEX", strPath);
+
+		strPath = texPath + L"gole1.png";
+		app->RegisterTexture(L"GOAL_TEX", strPath);
+
+		strPath = texPath + L"explodParticle.png";
+		app->RegisterTexture(L"EXPLODE_TEX", strPath);
+
+		strPath = texPath + L"explodeParticle1.png";
+		app->RegisterTexture(L"EXPLODE1_TEX", strPath);
+		strPath = texPath + L"explodeParticle2.png";
+		app->RegisterTexture(L"EXPLODE2_TEX", strPath);
+
 	}
 
 	void GameStageM::OnCreate() {
@@ -40,8 +53,8 @@ namespace basecross {
 			CreateViewLight();
 			CreateResource();
 
-			AddGameObject<Bomb>(Vec3(0, 5, 0),1.0f,1.0f);
-			AddGameObject<Bomb>(Vec3(1, 1, 0),3.0f,3.0f,3.0f,Vec3(0,9,0));
+			AddGameObject<Bomb>(Vec3(0, 5, 0));
+			AddGameObject<Bomb>(Vec3(1, 1, 0));
 
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < 5; j++) {
@@ -50,10 +63,14 @@ namespace basecross {
 			}
 
 			//”’l•\Ž¦
-			shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
-			num->UpdateNumber(1432);
+			//shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
+			//num->UpdateNumber(rand() % 1000);
 
-			
+			AddGameObject<BCSprite>(L"EXPLODE_TEX", Vec3(0, 0, 0), Vec2(100, 100));
+			//AddGameObject<BCParticleSprite>();
+			auto particle = AddGameObject<BCParticle>();
+			particle->Shot();
+			//AddGameObject<BombEffect>(false,1.0f,0.0f)->InsertFire(Vec3(0, 0, 0));
 		}
 		catch (...) {
 			throw;

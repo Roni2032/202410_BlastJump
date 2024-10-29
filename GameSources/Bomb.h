@@ -16,21 +16,21 @@ namespace basecross{
 
 		Vec3 m_ThrowVelocity;
 		Vec3 m_Pos;
-		//shared_ptr<>
+		shared_ptr<GameStageK> m_GameStage;
 	public:
 		Bomb(const shared_ptr<Stage>& ptr,Vec3 pos) : 
-			Bomb(ptr,pos,1.0f)
+			Bomb(ptr,pos, Vec3(0, 0, 0), 1.0f)
 		{}
-		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime) :
-			Bomb(ptr,pos,explodeTime,3.0f)
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, Vec3 velocity) :
+			Bomb(ptr, pos, velocity, 1.0f)
 		{}
-		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime,float explodeRange) :
-			Bomb(ptr,pos,explodeTime,explodeRange,10.0f)
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, Vec3 velocity, float explodeTime) :
+			Bomb(ptr,pos, velocity, explodeTime,3.0f)
 		{}
-		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime, float explodeRange,float explodePower) :
-			Bomb(ptr,pos,explodeTime,explodeRange,explodePower,Vec3(0,0,0))
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, Vec3 velocity, float explodeTime,float explodeRange) :
+			Bomb(ptr,pos, velocity, explodeTime,explodeRange,10.0f)
 		{}
-		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, float explodeTime, float explodeRange, float explodePower, Vec3 velocity) :
+		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, Vec3 velocity, float explodeTime, float explodeRange, float explodePower) :
 			GameObject(ptr),
 			m_ExplodeTime(explodeTime), m_ExplodeTimer(0.0f),
 			m_ExplodeRange(explodeRange), m_ExplodePower(explodePower),
