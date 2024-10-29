@@ -48,5 +48,9 @@ namespace basecross{
 			));
 		}
 	}
+
+	void ExplodeAoE::AddParticleData() {
+
+	}
 }
 //end basecross

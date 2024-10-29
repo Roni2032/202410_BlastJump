@@ -24,7 +24,15 @@ namespace basecross{
 
 		virtual void AddParticleData()override;
 
-		
+	};
+
+	class ExplodeAoE : public BCParticle {
+	public:
+		ExplodeAoE(const shared_ptr<Stage>& ptr) : BCParticle(ptr) {}
+		virtual ~ExplodeAoE() {}
+
+		virtual void AddParticleData()override;
+
 	};
 }
 //end basecross
