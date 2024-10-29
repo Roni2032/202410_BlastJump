@@ -16,7 +16,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,6.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ÉrÉÖÅ[ÇÃÉJÉÅÉâÇÃê›íË
-		auto PtrCamera = ObjectFactory::Create<MyCamera>();
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>());
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -34,7 +34,7 @@ namespace basecross {
 			CreateParticle();
 			LoadMap();
 
-			auto bomb = AddGameObject<Bomb>(Vec3(-3, 10, 0),Vec3(0.0f,0.0f,0.0f), 3.0f );
+			auto bomb = AddGameObject<Bomb>(Vec3(2, 1, 0),Vec3(2.0f,8.0f,0.0f), 3.0f );
 
 			m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 			m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
@@ -56,6 +56,11 @@ namespace basecross {
 
 
 		LoadMap();
+
+		auto camera = GetView()->GetTargetCamera();
+		Vec3 at = camera->GetAt();
+		//at.y += 0.02f;
+		camera->SetAt(at);
 	}
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -115,7 +120,13 @@ namespace basecross {
 		shared_ptr<Block> obj;
 		switch (blockNum) {
 		case 1:
-			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos);
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
+			break;
+		case 3:
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 50);
+			break;
+		case 4:
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 10);
 			break;
 		}
 
@@ -252,6 +263,10 @@ namespace basecross {
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
 		Vec3 mapPos = GetMapIndex(pos);
 		m_Map[mapPos.y][mapPos.x] = 0;
+		auto it = find(m_LoadedStageObjects.begin(), m_LoadedStageObjects.end(), block);
+		if (it != m_LoadedStageObjects.end()) {
+			m_LoadedStageObjects.erase(it);
+		}
 		PlayParticle(L"DESTROY_BLOCK_PCL", block->GetComponent<Transform>()->GetPosition());
 		
 		RemoveGameObject<GameObject>(block);

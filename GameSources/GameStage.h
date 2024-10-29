@@ -34,6 +34,8 @@ namespace basecross {
 		shared_ptr<BCNumber> m_TimerSprite[2];
 
 		vector<BetWeen> m_scrollRange;
+
+		Vec3 m_RespawnPosition;
 		//ÉrÉÖÅ[ÇÃçÏê¨
 		void CreateViewLight();
 		void CreateResource();
@@ -60,6 +62,11 @@ namespace basecross {
 		int GetBlock(Vec3 pos);
 		void DestroyBlock(Vec3 pos, shared_ptr<GameObject>& block);
 
+		void NewRespawnPosition(Vec3 pos) {
+			m_RespawnPosition = pos;
+		}
+		void GameClear(){}
+		void GameOver(){}
 	};
 
 
