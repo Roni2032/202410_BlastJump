@@ -11,8 +11,10 @@ namespace basecross{
 	class MyCamera : public Camera {
 		float m_HighY;
 		weak_ptr<Transform> m_player;
+
+		shared_ptr<GameStage> m_Stage;
 	public:
-		MyCamera():Camera(),m_HighY(0){}
+		MyCamera(const shared_ptr<GameStage>& ptr):Camera(),m_HighY(0),m_Stage(ptr){}
 		virtual ~MyCamera(){}
 
 		virtual void OnCreate()override;

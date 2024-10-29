@@ -26,6 +26,7 @@ namespace basecross{
 			}
 			if (playerPos.y - m_HighY < -8.0f) {
 				//ƒvƒŒƒCƒ„[‚ÌŽ€–Sˆ—
+				
 			}
 		}
 		
