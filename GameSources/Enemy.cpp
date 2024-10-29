@@ -35,15 +35,13 @@ namespace basecross {
 		auto ptrColl = AddComponent<CollisionCapsule>();
 		ptrColl->SetDrawActive(true);
 		//重力適用
-		//auto Gra = AddComponent<Gravity>();
+		auto Gra = AddComponent<Gravity>();
 
 		m_StateEnemy.reset(new StateMachine<Enemy>(GetThis<Enemy>()));
 		m_StateEnemy->ChangeState(SearchFarState::Instance());
 	}
 
 	void Enemy::OnUpdate() {
-		/*auto& app = App::GetApp();
-		auto delta = app->GetElapsedTime();*/
 		m_StateEnemy->Update();
 		/*if (m_hp = 0)
 		{
@@ -55,18 +53,15 @@ namespace basecross {
 	void Enemy::Move() {
 		auto& app = App::GetApp();
 		auto delta = app->GetElapsedTime();
-		//マップの情報を取得	
-		auto& MapVec = m_Csvmap.GetCsvVec();
-		//自分の進行方向の下のセルを持って来る
-		m_forward = m_ptrTrans->GetForward();
-
-		//落ちる前に進行方向を変えるため
-
 		auto thisPos = m_ptrTrans->GetPosition();
 		m_velo1.normalize();
 		thisPos += m_velo1 * m_speed * delta;
 		m_ptrTrans->SetPosition(thisPos);
+
+		////マップの情報を取得
+		int block = GetTypeStage<GameStage>()
 	}
+
 	shared_ptr<SearchFarState> SearchFarState::Instance() {
 		static shared_ptr<SearchFarState> instance(new SearchFarState);
 		return instance;

@@ -28,6 +28,7 @@ namespace basecross {
 		Vec3 m_scale;
 		Vec3 m_forward;
 		float m_StateChangeSize;
+		bool m_go;
 
 	public:
 		Enemy(const shared_ptr<Stage>& StagePtr,
