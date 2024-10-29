@@ -56,14 +56,14 @@ namespace basecross{
 	class FloorBlock : public Block {
 		int m_Durability;
 	public:
-		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos) :
-			FloorBlock(ptr, texKey, pos, Vec3(1, 1, 1))
+		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos,const int durability = 100) :
+			FloorBlock(ptr, texKey, pos, Vec3(1, 1, 1),durability)
 		{}
-		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec3 scale) :
-			FloorBlock(ptr, texKey, pos, scale, Vec3(0, 0, 0))
+		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec3 scale, const int durability = 100) :
+			FloorBlock(ptr, texKey, pos, scale, Vec3(0, 0, 0),durability)
 		{}
-		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec3 scale, Vec3 rot) :
-			Block(ptr, texKey, pos, scale, rot),m_Durability(100)
+		FloorBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec3 scale, Vec3 rot, const int durability = 100) :
+			Block(ptr, texKey, pos, scale, rot),m_Durability(durability)
 		{}
 		virtual ~FloorBlock() {}
 

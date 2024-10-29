@@ -52,7 +52,7 @@ namespace basecross{
 
 		auto col = AddComponent<CollisionObb>();
 		col->SetFixed(true);
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
