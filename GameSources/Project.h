@@ -18,6 +18,7 @@
 
 #include "Character.h"
 #include "Player.h"
+#include "Enemy.h"
 #include "BCSprite.h"
 #include "Bomb.h"
 #include "Blocks.h"
