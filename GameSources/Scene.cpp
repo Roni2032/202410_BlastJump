@@ -33,7 +33,7 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			//最初のアクティブステージの設定
-			ResetActiveStage<GameStageH>(L"TestMap.csv");
+			ResetActiveStage<GameStageH>(L"Stage01.csv");
 		}
 	}
 
