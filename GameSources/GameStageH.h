@@ -23,7 +23,7 @@ namespace basecross {
 		void CreateEnemy();
 	public:
 		//\’z‚Æ”jŠü
-		GameStageH(const wstring& mapName) : GameStage(L"TestMap.csv"), m_MapName(mapName) {}
+		GameStageH(const wstring& mapName) : GameStage(L"Stage01.csv"), m_MapName(mapName) {}
 		virtual ~GameStageH() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;

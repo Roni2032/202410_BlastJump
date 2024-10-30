@@ -74,7 +74,7 @@ namespace basecross {
 	}
 
 	void GameStageH::CreateEnemy(){
-		Vec3 AppearancePos = Vec3(0.0f,	0.0f,0.0f);
+		Vec3 AppearancePos = Vec3(0.0f,11.0f,0.0f);
 		Vec3 Size = Vec3(1.0f);
 		auto enemy = AddGameObject<Enemy>(AppearancePos,Size);
 		//SetSharedGameObject(L"Enemy",enemy);
@@ -83,11 +83,11 @@ namespace basecross {
 
 	void GameStageH::OnCreate() {
 		try {
-			CreateViewLight();
-			CreateResource();
-			CreateMap();
+			//CreateViewLight();
+			GameStage::OnCreate();
+			//CreateResource();
+			//CreateMap();
 			CreateEnemy();
-
 		}
 		catch (...) {
 			throw;
