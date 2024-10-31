@@ -29,6 +29,7 @@ namespace basecross {
 		Vec3 m_forward;
 		float m_StateChangeSize;
 		bool m_go;
+		int m_time;
 
 	public:
 		Enemy(const shared_ptr<Stage>& StagePtr,
@@ -47,7 +48,6 @@ namespace basecross {
 			return m_StateChangeSize;
 		}
 
-		//virtual void On 
 	};
 
 	class SearchFarState : public ObjState<Enemy> {
