@@ -30,9 +30,12 @@
     </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{51c2cff9-5a5c-45e9-8cb4-251227419deb}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Enemy">
+      <UniqueIdentifier>{8e37aeba-f2b7-466d-8d18-ea65ad8b1d70}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -78,7 +81,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h">
       <Filter>Effect</Filter>
     </ClInclude>
-
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -87,7 +89,9 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
       <Filter>Camera</Filter>
-
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
+      <Filter>Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -133,7 +137,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp">
       <Filter>Effect</Filter>
     </ClCompile>
-
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -142,6 +145,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp">
       <Filter>Camera</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
+      <Filter>Enemy</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
