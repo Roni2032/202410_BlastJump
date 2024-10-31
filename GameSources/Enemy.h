@@ -29,6 +29,7 @@ namespace basecross {
 		Vec3 m_forward;
 		float m_StateChangeSize;
 		bool m_go;
+		bool m_move;
 		int m_time;
 
 	public:
@@ -40,6 +41,10 @@ namespace basecross {
 		virtual void OnUpdate() override;
 		void Move();
 
+
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
+
+		virtual void OnCollisionExit(shared_ptr<GameObject>& Other)override;
 		//ステート系
 		const unique_ptr<StateMachine<Enemy>>& GetStateMachine() {
 			return m_StateEnemy;
