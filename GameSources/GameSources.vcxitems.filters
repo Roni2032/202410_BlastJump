@@ -30,7 +30,7 @@
     </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{51c2cff9-5a5c-45e9-8cb4-251227419deb}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="Camera">
       <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
     </Filter>
@@ -81,7 +81,6 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h">
       <Filter>Effect</Filter>
     </ClInclude>
-
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
       <Filter>Player</Filter>
     </ClInclude>
@@ -90,11 +89,11 @@
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
       <Filter>Camera</Filter>
-
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h">
       <Filter>Goal/CheckPoint</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Raycast.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -139,7 +138,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp">
       <Filter>Effect</Filter>
     </ClCompile>
-
     <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
       <Filter>Player</Filter>
     </ClCompile>
@@ -152,5 +150,6 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)StageObjects.cpp">
       <Filter>Goal/CheckPoint</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Raycast.cpp" />
   </ItemGroup>
 </Project>

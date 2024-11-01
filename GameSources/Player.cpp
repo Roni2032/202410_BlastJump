@@ -18,7 +18,7 @@ namespace basecross{
 		//描画コンポーネントの設定
 		m_Draw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		m_Draw->SetMeshResource(L"DEFAULT_SPHERE");
+		m_Draw->SetMeshResource(L"DEFAULT_CAPSULE");
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 120.0f));
@@ -28,7 +28,7 @@ namespace basecross{
 		m_Grav = AddComponent<BCGravity>();
 
 		//各パフォーマンスを得る
-		m_Collision = AddComponent<CollisionSphere>();
+		m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetDrawActive(true);
 	}
 
@@ -38,9 +38,12 @@ namespace basecross{
 		m_Pos = m_Transform->GetPosition();
 
 		m_KeyState = App::GetApp()->GetInputDevice().GetKeyState();
+		m_Controler = App::GetApp()->GetInputDevice().GetControlerVec();
 
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
+
+		//Raycast3D(m_Pos, Vec3(0.0f, -1.0f, 0.0f), 1.0f, Vec3(0.0f, -0.87f, 0.0f));
 
 		m_Transform->SetPosition(m_Pos);
 		m_Draw->SetDiffuse(m_State->GetDiffColor());
@@ -69,6 +72,10 @@ namespace basecross{
 		wstring collisionStr(L"Collision:\t");
 		collisionStr += L"CO=" + Util::FloatToWStr(collision, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
+		//bool testAns = Raycast3D(m_Pos, Vec3(0.0f, -1.0f, 0.0f), 1.0f, Vec3(0.0f, -0.87f, 0.0f));
+		//wstring testStr(L"Test:\t");
+		//testStr += L"T=" + Util::FloatToWStr(testAns, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+
 		wstring str = positionStr + stateName + gravityStr + collisionStr;
 
 		//文字列コンポーネントの取得
@@ -91,7 +98,21 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
 		}
 
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_DPAD_RIGHT) || player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(m_WalkSpeed));
+		}
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_DPAD_LEFT) || player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
+		}
+
 		if (player->InputKey(player->keyPressed, 0x58))
+		{
+			player->SetState(make_shared<PlayerStateThrow>());
+		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_X))
 		{
 			player->SetState(make_shared<PlayerStateThrow>());
 		}
@@ -100,11 +121,21 @@ namespace basecross{
 		{
 			player->PlayerJump(player->GetJumpPower());
 		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		{
+			player->PlayerJump(player->GetJumpPower());
+		}
 	}
 
 	void PlayerStateWalk::HandleInput(shared_ptr<Player> player)
 	{
 		if (player->InputKey(player->keyPressed, 0x58))
+		{
+			player->SetState(make_shared<PlayerStateThrow>());
+		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_X))
 		{
 			player->SetState(make_shared<PlayerStateThrow>());
 		}
@@ -118,7 +149,21 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateIdle>());
 		}
 
+		if (player->InputButton(0, player->b_Up, XINPUT_GAMEPAD_DPAD_RIGHT))
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+		if (player->InputButton(0, player->b_Up, XINPUT_GAMEPAD_DPAD_LEFT))
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+
 		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		{
+			player->PlayerJump(player->GetJumpPower());
+		}
+
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
 		{
 			player->PlayerJump(player->GetJumpPower());
 		}
@@ -139,6 +184,11 @@ namespace basecross{
 		if (player->InputKey(player->keyPush, VK_UP)) m_BombVec.y = m_BombShotSpeed;
 		if (player->InputKey(player->keyPush, VK_DOWN)) m_BombVec.y = -m_BombShotSpeed;
 
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_RIGHT)) m_BombVec.x = m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_LEFT)) m_BombVec.x = -m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_UP)) m_BombVec.y = m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = -m_BombShotSpeed;
+
 		if (m_IsBombCreate == false)
 		{
 			m_Pos = player->GetPlayerPos();
@@ -149,14 +199,6 @@ namespace basecross{
 			player->SetIsBombCreate(true);
 		}		
 
-		if (player->InputKey(player->keyPush, VK_RIGHT))
-		{
-			player->SetState(make_shared<PlayerStateWalk>(m_WalkSpeed));
-		}
-		if (player->InputKey(player->keyPush, VK_LEFT))
-		{
-			player->SetState(make_shared<PlayerStateWalk>(-m_WalkSpeed));
-		}
 		player->SetState(make_shared<PlayerStateIdle>());
 	}
 
