@@ -11,12 +11,14 @@ namespace basecross{
 		wstring m_TexKey;
 		shared_ptr<PNTStaticInstanceDraw> m_Draw;
 		vector<vector<int>> m_Maps;
+		float m_DrawMaxHeight;
+		vector<shared_ptr<GameObject>> m_CollisionObjects;
 
 		int m_SizeY;
 		Vec2 m_StartPos;
 	public:
 		InstanceBlock(const shared_ptr<Stage>& stage,const wstring& texKey,int sizeY) :
-			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY)
+			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY),m_DrawMaxHeight(-1)
 		{
 		}
 
@@ -26,13 +28,16 @@ namespace basecross{
 			m_StartPos = pos;
 		}
 		void AddBlock(int y,int cell);
-		void DrawMap();
+		
+		void DrawMap(const Vec2 max = Vec2(0), const Vec2 min = Vec2(0));
 	};
 	class Block : public GameObject {
 		wstring m_TexKey;
 		Vec3 m_Pos;
 		Vec3 m_Scale;
 		Vec3 m_Rot;
+
+		
 	public:
 		Block(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos):
 			Block(ptr,texKey,pos,Vec3(1,1,1))
@@ -51,6 +56,8 @@ namespace basecross{
 
 		virtual void Start(){}
 		virtual void Update(){}
+
+		static vector<weak_ptr<Transform>> m_MoveObjects;
 	};
 
 	class FloorBlock : public Block {

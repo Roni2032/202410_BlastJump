@@ -22,6 +22,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
+		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
 		vector<vector<int>> m_Map;
 		Vec3 m_MapLeftTop;
@@ -36,6 +37,7 @@ namespace basecross {
 		vector<BetWeen> m_scrollRange;
 
 		Vec3 m_RespawnPosition;
+		Vec3 m_LoadStageSize;
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
 		void CreateResource();
@@ -45,9 +47,11 @@ namespace basecross {
 		void CreateParticle();
 		shared_ptr<Block> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
+		void BlockUpdateActive();
 	public:
 		//\’z‚Æ”jŠü
-		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName) {}
+		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName),
+			m_LoadStageSize(Vec3(20,7,0)){}
 		virtual ~GameStage() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;

@@ -16,28 +16,81 @@ namespace basecross{
 		for (int i = 0; i < m_SizeY; i++) {
 			m_Maps.push_back({});
 		}
-
-		
 	}
 	void InstanceBlock::AddBlock(int y, int cell) {
 		if (y >= m_SizeY) return;
 		m_Maps[y].push_back(cell);
 	}
-	void InstanceBlock::DrawMap() {
-		for (int i = 0; i < m_Maps.size();i++) {
-			for (int j = 0; j < m_Maps[i].size(); j++) {
-				if (m_Maps[i][j] == 0) continue;
+	void InstanceBlock::DrawMap(const Vec2 max, const Vec2 min) {
+		Vec2 drawSize(0);
+		Vec2 minCell = min;
+		if (max.length() == 0) {
+			drawSize.x = m_Maps[0].size();
+			drawSize.y = m_Maps.size();
+		}
+		else {
+			drawSize = max;
+		}
+		if (minCell.y < 0) {
+			minCell.y = 0;
+		}
+		m_Draw->ClearMatrixVec();
+		for (int i = minCell.y; i < drawSize.y;i++) {
+			for (int j = 0; j < drawSize.x; j++) {
+				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
 				float x = m_StartPos.x + j;
-				float y = m_StartPos.y - i;
+				float y = i;
 
 				Mat4x4 matrix;
 				matrix.translation(Vec3(x, y, 0));
 
 				m_Draw->AddMatrix(matrix);
+				
+			}
+		}
+
+		for (int i = m_DrawMaxHeight + 1; i <= max.y; i++) {
+			for (int j = 0; j < drawSize.x; j++) {
+				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
+
+				float x = m_StartPos.x + j;
+				float y = i;
+
+				bool isCollider = false;
+
+				Vec2 aroundMap[] = {
+					Vec2(j + 1,m_Maps.size() - i - 1),
+					Vec2(j - 1,m_Maps.size() - i - 1),
+					Vec2(j,m_Maps.size() - i),
+					Vec2(j,m_Maps.size() - i - 2)
+				};
+				for (Vec2 around : aroundMap) {
+					if (around.x < 0 || around.x >= m_Maps[i].size()) continue;
+					if (around.y < 0 || around.y >= m_Maps.size()) continue;
+
+					if (m_Maps[around.y][around.x] == 0) {
+						isCollider = true;
+					}
+				}
+
+				if (isCollider) {
+					m_CollisionObjects.push_back(GetStage()->AddGameObject<Block>(L"", Vec3(x, y, 0), Vec3(1.0f)));
+				}
+			}
+		}
+		m_DrawMaxHeight = max.y;
+		for (int i = 0; i < m_CollisionObjects.size();i++) {
+			auto trans = m_CollisionObjects[i]->GetComponent<Transform>();
+			if (trans->GetPosition().y < minCell.y) {
+				GetStage()->RemoveGameObject<GameObject>(m_CollisionObjects[i]);
+				m_CollisionObjects.erase(m_CollisionObjects.begin() + i);
 			}
 		}
 	}
+
+	vector<weak_ptr<Transform>> Block::m_MoveObjects = {};
+
 	void Block::OnCreate() {
 		if (m_TexKey == L"" || m_TexKey == L"null") {
 			
@@ -52,7 +105,7 @@ namespace basecross{
 
 		auto col = AddComponent<CollisionObb>();
 		col->SetFixed(true);
-		//col->SetDrawActive(true);
+		col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
@@ -65,6 +118,8 @@ namespace basecross{
 
 	void Block::OnUpdate() {
 		Update();
+
+		
 	}
 
 	void FloorBlock::Start() {
