@@ -18,7 +18,7 @@ namespace basecross{
 		//描画コンポーネントの設定
 		m_Draw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
-		m_Draw->SetMeshResource(L"DEFAULT_SPHERE");
+		m_Draw->SetMeshResource(L"DEFAULT_CAPSULE");
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 120.0f));
@@ -28,7 +28,7 @@ namespace basecross{
 		m_Grav = AddComponent<BCGravity>();
 
 		//各パフォーマンスを得る
-		m_Collision = AddComponent<CollisionSphere>();
+		m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetDrawActive(true);
 	}
 
@@ -42,6 +42,8 @@ namespace basecross{
 
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
+
+		//Raycast3D(m_Pos, Vec3(0.0f, -1.0f, 0.0f), 1.0f, Vec3(0.0f, -0.87f, 0.0f));
 
 		m_Transform->SetPosition(m_Pos);
 		m_Draw->SetDiffuse(m_State->GetDiffColor());
@@ -69,6 +71,10 @@ namespace basecross{
 		auto collision = m_Collision->FindExcludeCollisionTag(L"Stage");
 		wstring collisionStr(L"Collision:\t");
 		collisionStr += L"CO=" + Util::FloatToWStr(collision, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+
+		//bool testAns = Raycast3D(m_Pos, Vec3(0.0f, -1.0f, 0.0f), 1.0f, Vec3(0.0f, -0.87f, 0.0f));
+		//wstring testStr(L"Test:\t");
+		//testStr += L"T=" + Util::FloatToWStr(testAns, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
 		wstring str = positionStr + stateName + gravityStr + collisionStr;
 

@@ -47,7 +47,7 @@ namespace basecross{
 		Col4 m_ColBlack = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 		Col4 m_TestCol = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		shared_ptr<basecross::CollisionSphere> m_Collision;
+		shared_ptr<basecross::CollisionCapsule> m_Collision;
 
 		shared_ptr<BCGravity> m_Grav;
 
