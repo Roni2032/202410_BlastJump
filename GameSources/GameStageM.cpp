@@ -50,28 +50,11 @@ namespace basecross {
 
 	void GameStageM::OnCreate() {
 		try {
-			//CreateViewLight();
 			GameStage::OnCreate();
-			//CreateResource();
 
-			//AddGameObject<Bomb>(Vec3(0, 10, 0));
-			//AddGameObject<Bomb>(Vec3(1, 1, 0));
-
-			//for (int i = 0; i < 5; i++) {
-			//	for (int j = 0; j < 5; j++) {
-			//		//AddGameObject<FloorBlock>(Vec3(-2.5f + j, 0, -2.5f + i));
-			//	}
-			//}
-
-			////êîílï\é¶
-			////shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
-			////num->UpdateNumber(rand() % 1000);
-
-			//AddGameObject<BCSprite>(L"EXPLODE_TEX", Vec3(0, 0, 0), Vec2(100, 100));
-			////AddGameObject<BCParticleSprite>();
-			//auto particle = AddGameObject<BCParticle>();
-			//particle->Shot();
-			////AddGameObject<BombEffect>(false,1.0f,0.0f)->InsertFire(Vec3(0, 0, 0));
+			auto player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			Block::m_MoveObjects.push_back(player->GetComponent<Transform>());
+			AddGameObject<Bomb>(Vec3(0, 10, 0));
 		}
 		catch (...) {
 			throw;

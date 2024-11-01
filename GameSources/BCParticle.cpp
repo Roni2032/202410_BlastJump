@@ -33,6 +33,7 @@ namespace basecross{
 
 		m_Trans = GetComponent<Transform>();
 		Init();
+		SetActive(false);
 	}
 	void BCParticleSprite::OnUpdate() {
 		float elapsed = App::GetApp()->GetElapsedTime();
