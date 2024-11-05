@@ -42,6 +42,8 @@ namespace basecross{
 				float x = m_StartPos.x + j;
 				float y = i;
 
+				y = floor(y, 0);
+
 				Mat4x4 matrix;
 				matrix.translation(Vec3(x, y, 0));
 
@@ -57,6 +59,8 @@ namespace basecross{
 				float x = m_StartPos.x + j;
 				float y = i;
 
+				y = floor(y, 0);
+
 				bool isCollider = false;
 
 				Vec2 aroundMap[] = {
@@ -71,6 +75,7 @@ namespace basecross{
 
 					if (m_Maps[around.y][around.x] == 0) {
 						isCollider = true;
+						break;
 					}
 				}
 
@@ -105,7 +110,7 @@ namespace basecross{
 
 		auto col = AddComponent<CollisionObb>();
 		col->SetFixed(true);
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();

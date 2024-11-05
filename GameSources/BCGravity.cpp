@@ -25,10 +25,6 @@ namespace basecross{
 		
 		objTrans->SetPosition(objPos);
 
-		Vec3 moveVelocity = objTrans->GetVelocity();
-		if (abs(moveVelocity.x) < abs(m_Velocity.x)) {
-			m_Velocity.x = moveVelocity.x;
-		}
 
 		switch (m_GravityDirection) {
 		case GRAVITY::X:
