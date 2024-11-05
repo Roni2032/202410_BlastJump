@@ -52,9 +52,8 @@ namespace basecross {
 		try {
 			GameStage::OnCreate();
 
-			auto player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
-			Block::m_MoveObjects.push_back(player->GetComponent<Transform>());
-			AddGameObject<Bomb>(Vec3(0, 10, 0));
+			
+			//AddGameObject<Bomb>(Vec3(0, 10, 0));
 		}
 		catch (...) {
 			throw;

@@ -34,10 +34,16 @@ namespace basecross {
 			CreateParticle();
 			LoadMap();
 
+			auto player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			Block::m_MoveObjects.push_back(player->GetComponent<Transform>());
+
+			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
+			camera->SetPlayer(player);
+
 			auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
 
-			m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
-			m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 
 		}
 		catch (...) {
@@ -51,19 +57,12 @@ namespace basecross {
 		int minute = m_MainTimer / 60.0f;
 		int second = m_MainTimer - 60.0f * minute;
 
-		m_TimerSprite[1]->UpdateNumber(minute);
-		m_TimerSprite[0]->UpdateNumber(second);
+		//m_TimerSprite[1]->UpdateNumber(minute);
+		//m_TimerSprite[0]->UpdateNumber(second);
 
 
 		LoadMap();
 
-		auto camera = GetView()->GetTargetCamera();
-		Vec3 at = camera->GetAt();
-		Vec3 eye = camera->GetEye();
-
-		
-		camera->SetAt(at);
-		camera->SetEye(eye);
 
 		BlockUpdateActive();
 	}
