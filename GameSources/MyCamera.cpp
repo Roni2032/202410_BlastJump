@@ -9,7 +9,9 @@
 namespace basecross{
 
 	void MyCamera::OnCreate() {
-
+		SetPers(false);
+		SetWidth(15);
+		SetHeight(10);
 	}
 	void MyCamera::OnUpdate() {
 
@@ -23,6 +25,8 @@ namespace basecross{
 				at.y = playerPos.y;
 
 				eye.y = playerPos.y;
+
+				m_HighY = playerPos.y;
 			}
 			if (playerPos.y - m_HighY < -8.0f) {
 				//ƒvƒŒƒCƒ„[‚ÌŽ€–Sˆ—
@@ -36,7 +40,7 @@ namespace basecross{
 		
 	}
 
-	void MyCamera::SetPlayer(weak_ptr<GameObject>& player) {
+	void MyCamera::SetPlayer(weak_ptr<Player> player) {
 		auto s_player = player.lock();
 		m_player = s_player->GetComponent<Transform>();
 	}

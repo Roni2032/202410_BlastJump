@@ -20,7 +20,7 @@ namespace basecross{
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
-		void SetPlayer(weak_ptr<GameObject>& player);
+		void SetPlayer(weak_ptr<Player> player);
 	};
 }
 //end basecross
