@@ -11,12 +11,14 @@ namespace basecross{
 		auto drawComp = AddComponent<BcPTStaticDraw>();
 		drawComp->SetMeshResource(L"DEFAULT_SPHERE");
 
-		AddComponent<CollisionSphere>();
+		auto col = AddComponent<CollisionSphere>();
+		col->AddExcludeCollisionTag(L"Player");
 
 		auto gravity = AddComponent<BCGravity>();
 		gravity->Jump(m_ThrowVelocity);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
+		GetComponent<Transform>()->SetScale(Vec3(0.5f));
 
 		m_GameStage = GetTypeStage<GameStage>();
 
@@ -40,6 +42,7 @@ namespace basecross{
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		Explode();
 		auto otherTrans = Other->GetComponent<Transform>();
 		if (Other->FindTag(L"Stage")) {
 			//RemoveComponent<Gravity>();
