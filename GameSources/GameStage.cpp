@@ -12,11 +12,11 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(-0.5f, 6.0f, -15.0f);
-		const Vec3 at(-0.5f,6.0f,0.0f);
+		const Vec3 eye(-0.5f, 4.0f, -11.0f);
+		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<MyCamera>();
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>());
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -34,10 +34,16 @@ namespace basecross {
 			CreateParticle();
 			LoadMap();
 
-			auto bomb = AddGameObject<Bomb>(Vec3(-3, 10, 0),Vec3(0.0f,0.0f,0.0f), 3.0f );
+			auto player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			Block::m_MoveObjects.push_back(player->GetComponent<Transform>());
 
-			m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
-			m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
+			camera->SetPlayer(player);
+
+			auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
+
+			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 
 		}
 		catch (...) {
@@ -51,11 +57,14 @@ namespace basecross {
 		int minute = m_MainTimer / 60.0f;
 		int second = m_MainTimer - 60.0f * minute;
 
-		m_TimerSprite[1]->UpdateNumber(minute);
-		m_TimerSprite[0]->UpdateNumber(second);
+		//m_TimerSprite[1]->UpdateNumber(minute);
+		//m_TimerSprite[0]->UpdateNumber(second);
 
 
 		LoadMap();
+
+
+		BlockUpdateActive();
 	}
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -79,7 +88,7 @@ namespace basecross {
 		
 		auto& mapVec = m_CsvMap.GetCsvVec();
 		GetStageInfo(mapVec[0]);
-		auto walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
+		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
 		vector<wstring> cells;
 		Vec2 startPos;
 		
@@ -95,27 +104,35 @@ namespace basecross {
 				int cell = stoi(cells[x]);
 				
 				if (cell == 2) {
-					walls->AddBlock(y, cell);
+					m_Walls->AddBlock(y, cell);
 				}
 				else {
-					walls->AddBlock(y, 0);
+					m_Walls->AddBlock(y, 0);
 				}
 				cow.push_back(cell);
 			}
 			m_Map.push_back(cow);
 		}
-		walls->SetStartPos((Vec2)m_MapLeftTop);
-		walls->DrawMap();
+		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
+		auto camera = GetView()->GetTargetCamera();
+		float atY = camera->GetAt().y;
+
 		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
-		CreateWallCollider(startPos, mapSize);
-		
+		//CreateWallCollider(startPos, mapSize);
+		LoadMap();
 	}
 
 	shared_ptr<Block> GameStage::CreateBlock(int blockNum, Vec3 pos) {
 		shared_ptr<Block> obj;
 		switch (blockNum) {
 		case 1:
-			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos);
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
+			break;
+		case 3:
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 50);
+			break;
+		case 4:
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 10);
 			break;
 		}
 
@@ -125,8 +142,10 @@ namespace basecross {
 		auto camera = GetView()->GetTargetCamera();
 		float atY = camera->GetAt().y;
 
+		
+
 		if (m_LoadedMaxHeight == 0) {
-			for (int i = 0; i <= atY + 10; i++) {
+			for (int i = 0; i <= atY + m_LoadStageSize.y; i++) {
 				if (i >= m_Map.size()) {
 					break;
 				}
@@ -135,21 +154,21 @@ namespace basecross {
 				int sizeX = m_Map[y].size();
 				for (int x = 0; x < sizeX; x++) {
 					int size = m_Map[y].size();
-					Vec2 startPos = Vec2(size / -2, m_Map.size());
-					auto obj = CreateBlock(m_Map[y][x], Vec3(startPos.x + x, startPos.y - y, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+					auto obj = CreateBlock(m_Map[y][x], Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
 					if (obj != nullptr) {
 						m_LoadedStageObjects.push_back(obj);
 					}
 				}
 			}
 
-			m_LoadedMaxHeight = atY + 10;
+			m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
+			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}
 
 		//新しくマップをロード
-		if (m_LoadedMaxHeight < static_cast<int>(atY) + 10) {
-			m_LoadedMaxHeight = atY + 10;
+		if (m_LoadedMaxHeight < static_cast<int>(atY) + m_LoadStageSize.y) {
+			m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
 			if (m_LoadedMaxHeight >= m_Map.size()) {
 				return;
 			}
@@ -167,17 +186,45 @@ namespace basecross {
 		else {
 			return;
 		}
+		m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 		//範囲外に入ったブロックを削除
 		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
 			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
 			float y = objTrans->GetPosition().y;
 
-			if (y < static_cast<int>(atY) - 10) {
+			if (y < static_cast<int>(atY) - m_LoadStageSize.y) {
 				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
 				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
 			}
 		}
+
 		
+		
+	}
+	void GameStage::BlockUpdateActive() {
+		for (auto& blockObject : GetGameObjectVec()) {
+			if (blockObject->FindTag(L"Stage")) {
+				bool isCollider = false;
+				for (int i = 0; i < Block::m_MoveObjects.size(); i++) {
+					auto trans = Block::m_MoveObjects[i].lock();
+					if (trans != nullptr) {
+						
+						if (length(trans->GetPosition() - blockObject->GetComponent<Transform>()->GetPosition()) < 3.0f) {
+							isCollider = true;
+						}
+						
+					}
+					else {
+						Block::m_MoveObjects.erase(Block::m_MoveObjects.begin() + i);
+					}
+				}
+				blockObject->SetUpdateActive(isCollider);
+				auto col = blockObject->GetComponent<Collision>(false);
+				if (col != nullptr) {
+					col->SetDrawActive(isCollider);
+				}
+			}
+		}
 	}
 	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize) {
 
@@ -252,6 +299,10 @@ namespace basecross {
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
 		Vec3 mapPos = GetMapIndex(pos);
 		m_Map[mapPos.y][mapPos.x] = 0;
+		auto it = find(m_LoadedStageObjects.begin(), m_LoadedStageObjects.end(), block);
+		if (it != m_LoadedStageObjects.end()) {
+			m_LoadedStageObjects.erase(it);
+		}
 		PlayParticle(L"DESTROY_BLOCK_PCL", block->GetComponent<Transform>()->GetPosition());
 		
 		RemoveGameObject<GameObject>(block);

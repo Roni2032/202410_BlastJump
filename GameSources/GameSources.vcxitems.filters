@@ -34,6 +34,12 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Goal/CheckPoint">
+      <UniqueIdentifier>{e33e3eb2-66e9-4f87-a730-40a2f05d3b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{7f33c4d2-2684-488e-92fa-8ddd9c50ca55}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
@@ -87,7 +93,13 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h">
+      <Filter>Goal/CheckPoint</Filter>
+    </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Raycast.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SoundManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -141,6 +153,12 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageObjects.cpp">
+      <Filter>Goal/CheckPoint</Filter>
+    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Raycast.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SoundManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

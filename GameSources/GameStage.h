@@ -22,6 +22,7 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
+		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
 		vector<vector<int>> m_Map;
 		Vec3 m_MapLeftTop;
@@ -34,6 +35,9 @@ namespace basecross {
 		shared_ptr<BCNumber> m_TimerSprite[2];
 
 		vector<BetWeen> m_scrollRange;
+
+		Vec3 m_RespawnPosition;
+		Vec3 m_LoadStageSize;
 		//ÉrÉÖÅ[ÇÃçÏê¨
 		void CreateViewLight();
 		void CreateResource();
@@ -43,9 +47,11 @@ namespace basecross {
 		void CreateParticle();
 		shared_ptr<Block> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
+		void BlockUpdateActive();
 	public:
 		//ç\ízÇ∆îjä¸
-		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName) {}
+		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName),
+			m_LoadStageSize(Vec3(20,7,0)){}
 		virtual ~GameStage() {}
 		//èâä˙âª
 		virtual void OnCreate()override;
@@ -56,10 +62,21 @@ namespace basecross {
 			return m_Map;
 		}
 
+		float GetBottomY() {
+			return -0.5f;
+		}
+		float GetTopY() {
+			return m_MapLeftTop.y;
+		}
 		Vec3 GetMapIndex(Vec3 pos);
 		int GetBlock(Vec3 pos);
 		void DestroyBlock(Vec3 pos, shared_ptr<GameObject>& block);
 
+		void NewRespawnPosition(Vec3 pos) {
+			m_RespawnPosition = pos;
+		}
+		void GameClear(){}
+		void GameOver(){}
 	};
 
 
