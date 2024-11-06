@@ -62,6 +62,12 @@ namespace basecross {
 			return m_Map;
 		}
 
+		float GetBottomY() {
+			return -0.5f;
+		}
+		float GetTopY() {
+			return m_MapLeftTop.y;
+		}
 		Vec3 GetMapIndex(Vec3 pos);
 		int GetBlock(Vec3 pos);
 		void DestroyBlock(Vec3 pos, shared_ptr<GameObject>& block);

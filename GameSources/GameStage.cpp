@@ -208,16 +208,21 @@ namespace basecross {
 				for (int i = 0; i < Block::m_MoveObjects.size(); i++) {
 					auto trans = Block::m_MoveObjects[i].lock();
 					if (trans != nullptr) {
+						
 						if (length(trans->GetPosition() - blockObject->GetComponent<Transform>()->GetPosition()) < 3.0f) {
 							isCollider = true;
 						}
-
+						
 					}
 					else {
 						Block::m_MoveObjects.erase(Block::m_MoveObjects.begin() + i);
 					}
 				}
 				blockObject->SetUpdateActive(isCollider);
+				auto col = blockObject->GetComponent<Collision>(false);
+				if (col != nullptr) {
+					col->SetDrawActive(isCollider);
+				}
 			}
 		}
 	}
