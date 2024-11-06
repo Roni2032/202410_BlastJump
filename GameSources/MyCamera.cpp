@@ -10,8 +10,8 @@ namespace basecross{
 
 	void MyCamera::OnCreate() {
 		SetPers(false);
-		SetWidth(15);
-		SetHeight(10);
+		SetWidth(m_CameraWidth);
+		SetHeight(m_CameraHight);
 	}
 	void MyCamera::OnUpdate() {
 
@@ -21,14 +21,13 @@ namespace basecross{
 		auto playerTransform = m_player.lock();
 		if (playerTransform != nullptr) {
 			Vec3 playerPos = playerTransform->GetPosition();
-			if (playerPos.y > m_HighY) {
+			if (playerPos.y > m_HighY && playerPos.y - m_CameraHight / 2.0f > m_Stage->GetBottomY() && playerPos.y + m_CameraHight / 2.0f < m_Stage->GetTopY()) {
 				at.y = playerPos.y;
-
 				eye.y = playerPos.y;
 
 				m_HighY = playerPos.y;
 			}
-			if (playerPos.y - m_HighY < -8.0f) {
+			if (playerPos.y - m_HighY < -m_CameraHight / 2.0f - 2.0f) {
 				//ƒvƒŒƒCƒ„[‚ÌŽ€–Sˆ—
 				
 			}
