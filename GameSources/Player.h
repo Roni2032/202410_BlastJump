@@ -54,8 +54,10 @@ namespace basecross{
 		float m_WalkSpeed = 0.1f;
 
 		Vec3 m_JumpPower = Vec3(0.0f, 5.0f, 0.0f);
+		bool m_IsJumping = false;
 
 		bool m_IsBombCreate = false;
+		float m_ThrowTime = 0.0f;
 		Vec3 m_BombVec = Vec3(0.0f);
 
 	public:
@@ -156,14 +158,21 @@ namespace basecross{
 		float GetVerticalVelocity() { return m_Grav->GetVelocity().y; }
 		const float m_PlayerNormalGravity = -9.8f;
 
+		bool GetIsJumping() { return m_IsJumping; }
+		void SetIsJumping(bool b) { m_IsJumping = b; }
+
 		bool GetIsBombCreate() { return  m_IsBombCreate; }
 		void SetIsBombCreate(bool b) { m_IsBombCreate = b; }
+
+		float GetThrowTime() { return m_ThrowTime; }
+		void SetThrowTime(float f) { m_ThrowTime = f; }
 
 		Vec3 GetBombVec() { return m_BombVec; }
 		void SetBombVec(Vec3 vec) { m_BombVec = vec; }
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		void DrawString();
 	};
 
@@ -178,6 +187,7 @@ namespace basecross{
 		void PlayerUpdate(shared_ptr<Player> player) override
 		{
 			player->SetIsBombCreate(false);
+			player->SetThrowTime(1.0f);
 		}
 
 		wstring GetStateName() override
@@ -209,6 +219,7 @@ namespace basecross{
 		void PlayerUpdate(shared_ptr<Player> player) override
 		{
 			player->SetIsBombCreate(false);
+			player->SetThrowTime(1.0f);
 
 			m_Pos = player->GetPlayerPos();
 			m_Pos.x += m_WalkSpeed;

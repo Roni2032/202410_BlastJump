@@ -49,6 +49,15 @@ namespace basecross{
 		m_Draw->SetDiffuse(m_State->GetDiffColor());
 	}
 
+	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
+	{
+		if (Other->FindTag(L"Stage"))
+		{
+			SetIsJumping(false);
+		}
+
+	}
+
 	void Player::DrawString()
 	{
 		const uint8_t numberOfDecimalPlaces = 2;
@@ -72,11 +81,11 @@ namespace basecross{
 		wstring collisionStr(L"Collision:\t");
 		collisionStr += L"CO=" + Util::FloatToWStr(collision, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
-		//bool testAns = Raycast3D(m_Pos, Vec3(0.0f, -1.0f, 0.0f), 1.0f, Vec3(0.0f, -0.87f, 0.0f));
-		//wstring testStr(L"Test:\t");
-		//testStr += L"T=" + Util::FloatToWStr(testAns, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+		float test = m_ThrowTime;
+		wstring testStr(L"Test:\t");
+		testStr += L"T=" + Util::FloatToWStr(test, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
-		wstring str = positionStr + stateName + gravityStr + collisionStr;
+		wstring str = positionStr + stateName + gravityStr + collisionStr + testStr;
 
 		//文字列コンポーネントの取得
 		auto ptrString = GetComponent<StringSprite>();
@@ -117,14 +126,16 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateThrow>());
 		}
 
-		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
+			player->SetIsJumping(true);			
 		}
 
-		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
+			player->SetIsJumping(true);		
 		}
 	}
 
@@ -158,14 +169,16 @@ namespace basecross{
 			player->SetState(make_shared<PlayerStateIdle>());
 		}
 
-		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
+			player->SetIsJumping(true);			
 		}
 
-		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetVerticalVelocity() <= player->m_PlayerNormalGravity))
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
+			player->SetIsJumping(true);			
 		}
 	}
 
@@ -176,6 +189,7 @@ namespace basecross{
 		float m_WalkSpeed = player->GetWalkSpeed();
 
 		bool m_IsBombCreate = player->GetIsBombCreate();
+		float m_ThrowTime = player->GetThrowTime();
 		Vec3 m_BombVec = player->GetBombVec();
 		float m_BombShotSpeed = 8.0f;
 
@@ -199,7 +213,15 @@ namespace basecross{
 			player->SetIsBombCreate(true);
 		}		
 
-		player->SetState(make_shared<PlayerStateIdle>());
+		if (m_ThrowTime <= 0.0f)
+		{
+			player->SetState(make_shared<PlayerStateIdle>());
+		}
+		else
+		{
+			m_ThrowTime -= 0.1f;
+			player->SetThrowTime(m_ThrowTime);
+		}
 	}
 
 }
