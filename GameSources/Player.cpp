@@ -12,9 +12,9 @@ namespace basecross{
 	{
 		//初期位置などの設定
 		m_Transform = GetComponent<Transform>();
-		m_Transform->SetScale(0.25f, 0.25f, 0.25f);	//直径25センチの球体
+		m_Transform->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
 		m_Transform->SetRotation(0.0f, 0.0f, 0.0f);
-		m_Transform->SetPosition(Vec3(0, 0.0f, 0));
+		m_Transform->SetPosition(Vec3(0, 1.0f, 0));
 		//描画コンポーネントの設定
 		m_Draw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
@@ -30,6 +30,8 @@ namespace basecross{
 		//各パフォーマンスを得る
 		m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetDrawActive(true);
+
+		AddTag(L"Player");
 	}
 
 	void Player::OnUpdate()
@@ -208,7 +210,7 @@ namespace basecross{
 			m_Pos = player->GetPlayerPos();
 
 			m_Stage = player->GetStage();
-			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 3.0f);
+			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.0f);
 
 			player->SetIsBombCreate(true);
 		}		

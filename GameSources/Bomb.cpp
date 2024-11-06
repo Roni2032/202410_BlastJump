@@ -11,14 +11,18 @@ namespace basecross{
 		auto drawComp = AddComponent<BcPTStaticDraw>();
 		drawComp->SetMeshResource(L"DEFAULT_SPHERE");
 
-		AddComponent<CollisionSphere>();
+		auto col = AddComponent<CollisionSphere>();
+		col->AddExcludeCollisionTag(L"Player");
 
 		auto gravity = AddComponent<BCGravity>();
 		gravity->Jump(m_ThrowVelocity);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
+		GetComponent<Transform>()->SetScale(Vec3(0.5f));
 
-		m_GameStage = GetTypeStage<GameStageK>();
+		m_GameStage = GetTypeStage<GameStage>();
+
+		Block::m_MoveObjects.push_back(GetComponent<Transform>());
 	}
 
 	void Bomb::OnUpdate() {
@@ -31,13 +35,14 @@ namespace basecross{
 	}
 
 	void Bomb::Explode() {
-		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(), GetThis<Bomb>());
+		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(),m_ExplodeStatus);
 		
-		//m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetPosition());
+		m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetPosition());
 		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		Explode();
 		auto otherTrans = Other->GetComponent<Transform>();
 		if (Other->FindTag(L"Stage")) {
 			//RemoveComponent<Gravity>();
@@ -54,41 +59,40 @@ namespace basecross{
 	void ExplodeCollider::OnCreate() {
 		auto col = AddComponent<CollisionSphere>();
 		col->SetAfterCollision(AfterCollision::None);
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 		auto trans = GetComponent<Transform>();
 
 		trans->SetPosition(m_Pos);
-		float range = m_Bomb->GetRange();
-		trans->SetScale(Vec3(range,range,range));
+		trans->SetScale(Vec3(m_Explosion.m_Range));
 	}
 	void ExplodeCollider::OnUpdate() {
 		GetStage()->RemoveGameObject<ExplodeCollider>(GetThis<ExplodeCollider>());
 	}
 	void ExplodeCollider::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto otherTrans = Other->GetComponent<Transform>();
+
+		Vec3 otherPos = otherTrans->GetPosition();
+		Vec3 ExplodeCorePos = GetComponent<Transform>()->GetPosition();
+
+		Vec3 diff = otherPos - ExplodeCorePos;
+
+		float distance = sqrtf(pow(diff.x, 2) + pow(diff.y, 2));
+		float reboundRate = distance / m_Explosion.m_Range;
+		if (reboundRate < m_MinReboundRate) {
+			reboundRate = m_MinReboundRate;
+		}
+		Vec3 reflectPower = diff.normalize() * reboundRate * m_Explosion.m_Power;
 		if (Other->FindTag(L"Floor")) {
 			auto block = static_pointer_cast<FloorBlock>(Other);
 			if (block != nullptr) {
-				block->HitExplode(40);
+				block->HitExplode(reflectPower.length() * 10);
+				//block->HitExplode(100);
 			}
-			//int block = GetTypeStage<GameStage>()->GetBlock(otherTrans->GetPosition());
-			//GetTypeStage<GameStage>()->DestroyBlock(otherTrans->GetPosition(), Other);
-			
 		}
 		auto gravity = Other->GetComponent<BCGravity>(false);
 		if (gravity != nullptr) {
-			float range = m_Bomb->GetRange();
-			Vec3 otherPos = otherTrans->GetPosition();
-			Vec3 ExplodeCorePos = GetComponent<Transform>()->GetPosition();
-
-			Vec3 diff = otherPos - ExplodeCorePos;
-
-			float distance = sqrtf(pow(diff.x, 2) + pow(diff.y, 2));
-			float reboundRate = distance / range;
-			if (reboundRate < m_MinReboundRate) {
-				reboundRate = m_MinReboundRate;
-			}
-			gravity->Jump(diff.normalize() * reboundRate * m_Bomb->GetPower());
+			
+			gravity->Jump(reflectPower);
 		}
 
 		
