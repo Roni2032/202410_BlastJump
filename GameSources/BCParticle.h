@@ -7,7 +7,81 @@
 #include "stdafx.h"
 
 namespace basecross{
-	
+	struct BCParticleSpriteData {
+		Mat4x4 matrix;
+		Vec3 m_StartPos;
+		Vec3 m_BaseVelocity;
+		Vec3 m_Velocity;
+		Vec3 m_Size;
+
+		BCParticleSpriteData() : 
+			matrix(Mat4x4()),m_StartPos(0,0,0),m_BaseVelocity(0,0,0),m_Velocity(0,0,0),m_Size(1,1,1)
+		{}
+		void SetVelocity(Vec3 velocity) {
+			m_Velocity = velocity;
+			m_BaseVelocity = velocity;
+		}
+		void SetSize(Vec3 size) {
+			m_Size = size;
+		}
+		void SetStartPos(Vec3 start) {
+			m_StartPos = start;
+		}
+	};
+	class BCParticleInstance : public GameObject {
+		shared_ptr<PNTStaticInstanceDraw> m_Draw;
+		shared_ptr<Camera> m_Camera;
+		shared_ptr<Transform> m_Trans;
+		weak_ptr<Transform> m_ParentTrans;
+
+		wstring m_TexKey;
+		vector<BCParticleSpriteData> spriteData;
+		int dataNum;
+		/*Vec3 m_StartPos;
+		Vec3 m_BaseVelocity;
+		Vec3 m_Velocity;
+		Vec3 m_Size;*/
+		Col4 m_Color;
+		BetWeen m_Alpha;
+		float m_MaxTime;
+		float m_TotalTime;
+		float m_Gravity;
+
+		bool m_IsActive = false;
+		void Init();
+	public:
+		BCParticleInstance(const shared_ptr<Stage>& ptr, const wstring& key,int num) :
+			GameObject(ptr),
+			m_TexKey(key),
+			m_Alpha(BetWeen(1.0f, 0.0f)),
+			m_MaxTime(2.0f), m_TotalTime(0.0f), m_Gravity(0.0f),
+			m_IsActive(false),
+			spriteData({}),
+			dataNum(num)
+		{}
+		virtual ~BCParticleInstance() {}
+
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+		vector<BCParticleSpriteData> GetSpriteDate() {
+			return spriteData;
+		}
+		void StartParticle(const Vec3 pos);
+		void SetActive(bool active);
+
+		void SetTexture(const wstring& key) {
+			m_TexKey = key;
+		}
+		void SetMaxTime(float time) {
+			m_MaxTime = time;
+		}
+		void SetColor(Col4 color);
+
+		void SetGravity(float gravity);
+		void SetParent(shared_ptr<Transform> transform) {
+			m_ParentTrans = transform;
+		}
+	};
 	class BCParticleSprite : public GameObject {
 		shared_ptr<PNTStaticDraw> m_Draw;
 		shared_ptr<Camera> m_Camera;
@@ -69,6 +143,7 @@ namespace basecross{
 	class BCParticle : public GameObject {
 
 		vector<shared_ptr<BCParticleSprite>> m_ParticleSprites;
+		vector<shared_ptr<BCParticleInstance>> m_ParticleInstance;
 		shared_ptr<Transform> m_Trans;
 	protected:
 		shared_ptr<Transform> m_Parent;
@@ -81,6 +156,10 @@ namespace basecross{
 		//void ClearParticle();
 		vector<shared_ptr<BCParticleSprite>> GetAllParticle() {
 			return m_ParticleSprites;
+		}
+		shared_ptr<BCParticleInstance> AddParticleInstance(int num, const wstring& key);
+		vector<shared_ptr<BCParticleInstance>> GetAllParticleInstance() {
+			return m_ParticleInstance;
 		}
 		virtual void AddParticleData(){}
 		void Shot(const Vec3 pos = Vec3(0,0,0));
