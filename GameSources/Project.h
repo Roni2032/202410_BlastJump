@@ -26,5 +26,6 @@
 #include "Particles.h"
 #include "BCGravity.h"
 #include "StageObjects.h"
+#include "SoundManager.h"
 //#include "Raycast.h"
 
