@@ -45,7 +45,7 @@ namespace basecross {
 		void CreateWallCollider(Vec2 startPos, Vec2 mapSize);
 		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
-		shared_ptr<Block> CreateBlock(int blockNum, Vec3 pos);
+		shared_ptr<GameObject> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
 		void BlockUpdateActive();
 	public:
@@ -75,7 +75,7 @@ namespace basecross {
 		void NewRespawnPosition(Vec3 pos) {
 			m_RespawnPosition = pos;
 		}
-		void GameClear(){}
+		void GameClear();
 		void GameOver(){}
 	};
 

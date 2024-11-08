@@ -12,7 +12,7 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStageM::CreateViewLight() {
-		const Vec3 eye(0.0f, 3.0f, -10.0f);
+		const Vec3 eye(0.0f, 3.0f, -100.0f);
 		const Vec3 at(0.0f,3.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
@@ -54,6 +54,7 @@ namespace basecross {
 
 			//SoundManager::Instance().StopBGM();
 			AddGameObject<Bomb>(Vec3(0, 5, 0));
+			AddGameObject<BackGroundManager>(9.0f);
 		}
 		catch (...) {
 			throw;

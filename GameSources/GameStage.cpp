@@ -12,11 +12,11 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(-0.5f, 4.0f, -11.0f);
+		const Vec3 eye(-0.5f, 4.0f, -110.0f);
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>());
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),1.0f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -80,6 +80,7 @@ namespace basecross {
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
+		app->RegisterTexture(L"GOALCLEAR_TEX", texPath + L"GameClearTest.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -122,8 +123,8 @@ namespace basecross {
 		LoadMap();
 	}
 
-	shared_ptr<Block> GameStage::CreateBlock(int blockNum, Vec3 pos) {
-		shared_ptr<Block> obj;
+	shared_ptr<GameObject> GameStage::CreateBlock(int blockNum, Vec3 pos) {
+		shared_ptr<GameObject> obj;
 		switch (blockNum) {
 		case 1:
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
@@ -134,6 +135,11 @@ namespace basecross {
 		case 4:
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 10);
 			break;
+		case 5:
+			obj = AddGameObject<BombItem>(pos,4);
+			break;
+		case 6:
+			obj = AddGameObject<Goal>(pos);
 		}
 
 		return obj;
@@ -218,10 +224,13 @@ namespace basecross {
 						Block::m_MoveObjects.erase(Block::m_MoveObjects.begin() + i);
 					}
 				}
-				blockObject->SetUpdateActive(isCollider);
 				auto col = blockObject->GetComponent<Collision>(false);
 				if (col != nullptr) {
 					col->SetDrawActive(isCollider);
+					col->SetUpdateActive(isCollider);
+				}
+				else {
+					blockObject->SetUpdateActive(isCollider);
 				}
 			}
 		}
@@ -306,6 +315,10 @@ namespace basecross {
 		PlayParticle(L"DESTROY_BLOCK_PCL", block->GetComponent<Transform>()->GetPosition());
 		
 		RemoveGameObject<GameObject>(block);
+	}
+
+	void GameStage::GameClear() {
+		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 	}
 }
 //end basecross

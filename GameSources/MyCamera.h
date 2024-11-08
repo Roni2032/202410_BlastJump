@@ -12,15 +12,18 @@ namespace basecross{
 		float m_HighY;
 		int m_CameraWidth;
 		int m_CameraHight;
+		float m_ScrollSpeed;
 
 		weak_ptr<Transform> m_player;
 
 		shared_ptr<GameStage> m_Stage;
 	public:
-		MyCamera(const shared_ptr<GameStage>& ptr):
+		MyCamera(const shared_ptr<GameStage>& ptr,const float scrollSpeed):
 			Camera(),
 			m_HighY(0),m_CameraHight(9),m_CameraWidth(14),
-			m_Stage(ptr){}
+			m_Stage(ptr),
+			m_ScrollSpeed(scrollSpeed)
+		{}
 		virtual ~MyCamera(){}
 
 		virtual void OnCreate()override;
