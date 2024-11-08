@@ -13,6 +13,8 @@ namespace basecross{
 		col->SetAfterCollision(AfterCollision::None);
 
 		col->SetDrawActive(true);
+
+		GetComponent<Transform>()->SetPosition(m_Pos);
 	}
 	void Goal::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Player")) {
