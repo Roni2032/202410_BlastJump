@@ -75,6 +75,12 @@ namespace basecross {
 		void NewRespawnPosition(Vec3 pos) {
 			m_RespawnPosition = pos;
 		}
+		Vec3 GetRespawnPosition() {
+			return m_RespawnPosition;
+		}
+		void UpdateLoadedHight(float hight) {
+			m_LoadedMaxHeight = hight;
+		}
 		void GameClear();
 		void GameOver(){}
 	};

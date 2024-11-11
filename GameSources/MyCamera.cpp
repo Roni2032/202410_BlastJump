@@ -49,5 +49,15 @@ namespace basecross{
 		auto s_player = player.lock();
 		m_player = s_player->GetComponent<Transform>();
 	}
+
+	void MyCamera::SetHight(float hight) {
+		m_HighY = hight;
+		Vec3 at = GetAt();
+		Vec3 eye = GetEye();
+		at.y = hight;
+		eye.y = hight;
+		SetAt(at);
+		SetEye(eye);
+	}
 }
 //end basecross

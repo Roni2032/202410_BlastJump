@@ -109,6 +109,7 @@ namespace basecross{
 		}
 
 		auto col = AddComponent<CollisionObb>();
+		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
 		//col->SetDrawActive(true);
 		AddTag(L"Stage");
@@ -123,10 +124,38 @@ namespace basecross{
 
 	void Block::OnUpdate() {
 		Update();
-
-		
 	}
+	void Block::OnCollisionExcute(shared_ptr<GameObject>& Other) {
+		auto col = Other->GetComponent<Collision>(false);
+		if (col != nullptr) {
+			if (col->GetAfterCollision() != AfterCollision::Auto) return;
 
+			auto otherTrans = Other->GetComponent<Transform>();
+			auto trans = GetComponent<Transform>();
+
+			Vec3 otherSize = otherTrans->GetScale();
+			Vec3 size = trans->GetScale();
+
+			Vec3 otherPos = otherTrans->GetPosition();
+			Vec3 pos = trans->GetPosition();
+
+			if (pos.x > otherPos.x + otherSize.x) {
+				otherPos.x = pos.x -  otherSize.x;
+			}
+			else if (pos.x + size.x < otherPos.x) {
+				otherPos.x = pos.x;
+			}
+
+			if (pos.y > otherPos.y + otherSize.y) {
+				otherPos.y = pos.y - otherSize.y;
+			}
+			else if (pos.y + size.y < otherPos.y) {
+				otherPos.y = pos.y;
+			}
+
+			otherTrans->SetPosition(otherPos);
+		}
+	}
 	void FloorBlock::Start() {
 		AddTag(L"Floor");
 		CheckDurability();
