@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include "BCGravity.h"
 
-namespace basecross{
+namespace basecross {
 
 	//前方宣言(各状態)
 	class Player;
@@ -41,6 +41,8 @@ namespace basecross{
 		KEYBOARD_STATE m_KeyState;
 		vector <basecross::CONTROLER_STATE> m_Controler;
 
+		shared_ptr<basecross::Camera> m_Camera;
+
 		shared_ptr<basecross::Transform> m_Transform;
 		Vec3 m_Pos = Vec3(0.0f);
 		shared_ptr<basecross::BcPNTStaticDraw> m_Draw;
@@ -49,14 +51,19 @@ namespace basecross{
 
 		shared_ptr<basecross::CollisionCapsule> m_Collision;
 
-		shared_ptr<BCGravity> m_Grav;
+		shared_ptr<BCGravity> m_Velo;
 
-		float m_WalkSpeed = 0.1f;
+		float m_WalkSpeed = 0.075f;
 
 		Vec3 m_JumpPower = Vec3(0.0f, 5.0f, 0.0f);
+		bool m_IsJumping = false;
 
 		bool m_IsBombCreate = false;
+		float m_ThrowCoolTime = 0.0f;
 		Vec3 m_BombVec = Vec3(0.0f);
+		uint8_t m_HasBomb = 0;
+
+		bool m_IsDead = false;
 
 	public:
 		// コンストラクタ：初期状態を受け取り設定する
@@ -95,7 +102,7 @@ namespace basecross{
 			b_Up,
 		};
 
-		bool InputKey(int keyState ,int keyCord)
+		bool InputKey(int keyState, int keyCord)
 		{
 			switch (keyState)
 			{
@@ -152,18 +159,30 @@ namespace basecross{
 		float GetWalkSpeed() { return m_WalkSpeed; }
 
 		Vec3 GetJumpPower() { return m_JumpPower; }
-		void PlayerJump(Vec3 velocity) { m_Grav->Jump(velocity); }
-		float GetVerticalVelocity() { return m_Grav->GetVelocity().y; }
+		void PlayerJump(Vec3 velocity) { m_Velo->Jump(velocity); }
+		float GetVerticalVelocity() { return m_Velo->GetVelocity().y; }
 		const float m_PlayerNormalGravity = -9.8f;
+
+		bool GetIsJumping() { return m_IsJumping; }
+		void SetIsJumping(bool b) { m_IsJumping = b; }
 
 		bool GetIsBombCreate() { return  m_IsBombCreate; }
 		void SetIsBombCreate(bool b) { m_IsBombCreate = b; }
 
+		float GetThrowCoolTime() { return m_ThrowCoolTime; }
+		void SetThrowCoolTime(float f) { m_ThrowCoolTime = f; }
+
 		Vec3 GetBombVec() { return m_BombVec; }
 		void SetBombVec(Vec3 vec) { m_BombVec = vec; }
 
+		uint8_t GetHasBomb() { return m_HasBomb; }
+		void SetHasBomb(uint8_t n) { m_HasBomb = n; }
+		void AddHasBomb() { m_HasBomb++; }
+		void SubtractHasBomb() { m_HasBomb--; }
+
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		void DrawString();
 	};
 
