@@ -21,8 +21,9 @@ namespace basecross{
 
 	class CheckPoint : public GameObject {
 		Vec3 m_Pos;
+		bool m_IsActuated;
 	public:
-		CheckPoint(const shared_ptr<Stage>& ptr, Vec3 pos) : GameObject(ptr),m_Pos(pos) {}
+		CheckPoint(const shared_ptr<Stage>& ptr, Vec3 pos) : GameObject(ptr),m_Pos(pos),m_IsActuated(false) {}
 		virtual ~CheckPoint() {}
 
 		virtual void OnCreate()override;
