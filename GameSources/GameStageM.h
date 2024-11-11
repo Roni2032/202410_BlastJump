@@ -17,7 +17,7 @@ namespace basecross {
 		void CreateViewLight();
 	public:
 		//\’z‚Æ”jŠü
-		GameStageM() :GameStage(L"Stage01.csv") {}
+		GameStageM() :GameStage(L"Stage03.csv") {}
 		virtual ~GameStageM() {}
 		//‰Šú‰»
 		virtual void OnCreate()override;
