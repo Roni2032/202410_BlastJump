@@ -26,7 +26,7 @@ namespace basecross{
 	void BombItem::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Player")) {
 			//Š”‚ğ‘‚â‚·
-
+			static_pointer_cast<Player>(Other)->AddHasBomb();
 			GetStage()->RemoveGameObject<BombItem>(GetThis<BombItem>());
 		}
 	}
