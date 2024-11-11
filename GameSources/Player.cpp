@@ -6,7 +6,7 @@
 #include "stdafx.h"
 #include "Project.h"
 
-namespace basecross{
+namespace basecross {
 
 	void Player::OnCreate()
 	{
@@ -21,11 +21,11 @@ namespace basecross{
 		m_Draw->SetMeshResource(L"DEFAULT_CAPSULE");
 		//文字列をつける
 		auto ptrString = AddComponent<StringSprite>();
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 120.0f));
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 150.0f));
 		ptrString->SetBackColor(m_ColBlack);
 		ptrString->GetFontSize();
 
-		m_Grav = AddComponent<BCGravity>();
+		m_Velo = AddComponent<BCGravity>();
 
 		//各パフォーマンスを得る
 		m_Collision = AddComponent<CollisionCapsule>();
@@ -45,10 +45,22 @@ namespace basecross{
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
 
-		//Raycast3D(m_Pos, Vec3(0.0f, -1.0f, 0.0f), 1.0f, Vec3(0.0f, -0.87f, 0.0f));
-
 		m_Transform->SetPosition(m_Pos);
+
 		m_Draw->SetDiffuse(m_State->GetDiffColor());
+
+		if (GetThrowCoolTime() > 0.0f) { m_ThrowCoolTime -= 0.1f; }
+
+		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBomb(); }
+
+		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - 5) m_IsDead = true;
+		else m_IsDead = false;
+
+		if (m_IsDead)
+		{
+			//仮です
+			int result = MessageBox(NULL, L"ゲームオーバー！", L"GameOver", MB_OK);
+		}
 	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
@@ -65,29 +77,36 @@ namespace basecross{
 		const uint8_t numberOfDecimalPlaces = 2;
 
 		auto pos = GetComponent<Transform>()->GetPosition();
-		wstring positionStr(L"Position:\t");
-		positionStr += L"X=" + Util::FloatToWStr(pos.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L",\t";
-		positionStr += L"Y=" + Util::FloatToWStr(pos.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L",\t";
+		wstring positionStr(L"Position: ");
+		positionStr += L"X=" + Util::FloatToWStr(pos.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
+		positionStr += L"Y=" + Util::FloatToWStr(pos.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
 		positionStr += L"Z=" + Util::FloatToWStr(pos.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
 		wstring stateName;
 		stateName = m_State->GetStateName() + L"\n";
 
-		auto gravity = m_Grav->GetVelocity();
-		wstring gravityStr(L"Gravity:\t");
-		gravityStr += L"GX=" + Util::FloatToWStr(gravity.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L",\t";
-		gravityStr += L"GY=" + Util::FloatToWStr(gravity.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L",\t";
-		gravityStr += L"GZ=" + Util::FloatToWStr(gravity.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+		auto velocity = m_Velo->GetVelocity();
+		wstring velocityStr(L"Velocity: ");
+		velocityStr += L"VX=" + Util::FloatToWStr(velocity.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
+		velocityStr += L"VY=" + Util::FloatToWStr(velocity.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
+		velocityStr += L"VZ=" + Util::FloatToWStr(velocity.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
-		auto collision = m_Collision->FindExcludeCollisionTag(L"Stage");
-		wstring collisionStr(L"Collision:\t");
-		collisionStr += L"CO=" + Util::FloatToWStr(collision, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+		auto hasBomb = GetHasBomb();
+		wstring hasBombStr(L"HasBomb: ");
+		hasBombStr += L"HB=" + Util::IntToWStr(hasBomb) + L"\n";
 
-		float test = m_ThrowTime;
-		wstring testStr(L"Test:\t");
-		testStr += L"T=" + Util::FloatToWStr(test, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
+		auto camera = OnGetDrawCamera();
+		wstring cameraStr(L"Camera:\t");
+		cameraStr += L"CA=" + Util::FloatToWStr(camera->GetEye().y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
-		wstring str = positionStr + stateName + gravityStr + collisionStr + testStr;
+		bool isDead = false;
+		if (pos.y < camera->GetEye().y - 5) isDead = true;
+		else isDead = false;
+		wstring deadStr(L"");
+		if (isDead) deadStr = L"DIED\n";
+		else deadStr = L"LIVED\n";
+
+		wstring str = positionStr + stateName + velocityStr + hasBombStr + cameraStr + deadStr;
 
 		//文字列コンポーネントの取得
 		auto ptrString = GetComponent<StringSprite>();
@@ -131,13 +150,13 @@ namespace basecross{
 		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
-			player->SetIsJumping(true);			
+			player->SetIsJumping(true);
 		}
 
 		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
-			player->SetIsJumping(true);		
+			player->SetIsJumping(true);
 		}
 	}
 
@@ -174,56 +193,52 @@ namespace basecross{
 		if (player->InputKey(player->keyPressed, 0x5A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
-			player->SetIsJumping(true);			
+			player->SetIsJumping(true);
 		}
 
 		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
-			player->SetIsJumping(true);			
+			player->SetIsJumping(true);
 		}
 	}
 
-	void PlayerStateThrow::PlayerUpdate(shared_ptr<Player> player) 
+	void PlayerStateThrow::PlayerUpdate(shared_ptr<Player> player)
 	{
 		Vec3 m_Pos;
 
 		float m_WalkSpeed = player->GetWalkSpeed();
 
 		bool m_IsBombCreate = player->GetIsBombCreate();
-		float m_ThrowTime = player->GetThrowTime();
+		float m_ThrowCoolTime = player->GetThrowCoolTime();
 		Vec3 m_BombVec = player->GetBombVec();
 		float m_BombShotSpeed = 8.0f;
+		uint8_t m_HasBomb = player->GetHasBomb();
 
 		if (player->InputKey(player->keyPush, VK_RIGHT)) m_BombVec.x = m_BombShotSpeed;
 		if (player->InputKey(player->keyPush, VK_LEFT)) m_BombVec.x = -m_BombShotSpeed;
 		if (player->InputKey(player->keyPush, VK_UP)) m_BombVec.y = m_BombShotSpeed;
 		if (player->InputKey(player->keyPush, VK_DOWN)) m_BombVec.y = -m_BombShotSpeed;
 
-		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_RIGHT)) m_BombVec.x = m_BombShotSpeed;
-		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_LEFT)) m_BombVec.x = -m_BombShotSpeed;
-		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_UP)) m_BombVec.y = m_BombShotSpeed;
-		if (player->InputButton(0, player->b_Push,XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = -m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_RIGHT)) m_BombVec.x = m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_LEFT)) m_BombVec.x = -m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_UP)) m_BombVec.y = m_BombShotSpeed;
+		if (player->InputButton(0, player->b_Push, XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = -m_BombShotSpeed;
 
-		if (m_IsBombCreate == false)
+		if ((m_IsBombCreate == false) && (m_HasBomb > 0) && (m_ThrowCoolTime <= 0.0f))
 		{
 			m_Pos = player->GetPlayerPos();
 
 			m_Stage = player->GetStage();
 			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.0f);
 
-			player->SetIsBombCreate(true);
-		}		
+			player->SubtractHasBomb();
 
-		if (m_ThrowTime <= 0.0f)
-		{
-			player->SetState(make_shared<PlayerStateIdle>());
+			player->SetThrowCoolTime(3.0f);
+			player->SetIsBombCreate(true);
 		}
-		else
-		{
-			m_ThrowTime -= 0.1f;
-			player->SetThrowTime(m_ThrowTime);
-		}
+
+		player->SetState(make_shared<PlayerStateIdle>());
 	}
 
 }

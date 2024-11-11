@@ -15,11 +15,12 @@ namespace basecross{
 	}
 	void MyCamera::OnUpdate() {
 
+		float elapsed = App::GetApp()->GetElapsedTime();
 		Vec3 eye = GetEye();
 		Vec3 at = GetAt();
 		
 		auto playerTransform = m_player.lock();
-		if (playerTransform != nullptr) {
+		if (playerTransform != nullptr && m_ScrollSpeed == 0) {
 			Vec3 playerPos = playerTransform->GetPosition();
 			if (playerPos.y > m_HighY && playerPos.y - m_CameraHight / 2.0f > m_Stage->GetBottomY() && playerPos.y + m_CameraHight / 2.0f < m_Stage->GetTopY()) {
 				at.y = playerPos.y;
@@ -33,6 +34,11 @@ namespace basecross{
 			}
 		}
 		
+		if (m_ScrollSpeed != 0) {
+			at.y += m_ScrollSpeed * elapsed;
+			eye.y = at.y;
+		}
+
 		SetEye(eye);
 		SetAt(at);
 

@@ -29,16 +29,16 @@ namespace basecross{
 		switch (m_GravityDirection) {
 		case GRAVITY::X:
 			if (m_Velocity.x <= m_GravitySpeed.x) {
-				m_Velocity = m_GravitySpeed;
+				m_Velocity.x = m_GravitySpeed.x;
 			}
 		case GRAVITY::Y:
 			if (m_Velocity.y <= m_GravitySpeed.y) {
-				m_Velocity = m_GravitySpeed;
+				m_Velocity.y = m_GravitySpeed.y;
 			}
 			break;
 		case GRAVITY::Z:
 			if (m_Velocity.z <= m_GravitySpeed.z) {
-				m_Velocity = m_GravitySpeed;
+				m_Velocity.z = m_GravitySpeed.z;
 			}
 			break;
 		}
