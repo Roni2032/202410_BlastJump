@@ -29,8 +29,9 @@ namespace basecross{
 		col->SetDrawActive(true);
 	}
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& Other) {
-		if (Other->FindTag(L"Player")) {
-
+		if (Other->FindTag(L"Player") && !m_IsActuated) {
+			GetTypeStage<GameStage>()->NewRespawnPosition(GetComponent<Transform>()->GetPosition());
+			m_IsActuated = true;
 		}
 	}
 }
