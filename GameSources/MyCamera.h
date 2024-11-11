@@ -30,6 +30,7 @@ namespace basecross{
 		virtual void OnUpdate()override;
 
 		void SetPlayer(weak_ptr<Player> player);
+		void SetHight(float hight);
 	};
 }
 //end basecross

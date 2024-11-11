@@ -16,7 +16,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),1.0f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),0.0f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -140,6 +140,10 @@ namespace basecross {
 			break;
 		case 6:
 			obj = AddGameObject<Goal>(pos);
+			break;
+		case 7:
+			obj = AddGameObject<CheckPoint>(pos);
+			break;
 		}
 
 		return obj;
@@ -189,7 +193,7 @@ namespace basecross {
 			}
 		}
 		//ロードしない場合はここで終了
-		else {
+		else if(m_LoadedMaxHeight == static_cast<int>(atY) + m_LoadStageSize.y){
 			return;
 		}
 		m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
@@ -199,6 +203,10 @@ namespace basecross {
 			float y = objTrans->GetPosition().y;
 
 			if (y < static_cast<int>(atY) - m_LoadStageSize.y) {
+				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
+				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
+			}
+			if (y > static_cast<int>(atY) + m_LoadStageSize.y) {
 				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
 				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
 			}
