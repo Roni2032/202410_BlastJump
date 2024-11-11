@@ -41,8 +41,6 @@ namespace basecross {
 		KEYBOARD_STATE m_KeyState;
 		vector <basecross::CONTROLER_STATE> m_Controler;
 
-		shared_ptr<basecross::Camera> m_Camera;
-
 		shared_ptr<basecross::Transform> m_Transform;
 		Vec3 m_Pos = Vec3(0.0f);
 		shared_ptr<basecross::BcPNTStaticDraw> m_Draw;
@@ -179,6 +177,7 @@ namespace basecross {
 		void SetHasBomb(uint8_t n) { m_HasBomb = n; }
 		void AddHasBomb() { m_HasBomb++; }
 		void SubtractHasBomb() { m_HasBomb--; }
+		void AddHasBombV2(uint8_t n) { m_HasBomb += n; }
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;

@@ -51,7 +51,7 @@ namespace basecross {
 
 		if (GetThrowCoolTime() > 0.0f) { m_ThrowCoolTime -= 0.1f; }
 
-		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBomb(); }
+		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBombV2(4); }
 
 		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - 5) m_IsDead = true;
 		else m_IsDead = false;
