@@ -9,9 +9,11 @@
 namespace basecross{
 
 	void MyCamera::OnCreate() {
-		SetPers(false);
+		//SetPers(false);
 		SetWidth(m_CameraWidth);
 		SetHeight(m_CameraHight);
+
+		SetFovY(XMConvertToRadians(15.0f));
 	}
 	void MyCamera::OnUpdate() {
 
@@ -50,7 +52,7 @@ namespace basecross{
 		m_player = s_player->GetComponent<Transform>();
 	}
 
-	void MyCamera::SetHight(float hight) {
+	void MyCamera::SetStageAt(float hight) {
 		m_HighY = hight;
 		Vec3 at = GetAt();
 		Vec3 eye = GetEye();
