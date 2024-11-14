@@ -14,7 +14,7 @@ namespace basecross {
 		m_Transform = GetComponent<Transform>();
 		m_Transform->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
 		m_Transform->SetRotation(0.0f, 0.0f, 0.0f);
-		m_Transform->SetPosition(Vec3(0, 1.0f, 0));
+		m_Transform->SetPosition(Vec3(0, 2.0f, 0));
 		//描画コンポーネントの設定
 		m_Draw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
@@ -59,7 +59,8 @@ namespace basecross {
 		if (m_IsDead)
 		{
 			//仮です
-			int result = MessageBox(NULL, L"ゲームオーバー！", L"GameOver", MB_OK);
+			//int result = MessageBox(NULL, L"ゲームオーバー！", L"GameOver", MB_OK);
+			GetTypeStage<GameStage>()->GameOver();
 		}
 	}
 
@@ -67,7 +68,18 @@ namespace basecross {
 	{
 		if (Other->FindTag(L"Stage"))
 		{
-			SetIsJumping(false);
+			Vec3 otherSize = Other->GetComponent<Transform>()->GetScale();
+			Vec3 otherPos = Other->GetComponent<Transform>()->GetPosition();
+			
+			Vec3 size = GetComponent<Transform>()->GetScale();
+			Vec3 pos = GetComponent<Transform>()->GetPosition();
+
+			if (pos.y > otherPos.y &&
+				pos.x + size.x / 2.0f > otherPos.x &&
+				pos.x + size.x / 2.0f < otherPos.x + otherSize.x) {
+				SetIsJumping(false);
+
+			}
 		}
 
 	}

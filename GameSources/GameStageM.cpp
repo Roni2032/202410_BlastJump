@@ -54,12 +54,23 @@ namespace basecross {
 
 			//SoundManager::Instance().StopBGM();
 			AddGameObject<Bomb>(Vec3(0, 5, 0));
-			AddGameObject<BackGroundManager>(9.0f);
+			//AddGameObject<BackGroundManager>(9.0f);
 		}
 		catch (...) {
 			throw;
 		}
 	}
 
+	void GameStageM::OnUpdate() {
+		GameStage::OnUpdate();
+
+		/*float e = App::GetApp()->GetElapsedTime();
+		timer += e;
+		if (timer > 10.0f) {
+			timer = 0;
+			static_pointer_cast<MyCamera>(GetView()->GetTargetCamera())->SetStageAt(10.0f);
+			m_Player->GetComponent<Transform>()->SetPosition(0, 10.0f, 0);
+		}*/
+	}
 }
 //end basecross

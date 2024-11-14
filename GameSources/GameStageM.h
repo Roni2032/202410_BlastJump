@@ -12,6 +12,7 @@ namespace basecross {
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStageM : public GameStage {
+		float timer;
 		//ビューの作成
 		void CreateResource();
 		void CreateViewLight();
@@ -21,7 +22,7 @@ namespace basecross {
 		virtual ~GameStageM() {}
 		//初期化
 		virtual void OnCreate()override;
-
+		virtual void OnUpdate()override;
 	};
 
 

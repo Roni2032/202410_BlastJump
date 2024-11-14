@@ -10,8 +10,7 @@ namespace basecross{
 	void BackGround::OnCreate() {
 		auto draw = AddComponent<PNTStaticDraw>();
 		draw->SetMeshResource(L"DEFAULT_SQUARE");
-		
-		draw->SetDiffuse(Col4(0, 0, 1, 1));
+		draw->SetTextureResource(L"BACKGROUND_TEX");
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
 		trans->SetScale(Vec3(15.0f,m_Scale.y,1));

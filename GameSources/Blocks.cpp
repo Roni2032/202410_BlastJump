@@ -16,6 +16,9 @@ namespace basecross{
 		for (int i = 0; i < m_SizeY; i++) {
 			m_Maps.push_back({});
 		}
+
+		m_Camera = OnGetDrawCamera();
+		m_CameraAtY = m_Camera->GetAt().y;
 	}
 	void InstanceBlock::AddBlock(int y, int cell) {
 		if (y >= m_SizeY) return;
@@ -34,6 +37,10 @@ namespace basecross{
 		if (minCell.y < 0) {
 			minCell.y = 0;
 		}
+
+		float cameraHight = m_Camera->GetHeight();
+		float atY = m_Camera->GetAt().y;
+
 		m_Draw->ClearMatrixVec();
 		for (int i = minCell.y; i < drawSize.y;i++) {
 			for (int j = 0; j < drawSize.x; j++) {
@@ -51,8 +58,37 @@ namespace basecross{
 				
 			}
 		}
+		/*int objectCount = m_CollisionObjects.size();
+		for (const auto& matrix : m_Draw->GetMatrixVec()) {
+			Vec3 translation = matrix.getTranslation();
+			if (m_CameraAtY + cameraHight < translation.y || m_CameraAtY - cameraHight > translation.y || objectCount == 0) {
+				Vec2 index = Vec2(translation.x - m_StartPos.x, m_StartPos.y - translation.y);
+				index = index.floor(0);
 
-		for (int i = m_DrawMaxHeight + 1; i <= max.y; i++) {
+				bool isCollider = false;
+
+				Vec2 aroundMap[] = {
+					Vec2(index.x + 1,m_Maps.size() - index.y - 1),
+					Vec2(index.x - 1,m_Maps.size() - index.y - 1),
+					Vec2(index.x,m_Maps.size() - index.y),
+					Vec2(index.x,m_Maps.size() - index.y - 2)
+				};
+				for (Vec2 around : aroundMap) {
+					if (around.x < 0 || around.x >= m_Maps[index.y].size()) continue;
+					if (around.y < 0 || around.y >= m_Maps.size()) continue;
+
+					if (m_Maps[around.y][around.x] == 0) {
+						isCollider = true;
+						break;
+					}
+				}
+
+				if (isCollider) {
+					m_CollisionObjects.push_back(GetStage()->AddGameObject<Block>(L"", translation, Vec3(1.0f)));
+				}
+			}
+		}*/
+		for (int i = m_DrawMaxHeight + 1/*m_CameraAtY + cameraHight + 1*/; i <= max.y; i++) {
 			for (int j = 0; j < drawSize.x; j++) {
 				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
@@ -84,10 +120,16 @@ namespace basecross{
 				}
 			}
 		}
+
 		m_DrawMaxHeight = max.y;
+		m_CameraAtY = atY;
 		for (int i = 0; i < m_CollisionObjects.size();i++) {
 			auto trans = m_CollisionObjects[i]->GetComponent<Transform>();
 			if (trans->GetPosition().y < minCell.y) {
+				GetStage()->RemoveGameObject<GameObject>(m_CollisionObjects[i]);
+				m_CollisionObjects.erase(m_CollisionObjects.begin() + i);
+			}
+			if (trans->GetPosition().y > max.y) {
 				GetStage()->RemoveGameObject<GameObject>(m_CollisionObjects[i]);
 				m_CollisionObjects.erase(m_CollisionObjects.begin() + i);
 			}
@@ -111,7 +153,7 @@ namespace basecross{
 		auto col = AddComponent<CollisionObb>();
 		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
-		//col->SetDrawActive(true);
+		col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();

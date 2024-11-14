@@ -81,7 +81,7 @@ namespace basecross{
 		if (reboundRate < m_MinReboundRate) {
 			reboundRate = m_MinReboundRate;
 		}
-		Vec3 reflectPower = diff.normalize() * reboundRate * m_Explosion.m_Power;
+		Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_Explosion.m_Power;
 		if (Other->FindTag(L"Floor")) {
 			auto block = static_pointer_cast<FloorBlock>(Other);
 			if (block != nullptr) {

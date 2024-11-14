@@ -12,6 +12,8 @@ namespace basecross{
 		shared_ptr<PNTStaticInstanceDraw> m_Draw;
 		vector<vector<int>> m_Maps;
 		float m_DrawMaxHeight;
+		float m_CameraAtY;
+		shared_ptr<Camera> m_Camera;
 		vector<shared_ptr<GameObject>> m_CollisionObjects;
 
 		int m_SizeY;
