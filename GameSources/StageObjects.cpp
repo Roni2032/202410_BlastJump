@@ -9,6 +9,16 @@
 namespace basecross{
 
 	void Goal::OnCreate() {
+		auto draw = AddComponent<PNTStaticModelDraw>();
+
+		draw->SetMultiMeshResource(L"GOAL_MD");
+		draw->SetSamplerState(SamplerState::LinearWrap);
+		Mat4x4 matrix;
+		matrix.affineTransformation(
+			Vec3(0.3f,0.3f,0.3f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,-0.5f,0.0f)
+		);
+		draw->SetMeshToTransformMatrix(matrix);
+
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
 

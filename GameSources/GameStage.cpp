@@ -12,7 +12,7 @@ namespace basecross {
 	//	ゲームステージクラス実体
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(-0.5f, 4.0f, -110.0f);
+		const Vec3 eye(-0.5f, 4.0f, -34.0f);
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
@@ -28,23 +28,28 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
+			Block::m_MoveObjects.clear();
 			CreateViewLight();
 			CreateResource();
 			CreateMap();
 			CreateParticle();
 			LoadMap();
 
-			auto player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
-			Block::m_MoveObjects.push_back(player->GetComponent<Transform>());
+			
+			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			Block::m_MoveObjects.push_back(m_Player->GetComponent<Transform>());
 
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
-			camera->SetPlayer(player);
+			camera->SetPlayer(m_Player);
 
 			auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
 
 			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 
+			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -240.0f, 0), Vec2(200, 150));
+			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -220.0f, 0), Vec2(80, 250), 2);
+			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 		}
 		catch (...) {
 			throw;
@@ -60,11 +65,20 @@ namespace basecross {
 		//m_TimerSprite[1]->UpdateNumber(minute);
 		//m_TimerSprite[0]->UpdateNumber(second);
 
-
 		LoadMap();
 
-
 		BlockUpdateActive();
+
+		m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
+
+		if (isGameOver) {
+			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+			if (pad.bConnected) {
+				if (pad.wPressedButtons == XINPUT_GAMEPAD_Y) {
+					PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+				}
+			}
+		}
 	}
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -72,6 +86,7 @@ namespace basecross {
 		wstring uiPath = path + L"UITex/";
 		wstring mapPath = path + L"Maps/";
 		wstring texPath = path + L"Texture/";
+		wstring modelPath = path + L"Models/";
 		app->RegisterTexture(L"TEST_TEX", texPath + L"TestTex_wall.jpg");
 		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
 		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
@@ -81,6 +96,13 @@ namespace basecross {
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
 		app->RegisterTexture(L"GOALCLEAR_TEX", texPath + L"GameClearTest.png");
+		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText.png");
+		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
+		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText.png");
+		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
+
+		auto model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
+		app->RegisterResource(L"GOAL_MD", model);
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -124,7 +146,7 @@ namespace basecross {
 	}
 
 	shared_ptr<GameObject> GameStage::CreateBlock(int blockNum, Vec3 pos) {
-		shared_ptr<GameObject> obj;
+		shared_ptr<GameObject> obj = nullptr;
 		switch (blockNum) {
 		case 1:
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
@@ -154,7 +176,7 @@ namespace basecross {
 
 		
 
-		if (m_LoadedMaxHeight == 0) {
+		/*if (m_LoadedMaxHeight == 0) {
 			for (int i = 0; i <= atY + m_LoadStageSize.y; i++) {
 				if (i >= m_Map.size()) {
 					break;
@@ -174,29 +196,77 @@ namespace basecross {
 			m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
 			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
-		}
-
+		}*/
 		//新しくマップをロード
-		if (m_LoadedMaxHeight < static_cast<int>(atY) + m_LoadStageSize.y) {
-			m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
-			if (m_LoadedMaxHeight >= m_Map.size()) {
-				return;
+		//if (m_LoadedMaxHeight < static_cast<int>(atY) + m_LoadStageSize.y) {
+		//	m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
+		//	if (m_LoadedMaxHeight >= m_Map.size()) {
+		//		return;
+		//	}
+		//	int loadedIndex = m_Map.size() - 1 - m_LoadedMaxHeight;
+		//	for (int x = 0; x < m_Map[loadedIndex].size(); x++) {
+		//		int size = m_Map[loadedIndex].size();
+		//		Vec2 startPos = Vec2(size / -2 , m_Map.size() - 2);
+		//		auto obj = CreateBlock(m_Map[loadedIndex][x], Vec3(startPos.x + x, startPos.y - loadedIndex, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+		//		if (obj != nullptr) {
+		//			m_LoadedStageObjects.push_back(obj);
+		//		}
+		//	}
+		//}
+		////ロードしない場合はここで終了
+		//else if(m_LoadedMaxHeight == static_cast<int>(atY) + m_LoadStageSize.y){
+		//	return;
+		//}
+		if (m_CameraAtY == 0) {
+			m_CameraAtY = atY;
+			for (int i = 0; i <= m_CameraAtY + m_LoadStageSize.y; i++) {
+				if (i >= m_Map.size()) {
+					break;
+				}
+				int y = m_Map.size() - i - 1;
+				int sizeX = m_Map[y].size();
+				for (int x = 0; x < sizeX; x++) {
+					int size = m_Map[y].size();
+					auto obj = CreateBlock(m_Map[y][x], Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+					if (obj != nullptr) {
+						m_LoadedStageObjects.push_back(obj);
+					}
+				}
 			}
-			int loadedIndex = m_Map.size() - 1 - m_LoadedMaxHeight;
-			for (int x = 0; x < m_Map[loadedIndex].size(); x++) {
-				int size = m_Map[loadedIndex].size();
-				Vec2 startPos = Vec2(size / -2 , m_Map.size() - 2);
-				auto obj = CreateBlock(m_Map[loadedIndex][x], Vec3(startPos.x + x, startPos.y - loadedIndex, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+
+			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
+			return;
+		}
+		for (int i = m_CameraAtY + m_LoadStageSize.y + 1; i <= atY + m_LoadStageSize.y; i++) {
+			if (i >= m_Map.size()) return;
+
+			for (int j = 0; j < m_Map[i].size(); j++) {
+
+				int loadIndexY = m_Map.size() - i - 1;
+				float sizeX = static_cast<float>(m_Map[i].size());
+				Vec2 startPos = Vec2(sizeX / -2, m_Map.size() - 2);
+				auto obj = CreateBlock(m_Map[loadIndexY][j], Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
 				if (obj != nullptr) {
 					m_LoadedStageObjects.push_back(obj);
 				}
 			}
 		}
-		//ロードしない場合はここで終了
-		else if(m_LoadedMaxHeight == static_cast<int>(atY) + m_LoadStageSize.y){
-			return;
+
+		for (int i = m_CameraAtY - m_LoadStageSize.y - 1; i >= atY - m_LoadStageSize.y; i--) {
+			if (i < 0) return;
+
+			for (int j = 0; j < m_Map[i].size(); j++) {
+
+				int loadIndexY = m_Map.size() - i - 1;
+				Vec2 startPos = Vec2(m_Map[i].size() / -2.0f, m_Map.size() - 2);
+				auto obj = CreateBlock(m_Map[loadIndexY][j], Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+				if (obj != nullptr) {
+					m_LoadedStageObjects.push_back(obj);
+				}
+			}
 		}
-		m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
+		m_CameraAtY = atY;
+		m_Walls->DrawMap(Vec2(m_Map[0].size(), m_CameraAtY + m_LoadStageSize.y), Vec2(0, m_CameraAtY - m_LoadStageSize.y));
 		//範囲外に入ったブロックを削除
 		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
 			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
@@ -327,6 +397,15 @@ namespace basecross {
 
 	void GameStage::GameClear() {
 		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
+		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
+
+		isGameOver = true;
+	}
+	void GameStage::GameOver() {
+		AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
+		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
+
+		isGameOver = true;
 	}
 }
 //end basecross

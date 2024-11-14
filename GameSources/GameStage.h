@@ -7,6 +7,7 @@
 #include "stdafx.h"
 #include "BCSprite.h"
 #include "Blocks.h"
+#include "Player.h"
 
 namespace basecross {
 
@@ -24,6 +25,7 @@ namespace basecross {
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
+		int m_CameraAtY = 0;
 		vector<vector<int>> m_Map;
 		Vec3 m_MapLeftTop;
 		wstring m_MapName;
@@ -31,10 +33,14 @@ namespace basecross {
 
 		int m_BombNum;
 		float m_MainTimer;
+		bool isGameOver = false;
 
 		shared_ptr<BCNumber> m_TimerSprite[2];
+		shared_ptr<BCNumber> m_PlayerHasBombs;
 
 		vector<BetWeen> m_scrollRange;
+
+		
 
 		Vec3 m_RespawnPosition;
 		Vec3 m_LoadStageSize;
@@ -56,6 +62,8 @@ namespace basecross {
 		//èâä˙âª
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+
+		shared_ptr<Player> m_Player;
 
 		void PlayParticle(const wstring& key, Vec3 pos);
 		vector<vector<int>> GetMap() {
@@ -82,7 +90,7 @@ namespace basecross {
 			m_LoadedMaxHeight = hight;
 		}
 		void GameClear();
-		void GameOver(){}
+		void GameOver();
 	};
 
 
