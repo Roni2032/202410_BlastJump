@@ -16,6 +16,7 @@ namespace basecross{
 		virtual ~SoundManager(){}
 
 		void RegisterSounds();
+		void RegisterSound(const wstring& key, const wstring& fileName);
 
 		static SoundManager& Instance();
 		void PlaySE(const wstring& key,const float volume = 1.0f);

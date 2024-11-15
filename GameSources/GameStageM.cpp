@@ -52,9 +52,7 @@ namespace basecross {
 		try {
 			GameStage::OnCreate();
 
-			//SoundManager::Instance().StopBGM();
-			AddGameObject<Bomb>(Vec3(0, 5, 0));
-			//AddGameObject<BackGroundManager>(9.0f);
+			AddGameObject<BackGroundManager>(9.0f);
 		}
 		catch (...) {
 			throw;

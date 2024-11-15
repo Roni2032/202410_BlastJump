@@ -16,7 +16,11 @@ namespace basecross{
 		SetFovY(XMConvertToRadians(15.0f));
 	}
 	void MyCamera::OnUpdate() {
-
+		if (m_Stage != nullptr) {
+			if (m_Stage->GetGameMode() != GameStage::GameMode::InGame) {
+				return;
+			}
+		}
 		float elapsed = App::GetApp()->GetElapsedTime();
 		Vec3 eye = GetEye();
 		Vec3 at = GetAt();

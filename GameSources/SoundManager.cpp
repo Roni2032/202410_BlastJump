@@ -15,9 +15,14 @@ namespace basecross{
 	}
 	void SoundManager::RegisterSounds() {
 		m_Audio = App::GetApp()->GetXAudio2Manager();
-
+		RegisterSound(L"BOMB_SD", L"Bomb.wav");
 	}
+	void SoundManager::RegisterSound(const wstring& key, const wstring& fileName) {
+		wstring path = App::GetApp()->GetDataDirWString() + L"Sounds/";
 
+		auto audioRes = App::GetApp()->RegisterWav(key, path + fileName);
+		m_SoundKeys.push_back(key);
+	}
 	void SoundManager::PlaySE(const wstring& key, const float volume) {
 		if (m_Audio == nullptr) {
 			m_Audio = App::GetApp()->GetXAudio2Manager();
