@@ -9,7 +9,12 @@
 namespace basecross{
 	void Bomb::OnCreate() {
 		auto drawComp = AddComponent<BcPTStaticDraw>();
-		drawComp->SetMeshResource(L"DEFAULT_SPHERE");
+		drawComp->SetMeshResource(L"BOMB_MD");
+		Mat4x4 matrix;
+		matrix.affineTransformation(
+			Vec3(0.5f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
+		);
+		drawComp->SetMeshToTransformMatrix(matrix);
 
 		auto col = AddComponent<CollisionSphere>();
 		col->AddExcludeCollisionTag(L"Player");
@@ -23,6 +28,17 @@ namespace basecross{
 		m_GameStage = GetTypeStage<GameStage>();
 
 		Block::m_MoveObjects.push_back(GetComponent<Transform>());
+
+		rotateSpeed = Vec3(0
+			/*Util::RandZeroToOne() * 180.0f - 90.0f,
+			Util::RandZeroToOne() * 180.0f - 90.0f,
+			Util::RandZeroToOne() * 180.0f - 90.0f*/
+		);
+		auto parent = GetTypeStage<GameStage>()->m_Player->GetComponent<Transform>()->GetParent();
+		if (parent != nullptr) {
+			GetComponent<Transform>()->SetParent(parent);
+		}
+
 	}
 
 	void Bomb::OnUpdate() {
@@ -32,14 +48,20 @@ namespace basecross{
 		if (m_ExplodeTimer > m_ExplodeTime) {
 			Explode();
 		}
+
+		Vec3 rot = GetComponent<Transform>()->GetRotation();
+		rot += rotateSpeed * elapsedTime;
+		GetComponent<Transform>()->SetRotation(rot);
 	}
 
 	void Bomb::Explode() {
-		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetPosition(),m_ExplodeStatus);
+		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetWorldPosition(),m_ExplodeStatus);
 		
-		m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetPosition());
+		m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition());
 		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
+
+		SoundManager::Instance().PlaySE(L"BOMB_SD");
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		Explode();
@@ -71,17 +93,20 @@ namespace basecross{
 	void ExplodeCollider::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto otherTrans = Other->GetComponent<Transform>();
 
-		Vec3 otherPos = otherTrans->GetPosition();
+		Vec3 otherPos = otherTrans->GetWorldPosition();
 		Vec3 ExplodeCorePos = GetComponent<Transform>()->GetPosition();
 
 		Vec3 diff = otherPos - ExplodeCorePos;
 
 		float distance = sqrtf(pow(diff.x, 2) + pow(diff.y, 2));
 		float reboundRate = distance / m_Explosion.m_Range;
+		if (reboundRate > 1.0f) {
+			reboundRate = 1.0f;
+		}
 		if (reboundRate < m_MinReboundRate) {
 			reboundRate = m_MinReboundRate;
 		}
-		Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_Explosion.m_Power;
+ 		Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_Explosion.m_Power;
 		if (Other->FindTag(L"Floor")) {
 			auto block = static_pointer_cast<FloorBlock>(Other);
 			if (block != nullptr) {

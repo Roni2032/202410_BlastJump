@@ -17,6 +17,7 @@ namespace basecross{
 
 	};
 	class Bomb : public GameObject {
+		Vec3 rotateSpeed;
 		float m_ExplodeTime;
 		float m_ExplodeTimer;
 
