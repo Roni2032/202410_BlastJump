@@ -22,6 +22,14 @@ namespace basecross {
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
+	public:
+		enum GameMode {
+			NotBomb,
+			InGame,
+			Clear,
+			Over
+		};
+	private:
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
@@ -33,7 +41,7 @@ namespace basecross {
 
 		int m_BombNum;
 		float m_MainTimer;
-		bool isGameOver = false;
+		GameMode m_Mode;
 
 		shared_ptr<BCNumber> m_TimerSprite[2];
 		shared_ptr<BCNumber> m_PlayerHasBombs;
@@ -57,7 +65,11 @@ namespace basecross {
 	public:
 		//構築と破棄
 		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,7,0)){}
+			m_LoadStageSize(Vec3(20,7,0)),
+			m_BombNum(0),
+			m_MainTimer(0),
+			m_Mode(GameMode::InGame)
+		{}
 		virtual ~GameStage() {}
 		//初期化
 		virtual void OnCreate()override;
@@ -88,6 +100,9 @@ namespace basecross {
 		}
 		void UpdateLoadedHight(float hight) {
 			m_LoadedMaxHeight = hight;
+		}
+		GameMode GetGameMode() {
+			return m_Mode;
 		}
 		void GameClear();
 		void GameOver();

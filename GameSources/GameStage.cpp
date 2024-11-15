@@ -31,18 +31,19 @@ namespace basecross {
 			Block::m_MoveObjects.clear();
 			CreateViewLight();
 			CreateResource();
+			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			Block::m_MoveObjects.push_back(m_Player->GetComponent<Transform>());
 			CreateMap();
 			CreateParticle();
 			LoadMap();
 
 			
-			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
-			Block::m_MoveObjects.push_back(m_Player->GetComponent<Transform>());
+			
 
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
 
-			auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
+			//auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
 
 			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
@@ -71,7 +72,7 @@ namespace basecross {
 
 		m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
-		if (isGameOver) {
+		if (m_Mode != GameMode::InGame) {
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 			if (pad.bConnected) {
 				if (pad.wPressedButtons == XINPUT_GAMEPAD_Y) {
@@ -86,23 +87,20 @@ namespace basecross {
 		wstring uiPath = path + L"UITex/";
 		wstring mapPath = path + L"Maps/";
 		wstring texPath = path + L"Texture/";
-		wstring modelPath = path + L"Models/";
 		app->RegisterTexture(L"TEST_TEX", texPath + L"TestTex_wall.jpg");
 		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
 		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
 		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
-
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
-		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
 		app->RegisterTexture(L"GOALCLEAR_TEX", texPath + L"GameClearTest.png");
+
+		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
 		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText.png");
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
 
-		auto model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
-		app->RegisterResource(L"GOAL_MD", model);
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -165,6 +163,12 @@ namespace basecross {
 			break;
 		case 7:
 			obj = AddGameObject<CheckPoint>(pos);
+			break;
+		case 8:
+			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(2, 0, 0));
+			break;
+		case 9:
+			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(-2, 0, 0));
 			break;
 		}
 
@@ -233,7 +237,6 @@ namespace basecross {
 					}
 				}
 			}
-
 			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}
@@ -293,7 +296,7 @@ namespace basecross {
 					auto trans = Block::m_MoveObjects[i].lock();
 					if (trans != nullptr) {
 						
-						if (length(trans->GetPosition() - blockObject->GetComponent<Transform>()->GetPosition()) < 3.0f) {
+						if (length(trans->GetWorldPosition() - blockObject->GetComponent<Transform>()->GetWorldPosition()) < 3.0f) {
 							isCollider = true;
 						}
 						
@@ -384,6 +387,9 @@ namespace basecross {
 	}
 
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
+		if (m_Player->GetComponent<Transform>()->GetParent() == block) {
+			m_Player->GetComponent<Transform>()->SetParent(nullptr);
+		}
 		Vec3 mapPos = GetMapIndex(pos);
 		m_Map[mapPos.y][mapPos.x] = 0;
 		auto it = find(m_LoadedStageObjects.begin(), m_LoadedStageObjects.end(), block);
@@ -399,13 +405,13 @@ namespace basecross {
 		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
-		isGameOver = true;
+		m_Mode = GameMode::Clear;
 	}
 	void GameStage::GameOver() {
 		AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
-		isGameOver = true;
+		m_Mode = GameMode::Over;
 	}
 }
 //end basecross

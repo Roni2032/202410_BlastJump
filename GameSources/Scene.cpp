@@ -14,6 +14,16 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	void Scene::OnCreate(){
 		try {
+			auto& app = App::GetApp();
+			wstring path = app->GetDataDirWString();
+			wstring modelPath = path + L"Models/";
+
+			auto multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
+			app->RegisterResource(L"GOAL_MD", multiModel);
+			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
+			app->RegisterResource(L"BOMB_MD", model);
+
+
 			//クリアする色を設定
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
@@ -22,8 +32,8 @@ namespace basecross{
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
 
-			/*auto soundManager = new SoundManager();
-			soundManager->RegisterSounds();*/
+			auto soundManager = SoundManager::Instance();
+			soundManager.RegisterSounds();
 		}
 		catch (...) {
 			throw;
