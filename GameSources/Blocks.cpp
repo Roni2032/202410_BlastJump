@@ -168,6 +168,7 @@ namespace basecross{
 		Update();
 	}
 	void Block::OnCollisionExcute(shared_ptr<GameObject>& Other) {
+		return;
 		auto col = Other->GetComponent<Collision>(false);
 		if (col != nullptr) {
 			if (col->GetAfterCollision() != AfterCollision::Auto) return;
@@ -178,22 +179,24 @@ namespace basecross{
 			Vec3 otherSize = otherTrans->GetScale();
 			Vec3 size = trans->GetScale();
 
-			Vec3 otherPos = otherTrans->GetPosition();
+			Vec3 otherPos = otherTrans->GetWorldPosition();
 			Vec3 pos = trans->GetPosition();
+			Vec3 otherVelocity = otherTrans->GetVelocity();
 
-			if (pos.x > otherPos.x + otherSize.x) {
-				otherPos.x = pos.x -  otherSize.x;
+			float immersion = 10000.0f;
+			/*if (pos.x > otherPos.x + otherSize.x) {
+				float nneImersion
 			}
 			else if (pos.x + size.x < otherPos.x) {
 				otherPos.x = pos.x;
 			}
 
-			if (pos.y > otherPos.y + otherSize.y) {
+			if (pos.y + otherSize.y < otherPos.y + otherSize.y) {
 				otherPos.y = pos.y - otherSize.y;
 			}
-			else if (pos.y + size.y < otherPos.y) {
-				otherPos.y = pos.y;
-			}
+			else if (pos.y > otherPos.y + otherSize.y) {
+				otherPos.y = pos.y + otherSize.y;
+			}*/
 
 			otherTrans->SetPosition(otherPos);
 		}
@@ -224,6 +227,43 @@ namespace basecross{
 		}
 		else {
 			drawComp->SetTextureResource(L"TEST100_TEX");
+		}
+	}
+
+	void MoveBlock::Start() {
+		FloorBlock::Start();
+
+		m_Trans = GetComponent<Transform>();
+
+		m_TargetPos = m_MoveStartPos;
+	}
+
+	void MoveBlock::Update() {
+		FloorBlock::Update();
+
+		float elapsed = App::GetApp()->GetElapsedTime();
+		Vec3 pos = m_Trans->GetPosition();
+		Vec3 velocity = m_TargetPos - pos;
+		velocity = velocity.normalize();
+
+		pos += m_MoveSpeed * velocity * elapsed;
+
+		if ((m_TargetPos - pos).length() < 0.1f) {
+			pos = m_TargetPos;
+
+			m_TargetPos = m_TargetPos == m_MoveStartPos ? m_MoveEndPos : m_MoveStartPos;
+		}
+		m_Trans->SetPosition(pos);
+	}
+
+	void MoveBlock::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		if (Other->FindTag(L"Player")) {
+			Other->GetComponent<Transform>()->SetParent(GetThis<GameObject>());
+		}
+	}
+	void MoveBlock::OnCollisionExit(shared_ptr<GameObject>& Other) {
+		if (Other->FindTag(L"Player")) {
+			Other->GetComponent<Transform>()->SetParent(nullptr);
 		}
 	}
 }
