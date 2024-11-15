@@ -106,6 +106,7 @@ namespace basecross {
 		
 		model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
 		app->RegisterResource(L"PLAYER_MD", model);
+		app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();

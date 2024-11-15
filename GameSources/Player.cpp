@@ -19,6 +19,7 @@ namespace basecross {
 		m_Draw = AddComponent<BcPNTStaticDraw>();
 		//描画するメッシュを設定
 		m_Draw->SetMultiMeshResource(L"PLAYER_MD");
+		m_Draw->SetTextureResource(L"PLAYER_MD_TEX");
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
 			Vec3(0.5f),//スケール
