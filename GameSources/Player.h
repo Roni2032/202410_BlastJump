@@ -51,7 +51,7 @@ namespace basecross {
 
 		shared_ptr<BCGravity> m_Velo;
 
-		float m_WalkSpeed = 0.075f;
+		float m_WalkSpeed = 2.0f;
 
 		Vec3 m_JumpPower = Vec3(0.0f, 5.0f, 0.0f);
 		bool m_IsJumping = false;
@@ -179,9 +179,13 @@ namespace basecross {
 		void SubtractHasBomb() { m_HasBomb--; }
 		void AddHasBombV2(uint8_t n) { m_HasBomb += n; }
 
+		Vec3 m_cameraTest = Vec3(0.0f, 1.0f, 0.0f);
+
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		//virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
 		void DrawString();
 	};
 
@@ -215,6 +219,7 @@ namespace basecross {
 
 		float m_WalkSpeed = 0.0f;
 		Vec3 m_Pos;
+		float m_DeltaTime = App::GetApp()->GetElapsedTime();
 
 	public:
 
@@ -229,7 +234,7 @@ namespace basecross {
 			player->SetIsBombCreate(false);
 
 			m_Pos = player->GetPlayerPos();
-			m_Pos.x += m_WalkSpeed;
+			m_Pos.x += m_WalkSpeed * m_DeltaTime;
 			player->SetPlayerPos(m_Pos);
 		}
 

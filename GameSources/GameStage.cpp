@@ -103,6 +103,9 @@ namespace basecross {
 
 		auto model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
 		app->RegisterResource(L"GOAL_MD", model);
+		
+		model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
+		app->RegisterResource(L"PLAYER_MD", model);
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();

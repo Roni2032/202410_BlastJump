@@ -19,9 +19,6 @@
     <Filter Include="workHashimoto">
       <UniqueIdentifier>{07c42c35-dd0c-4088-8b34-059d822494f8}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Floor">
-      <UniqueIdentifier>{ea270f3f-4822-4be1-ac49-8a3389e29a2e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Bomb">
       <UniqueIdentifier>{8d47161f-77d3-48b8-86d0-c3a941a322b9}</UniqueIdentifier>
     </Filter>
@@ -42,6 +39,9 @@
     </Filter>
     <Filter Include="TrackingEnemy">
       <UniqueIdentifier>{c504b0b7-173e-49f5-a7c9-81e64ab23145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Block">
+      <UniqueIdentifier>{ea270f3f-4822-4be1-ac49-8a3389e29a2e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -70,7 +70,7 @@
       <Filter>Bomb</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h">
-      <Filter>Floor</Filter>
+      <Filter>Block</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h">
       <Filter>workHashimoto</Filter>
@@ -139,7 +139,7 @@
       <Filter>Bomb</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp">
-      <Filter>Floor</Filter>
+      <Filter>Block</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp">
       <Filter>workHashimoto</Filter>
