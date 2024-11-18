@@ -99,9 +99,7 @@ namespace basecross {
 		Vec3 GetRespawnPosition() {
 			return m_RespawnPosition;
 		}
-		void UpdateLoadedHight(float hight) {
-			m_LoadedMaxHeight = hight;
-		}
+		
 		GameMode GetGameMode() {
 			return m_Mode;
 		}

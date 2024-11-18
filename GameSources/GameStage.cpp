@@ -72,11 +72,8 @@ namespace basecross {
 
 		m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
-<<<<<<< HEAD
 		if (m_Mode != GameMode::InGame) {
-=======
-		if (isGameOver) {
->>>>>>> master
+
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 			if (pad.bConnected) {
 				if (pad.wPressedButtons == XINPUT_GAMEPAD_Y) {
@@ -102,26 +99,11 @@ namespace basecross {
 
 		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
-<<<<<<< HEAD
 		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText1.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText1.png");
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
 
-=======
-		app->RegisterTexture(L"GOALCLEAR_TEX", texPath + L"GameClearTest.png");
-		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText.png");
-		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
-		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText.png");
-		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
-
-		auto model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
-		app->RegisterResource(L"GOAL_MD", model);
-		
-		model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
-		app->RegisterResource(L"PLAYER_MD", model);
-		app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
->>>>>>> master
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -258,10 +240,7 @@ namespace basecross {
 					}
 				}
 			}
-<<<<<<< HEAD
-=======
 
->>>>>>> master
 			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}
@@ -430,21 +409,15 @@ namespace basecross {
 		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
-<<<<<<< HEAD
 		m_Mode = GameMode::Clear;
-=======
-		isGameOver = true;
->>>>>>> master
+
 	}
 	void GameStage::GameOver() {
 		AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
-<<<<<<< HEAD
 		m_Mode = GameMode::Over;
-=======
-		isGameOver = true;
->>>>>>> master
+
 	}
 }
 //end basecross

@@ -24,7 +24,9 @@ namespace basecross{
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
-
+			multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
+			app->RegisterResource(L"PLAYER_MD", multiModel);
+			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 
 			//ƒNƒŠƒA‚·‚éF‚ğİ’è
 			Col4 Col;

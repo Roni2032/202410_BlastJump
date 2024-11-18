@@ -23,7 +23,7 @@ namespace basecross{
 
 	public:
 		InstanceBlock(const shared_ptr<Stage>& stage,const wstring& texKey,int sizeY) :
-			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY),m_DrawMaxHeight(-1)
+			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY),m_DrawMaxHeight(-1),m_CameraAtY(0)
 		{
 		}
 
