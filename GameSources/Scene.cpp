@@ -20,8 +20,10 @@ namespace basecross{
 
 			auto multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
 			app->RegisterResource(L"GOAL_MD", multiModel);
+			app->RegisterTexture(L"GOAL_MD_TEX", modelPath + L"goaltex.png");
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
+			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
 
 
 			//ƒNƒŠƒA‚·‚éF‚ğİ’è

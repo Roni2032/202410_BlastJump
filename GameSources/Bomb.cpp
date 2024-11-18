@@ -10,11 +10,16 @@ namespace basecross{
 	void Bomb::OnCreate() {
 		auto drawComp = AddComponent<BcPTStaticDraw>();
 		drawComp->SetMeshResource(L"BOMB_MD");
+		drawComp->SetTextureResource(L"BOMB_MD_TEX");
 		Mat4x4 matrix;
 		matrix.affineTransformation(
 			Vec3(0.5f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
 		);
 		drawComp->SetMeshToTransformMatrix(matrix);
+
+		auto shadow = AddComponent<Shadowmap>();
+		shadow->SetMeshResource(L"BOMB_MD");
+		shadow->SetMeshToTransformMatrix(matrix);
 
 		auto col = AddComponent<CollisionSphere>();
 		col->AddExcludeCollisionTag(L"Player");
@@ -62,6 +67,10 @@ namespace basecross{
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 
 		SoundManager::Instance().PlaySE(L"BOMB_SD");
+
+		if (m_GameStage->GetGameMode() == GameStage::GameMode::NotBomb) {
+			m_GameStage->SetGameMode(GameStage::GameMode::InGame);
+		}
 	}
 	void Bomb::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		Explode();

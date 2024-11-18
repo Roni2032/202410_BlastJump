@@ -12,6 +12,7 @@ namespace basecross{
 		auto draw = AddComponent<PNTStaticModelDraw>();
 
 		draw->SetMultiMeshResource(L"GOAL_MD");
+		draw->SetTextureResource(L"GOAL_MD_TEX");
 		draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
 		matrix.affineTransformation(

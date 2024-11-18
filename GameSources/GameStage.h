@@ -68,7 +68,7 @@ namespace basecross {
 			m_LoadStageSize(Vec3(20,7,0)),
 			m_BombNum(0),
 			m_MainTimer(0),
-			m_Mode(GameMode::InGame)
+			m_Mode(GameMode::NotBomb)
 		{}
 		virtual ~GameStage() {}
 		//èâä˙âª
@@ -103,6 +103,9 @@ namespace basecross {
 		}
 		GameMode GetGameMode() {
 			return m_Mode;
+		}
+		void SetGameMode(GameMode mode) {
+			m_Mode = mode;
 		}
 		void GameClear();
 		void GameOver();
