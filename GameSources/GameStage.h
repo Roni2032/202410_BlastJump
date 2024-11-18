@@ -33,7 +33,7 @@ namespace basecross {
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
-		int m_CameraAtY = 0;
+		float m_CameraAtY = 0;
 		vector<vector<int>> m_Map;
 		Vec3 m_MapLeftTop;
 		wstring m_MapName;

@@ -10,8 +10,15 @@ namespace basecross{
 
 	void BombItem::OnCreate() {
 		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"DEFAULT_SPHERE");
-		AddTag(L"Stage");
+		draw->SetMeshResource(L"BOMB_MD");
+		draw->SetTextureResource(L"BOMB_MD_TEX");
+		Mat4x4 matrix;
+		matrix.affineTransformation(
+			Vec3(0.5f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
+		);
+		draw->SetMeshToTransformMatrix(matrix);
+
+
 		auto col = AddComponent<CollisionSphere>();
 		col->SetAfterCollision(AfterCollision::None);
 		

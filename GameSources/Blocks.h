@@ -63,7 +63,7 @@ namespace basecross{
 		virtual void Start(){}
 		virtual void Update(){}
 
-		static vector<weak_ptr<Transform>> m_MoveObjects;
+		static vector<weak_ptr<Transform>> CollisionObjects;
 	};
 
 	class FloorBlock : public Block {

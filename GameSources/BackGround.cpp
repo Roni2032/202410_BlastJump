@@ -29,7 +29,7 @@ namespace basecross{
 			for (int i = -1; i < 3; i++) {
 				float cameraHight = camera->GetHeight();
 				Vec3 at = camera->GetAt();
-				m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(0, 0, 1) + Vec3(0,m_LoopDistance,0) * i, Vec3(cameraHight)));
+				m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(0, 0, 1) + Vec3(0,m_LoopDistance,0) * static_cast<float>(i), Vec3(cameraHight)));
 			}
 		}
 	}

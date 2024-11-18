@@ -28,8 +28,8 @@ namespace basecross{
 		Vec2 drawSize(0);
 		Vec2 minCell = min;
 		if (max.length() == 0) {
-			drawSize.x = m_Maps[0].size();
-			drawSize.y = m_Maps.size();
+			drawSize.x = static_cast<float>(m_Maps[0].size());
+			drawSize.y = static_cast<float>(m_Maps.size());
 		}
 		else {
 			drawSize = max;
@@ -47,7 +47,7 @@ namespace basecross{
 				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
 				float x = m_StartPos.x + j;
-				float y = i;
+				float y = static_cast<float>(i);
 
 				y = floor(y, 0);
 
@@ -93,7 +93,7 @@ namespace basecross{
 				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
 				float x = m_StartPos.x + j;
-				float y = i;
+				float y = static_cast<float>(i);
 
 				y = floor(y, 0);
 
@@ -109,7 +109,7 @@ namespace basecross{
 					if (around.x < 0 || around.x >= m_Maps[i].size()) continue;
 					if (around.y < 0 || around.y >= m_Maps.size()) continue;
 
-					if (m_Maps[around.y][around.x] == 0) {
+					if (m_Maps[static_cast<int>(around.y)][static_cast<int>(around.x)] == 0) {
 						isCollider = true;
 						break;
 					}
@@ -136,7 +136,7 @@ namespace basecross{
 		}
 	}
 
-	vector<weak_ptr<Transform>> Block::m_MoveObjects = {};
+	vector<weak_ptr<Transform>> Block::CollisionObjects = {};
 
 	void Block::OnCreate() {
 		if (m_TexKey == L"" || m_TexKey == L"null") {
@@ -153,7 +153,7 @@ namespace basecross{
 		auto col = AddComponent<CollisionObb>();
 		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();

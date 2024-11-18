@@ -34,7 +34,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToGameStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
 			auto soundManager = SoundManager::Instance();
 			soundManager.RegisterSounds();
@@ -52,6 +52,9 @@ namespace basecross{
 			//最初のアクティブステージの設定
 			//ResetActiveStage<GameStage>(L"Stage01.csv");
 			ResetActiveStage<GameStageM>();
+		}
+		else if (event->m_MsgStr == L"ToTitleStage") {
+			ResetActiveStage<TitleStage>();
 		}
 	}
 

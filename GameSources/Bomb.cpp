@@ -8,7 +8,7 @@
 
 namespace basecross{
 	void Bomb::OnCreate() {
-		auto drawComp = AddComponent<BcPTStaticDraw>();
+		auto drawComp = AddComponent<PNTStaticDraw>();
 		drawComp->SetMeshResource(L"BOMB_MD");
 		drawComp->SetTextureResource(L"BOMB_MD_TEX");
 		Mat4x4 matrix;
@@ -32,7 +32,7 @@ namespace basecross{
 
 		m_GameStage = GetTypeStage<GameStage>();
 
-		Block::m_MoveObjects.push_back(GetComponent<Transform>());
+		Block::CollisionObjects.push_back(GetComponent<Transform>());
 
 		rotateSpeed = Vec3(0
 			/*Util::RandZeroToOne() * 180.0f - 90.0f,
@@ -107,7 +107,7 @@ namespace basecross{
 
 		Vec3 diff = otherPos - ExplodeCorePos;
 
-		float distance = sqrtf(pow(diff.x, 2) + pow(diff.y, 2));
+		float distance = sqrtf(static_cast<float>(pow(diff.x, 2) + pow(diff.y, 2)));
 		float reboundRate = distance / m_Explosion.m_Range;
 		if (reboundRate > 1.0f) {
 			reboundRate = 1.0f;
@@ -119,7 +119,7 @@ namespace basecross{
 		if (Other->FindTag(L"Floor")) {
 			auto block = static_pointer_cast<FloorBlock>(Other);
 			if (block != nullptr) {
-				block->HitExplode(reflectPower.length() * 10);
+				block->HitExplode(reflectPower.length() * 10.0f);
 				//block->HitExplode(100);
 			}
 		}

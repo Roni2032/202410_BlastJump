@@ -12,6 +12,8 @@ namespace basecross{
 		weak_ptr<GameObject> m_player;
 		shared_ptr<Transform> m_Trans;
 		shared_ptr<PNTStaticDraw> m_Draw;
+
+		float testDeg = 0;
 	public:
 		BombThrowArrow(const shared_ptr<Stage>& ptr,shared_ptr<GameObject> player) : GameObject(ptr),m_player(player){}
 		virtual ~BombThrowArrow(){}

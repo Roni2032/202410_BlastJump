@@ -28,11 +28,11 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
-			Block::m_MoveObjects.clear();
+			Block::CollisionObjects.clear();
 			CreateViewLight();
 			CreateResource();
 			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
-			Block::m_MoveObjects.push_back(m_Player->GetComponent<Transform>());
+			Block::CollisionObjects.push_back(m_Player->GetComponent<Transform>());
 			CreateMap();
 			CreateParticle();
 			LoadMap();
@@ -60,8 +60,8 @@ namespace basecross {
 	void GameStage::OnUpdate() {
 		auto elapsedTime = App::GetApp()->GetElapsedTime();
 		m_MainTimer += elapsedTime;
-		int minute = m_MainTimer / 60.0f;
-		int second = m_MainTimer - 60.0f * minute;
+		int minute = static_cast<int>(m_MainTimer / 60.0f);
+		int second = static_cast<int>(m_MainTimer - 60.0f * minute);
 
 		//m_TimerSprite[1]->UpdateNumber(minute);
 		//m_TimerSprite[0]->UpdateNumber(second);
@@ -173,6 +173,13 @@ namespace basecross {
 		case 9:
 			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(-2, 0, 0));
 			break;
+		case 10:
+			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(0, 2, 0));
+			break;
+		case 11:
+			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(0, -2, 0));
+			break;
+
 		}
 
 		return obj;
@@ -230,10 +237,10 @@ namespace basecross {
 				if (i >= m_Map.size()) {
 					break;
 				}
-				int y = m_Map.size() - i - 1;
-				int sizeX = m_Map[y].size();
+				int y = static_cast<int>(m_Map.size()) - i - 1;
+				int sizeX = static_cast<int>(m_Map[y].size());
 				for (int x = 0; x < sizeX; x++) {
-					int size = m_Map[y].size();
+					int size = static_cast<int>(m_Map[y].size());
 					auto obj = CreateBlock(m_Map[y][x], Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
 					if (obj != nullptr) {
 						m_LoadedStageObjects.push_back(obj);
@@ -249,7 +256,7 @@ namespace basecross {
 
 			for (int j = 0; j < m_Map[i].size(); j++) {
 
-				int loadIndexY = m_Map.size() - i - 1;
+				int loadIndexY = static_cast<int>(m_Map.size()) - i - 1;
 				float sizeX = static_cast<float>(m_Map[i].size());
 				Vec2 startPos = Vec2(sizeX / -2, m_Map.size() - 2);
 				auto obj = CreateBlock(m_Map[loadIndexY][j], Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
@@ -264,7 +271,7 @@ namespace basecross {
 
 			for (int j = 0; j < m_Map[i].size(); j++) {
 
-				int loadIndexY = m_Map.size() - i - 1;
+				int loadIndexY = static_cast<int>(m_Map.size()) - i - 1;
 				Vec2 startPos = Vec2(m_Map[i].size() / -2.0f, m_Map.size() - 2);
 				auto obj = CreateBlock(m_Map[loadIndexY][j], Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
 				if (obj != nullptr) {
@@ -296,8 +303,8 @@ namespace basecross {
 		for (auto& blockObject : GetGameObjectVec()) {
 			if (blockObject->FindTag(L"Stage")) {
 				bool isCollider = false;
-				for (int i = 0; i < Block::m_MoveObjects.size(); i++) {
-					auto trans = Block::m_MoveObjects[i].lock();
+				for (int i = 0; i < Block::CollisionObjects.size(); i++) {
+					auto trans = Block::CollisionObjects[i].lock();
 					if (trans != nullptr) {
 						
 						if (length(trans->GetWorldPosition() - blockObject->GetComponent<Transform>()->GetWorldPosition()) < 3.0f) {
@@ -306,12 +313,12 @@ namespace basecross {
 						
 					}
 					else {
-						Block::m_MoveObjects.erase(Block::m_MoveObjects.begin() + i);
+						Block::CollisionObjects.erase(Block::CollisionObjects.begin() + i);
 					}
 				}
 				auto col = blockObject->GetComponent<Collision>(false);
 				if (col != nullptr) {
-					col->SetDrawActive(isCollider);
+					//col->SetDrawActive(isCollider);
 					col->SetUpdateActive(isCollider);
 				}
 				else {
@@ -387,7 +394,7 @@ namespace basecross {
 	int GameStage::GetBlock(Vec3 pos) {
 		Vec3 mapPos = GetMapIndex(pos);
 		
-		return m_Map[mapPos.y][mapPos.x];
+		return m_Map[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)];
 	}
 
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
@@ -395,7 +402,7 @@ namespace basecross {
 			m_Player->GetComponent<Transform>()->SetParent(nullptr);
 		}
 		Vec3 mapPos = GetMapIndex(pos);
-		m_Map[mapPos.y][mapPos.x] = 0;
+		m_Map[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)] = 0;
 		auto it = find(m_LoadedStageObjects.begin(), m_LoadedStageObjects.end(), block);
 		if (it != m_LoadedStageObjects.end()) {
 			m_LoadedStageObjects.erase(it);
