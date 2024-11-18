@@ -16,7 +16,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),0.0f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),1.0f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -37,7 +37,7 @@ namespace basecross {
 			CreateParticle();
 			LoadMap();
 
-			
+			AddGameObject<BombThrowArrow>(m_Player);
 			
 
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
@@ -93,12 +93,13 @@ namespace basecross {
 		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
-		app->RegisterTexture(L"GOALCLEAR_TEX", texPath + L"GameClearTest.png");
+		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
 
+		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
-		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText.png");
+		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText1.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
-		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText.png");
+		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText1.png");
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
 
 
