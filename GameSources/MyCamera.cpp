@@ -34,10 +34,7 @@ namespace basecross{
 
 				m_HighY = playerPos.y;
 			}
-			if (playerPos.y - m_HighY < -m_CameraHight / 2.0f - 2.0f) {
-				//ƒvƒŒƒCƒ„[‚ÌŽ€–Sˆ—
-				
-			}
+			
 		}
 		
 		if (m_ScrollSpeed != 0) {

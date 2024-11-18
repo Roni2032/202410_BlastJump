@@ -42,7 +42,7 @@ namespace basecross{
 		float atY = m_Camera->GetAt().y;
 
 		m_Draw->ClearMatrixVec();
-		for (int i = minCell.y; i < drawSize.y;i++) {
+		for (int i = minCell.y; i <= drawSize.y;i++) {
 			for (int j = 0; j < drawSize.x; j++) {
 				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
