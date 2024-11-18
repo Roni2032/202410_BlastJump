@@ -31,3 +31,4 @@
 #include "BombItem.h"
 #include "TrackingEnemy.h"
 #include "EnemyState.h"
+#include "BombThrowArrow.h"

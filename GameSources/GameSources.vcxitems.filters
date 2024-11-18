@@ -112,6 +112,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackingEnemy.h">
       <Filter>TrackingEnemy</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h">
+      <Filter>Bomb</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -180,6 +183,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackingEnemy.cpp">
       <Filter>TrackingEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp">
+      <Filter>Bomb</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

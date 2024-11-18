@@ -19,6 +19,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BombItem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EnemyState.h" />
@@ -44,6 +45,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BombItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EnemyState.cpp" />
