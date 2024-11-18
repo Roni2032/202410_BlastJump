@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -9,20 +9,20 @@
 namespace basecross {
 	class Block;
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
 		const Vec3 eye(-0.5f, 4.0f, -34.0f);
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		//ï¿½rï¿½ï¿½ï¿½[ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),1.0f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ï¿½}ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Cï¿½gï¿½Ìì¬
 		auto PtrMultiLight = CreateLight<MultiLight>();
-		//ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		//ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Ìƒï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½wï¿½ï¿½
 		PtrMultiLight->SetDefaultLighting();
 	}
 
@@ -72,7 +72,11 @@ namespace basecross {
 
 		m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
+<<<<<<< HEAD
 		if (m_Mode != GameMode::InGame) {
+=======
+		if (isGameOver) {
+>>>>>>> master
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 			if (pad.bConnected) {
 				if (pad.wPressedButtons == XINPUT_GAMEPAD_Y) {
@@ -87,6 +91,7 @@ namespace basecross {
 		wstring uiPath = path + L"UITex/";
 		wstring mapPath = path + L"Maps/";
 		wstring texPath = path + L"Texture/";
+		wstring modelPath = path + L"Models/";
 		app->RegisterTexture(L"TEST_TEX", texPath + L"TestTex_wall.jpg");
 		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
 		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
@@ -97,11 +102,26 @@ namespace basecross {
 
 		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
+<<<<<<< HEAD
 		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText1.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText1.png");
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
 
+=======
+		app->RegisterTexture(L"GOALCLEAR_TEX", texPath + L"GameClearTest.png");
+		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText.png");
+		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
+		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText.png");
+		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
+
+		auto model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
+		app->RegisterResource(L"GOAL_MD", model);
+		
+		model = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
+		app->RegisterResource(L"PLAYER_MD", model);
+		app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
+>>>>>>> master
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -202,7 +222,7 @@ namespace basecross {
 			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}*/
-		//V‚µ‚­ƒ}ƒbƒv‚ğƒ[ƒh
+		//ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½}ï¿½bï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h
 		//if (m_LoadedMaxHeight < static_cast<int>(atY) + m_LoadStageSize.y) {
 		//	m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
 		//	if (m_LoadedMaxHeight >= m_Map.size()) {
@@ -218,7 +238,7 @@ namespace basecross {
 		//		}
 		//	}
 		//}
-		////ƒ[ƒh‚µ‚È‚¢ê‡‚Í‚±‚±‚ÅI—¹
+		////ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ÅIï¿½ï¿½
 		//else if(m_LoadedMaxHeight == static_cast<int>(atY) + m_LoadStageSize.y){
 		//	return;
 		//}
@@ -238,6 +258,10 @@ namespace basecross {
 					}
 				}
 			}
+<<<<<<< HEAD
+=======
+
+>>>>>>> master
 			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}
@@ -271,7 +295,7 @@ namespace basecross {
 		}
 		m_CameraAtY = atY;
 		m_Walls->DrawMap(Vec2(m_Map[0].size(), m_CameraAtY + m_LoadStageSize.y), Vec2(0, m_CameraAtY - m_LoadStageSize.y));
-		//”ÍˆÍŠO‚É“ü‚Á‚½ƒuƒƒbƒN‚ğíœ
+		//ï¿½ÍˆÍŠOï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½íœ
 		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
 			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
 			float y = objTrans->GetPosition().y;
@@ -320,13 +344,13 @@ namespace basecross {
 	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize) {
 
 		Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
-		//ã
+		//ï¿½ï¿½
 		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y, 0), Vec3(mapSize.x, 1, 1));
-		//‰º
+		//ï¿½ï¿½
 		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y - mapSize.y + 1, 0), Vec3(mapSize.x, 1, 1));
-		//‰E
+		//ï¿½E
 		AddGameObject<Block>(L"", Vec3(startPos.x + mapSize.x - 1, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
-		//¶
+		//ï¿½ï¿½
 		AddGameObject<Block>(L"", Vec3(startPos.x, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
 	}
 	
@@ -406,13 +430,21 @@ namespace basecross {
 		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
+<<<<<<< HEAD
 		m_Mode = GameMode::Clear;
+=======
+		isGameOver = true;
+>>>>>>> master
 	}
 	void GameStage::GameOver() {
 		AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
+<<<<<<< HEAD
 		m_Mode = GameMode::Over;
+=======
+		isGameOver = true;
+>>>>>>> master
 	}
 }
 //end basecross

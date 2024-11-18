@@ -43,6 +43,7 @@ namespace basecross {
 		float m_MainTimer;
 		GameMode m_Mode;
 
+
 		shared_ptr<BCNumber> m_TimerSprite[2];
 		shared_ptr<BCNumber> m_PlayerHasBombs;
 

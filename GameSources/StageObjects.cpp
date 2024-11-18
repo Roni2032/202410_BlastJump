@@ -1,6 +1,6 @@
 /*!
 @file Character.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇŽÀ‘Ì
+@brief ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½^ï¿½[ï¿½È‚ÇŽï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -13,6 +13,7 @@ namespace basecross{
 
 		draw->SetMultiMeshResource(L"GOAL_MD");
 		draw->SetTextureResource(L"GOAL_MD_TEX");
+
 		draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
 		matrix.affineTransformation(
