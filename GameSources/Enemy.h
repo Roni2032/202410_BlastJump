@@ -29,8 +29,14 @@ namespace basecross {
 		Vec3 m_forward;
 		float m_StateChangeSize;
 		bool m_go;
-		bool m_move;
+		bool m_IsMove;
 		int m_time;
+		Vec3 m_Beforepos;
+		Vec3 m_NowPos;
+		int m_Blo;
+		int m_Blo1;
+		int m_Blo2;
+		float m_BeforeVelo;
 
 	public:
 		Enemy(const shared_ptr<Stage>& StagePtr,
@@ -40,6 +46,7 @@ namespace basecross {
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		void Move();
+		void String();
 
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;

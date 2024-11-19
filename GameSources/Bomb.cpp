@@ -18,7 +18,7 @@ namespace basecross{
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
 
-		m_GameStage = GetTypeStage<GameStageK>();
+		m_GameStage = GetTypeStage<GameStage>();
 	}
 
 	void Bomb::OnUpdate() {

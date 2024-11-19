@@ -36,8 +36,8 @@ namespace basecross {
 
 			auto bomb = AddGameObject<Bomb>(Vec3(-3, 10, 0),Vec3(0.0f,0.0f,0.0f), 3.0f );
 
-			m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
-			m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
+			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 
 		}
 		catch (...) {
@@ -47,12 +47,12 @@ namespace basecross {
 
 	void GameStage::OnUpdate() {
 		auto elapsedTime = App::GetApp()->GetElapsedTime();
-		m_MainTimer += elapsedTime;
-		int minute = m_MainTimer / 60.0f;
-		int second = m_MainTimer - 60.0f * minute;
+		//m_MainTimer += elapsedTime;
+		//int minute = m_MainTimer / 60.0f;
+		//int second = m_MainTimer - 60.0f * minute;
 
-		m_TimerSprite[1]->UpdateNumber(minute);
-		m_TimerSprite[0]->UpdateNumber(second);
+		//m_TimerSprite[1]->UpdateNumber(minute);
+		//m_TimerSprite[0]->UpdateNumber(second);
 
 
 		LoadMap();
@@ -256,5 +256,12 @@ namespace basecross {
 		
 		RemoveGameObject<GameObject>(block);
 	}
+	//void GameStage::CreateEnemy() {
+	//	Vec3 AppearancePos = Vec3(0.0f, 10.0f, 0.0f);
+	//	Vec3 Size = Vec3(1.0f);
+	//	auto enemy = AddGameObject<Enemy>(AppearancePos, Size);
+	//	//SetSharedGameObject(L"Enemy",enemy);
+	//}
+
 }
 //end basecross

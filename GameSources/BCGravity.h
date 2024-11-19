@@ -23,6 +23,10 @@ namespace basecross{
 			m_Velocity = jumpSpeed;
 		}
 
+		void SetGravity(float gravity) {
+			m_GravitySpeed.y = gravity;
+		}
+
 		Vec3 GetVelocity() {
 			return m_Velocity;
 		}

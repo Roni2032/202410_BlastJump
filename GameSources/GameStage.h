@@ -29,9 +29,9 @@ namespace basecross {
 		CsvFile m_CsvMap;
 
 		int m_BombNum;
-		float m_MainTimer;
+		//float m_MainTimer;
 
-		shared_ptr<BCNumber> m_TimerSprite[2];
+		// shared_ptr<BCNumber> m_TimerSprite[2];
 
 		vector<BetWeen> m_scrollRange;
 		//ƒrƒ…[‚Ìì¬
@@ -43,6 +43,7 @@ namespace basecross {
 		void CreateParticle();
 		shared_ptr<Block> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
+		void CreateEnemy();
 	public:
 		//\’z‚Æ”jŠü
 		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName) {}

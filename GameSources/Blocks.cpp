@@ -10,7 +10,7 @@ namespace basecross{
 	void InstanceBlock::OnCreate() {
 		m_Draw = AddComponent<PNTStaticInstanceDraw>();
 		m_Draw->SetMeshResource(L"DEFAULT_CUBE");
-		m_Draw->SetTextureResource(m_TexKey);
+		m_Draw->SetTextureResource(m_TexKey);	
 
 		m_Maps.reserve(m_SizeY);
 		for (int i = 0; i < m_SizeY; i++) {
@@ -53,6 +53,7 @@ namespace basecross{
 		auto col = AddComponent<CollisionObb>();
 		col->SetFixed(true);
 		col->SetDrawActive(true);
+		//col->SetAfterCollision(AfterCollision::None);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
