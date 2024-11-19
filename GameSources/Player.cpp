@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½È‚Çï¿½ï¿½ï¿½
+@brief E½vE½E½E½CE½E½E½[E½È‚Çï¿½E½E½
 */
 
 #include "stdafx.h"
@@ -10,26 +10,32 @@ namespace basecross {
 
 	void Player::OnCreate()
 	{
-		//ï¿½ï¿½ï¿½ï¿½ï¿½Ê’uï¿½È‚Ç‚Ìİ’ï¿½
+		//E½E½E½E½E½Ê’uE½È‚Ç‚Ìİ’ï¿½
 		m_Transform = GetComponent<Transform>();
-		m_Transform->SetScale(0.5f, 0.5f, 0.5f);	//ï¿½ï¿½ï¿½a25ï¿½Zï¿½ï¿½ï¿½`ï¿½Ì‹ï¿½ï¿½ï¿½
+		m_Transform->SetScale(0.5f, 0.5f, 0.5f);	//E½E½E½a25E½ZE½E½E½`E½Ì‹ï¿½E½E½
 		m_Transform->SetRotation(0.0f, 0.0f, 0.0f);
 		m_Transform->SetPosition(Vec3(0, 2.0f, 0));
-		//ï¿½`ï¿½ï¿½Rï¿½ï¿½ï¿½|ï¿½[ï¿½lï¿½ï¿½ï¿½gï¿½Ìİ’ï¿½
+		//E½`E½E½RE½E½E½|E½[E½lE½E½E½gE½Ìİ’ï¿½
 		m_Draw = AddComponent<BcPNTStaticDraw>();
-		//ï¿½`ï¿½æ‚·ï¿½éƒï¿½bï¿½Vï¿½ï¿½ï¿½ï¿½İ’ï¿½
+		//E½`E½æ‚·E½éƒE¿½bE½VE½E½E½E½İ’ï¿½
 		m_Draw->SetMultiMeshResource(L"PLAYER_MD");
 		m_Draw->SetTextureResource(L"PLAYER_MD_TEX");
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f),//ï¿½Xï¿½Pï¿½[ï¿½ï¿½
-			Vec3(0.0f, 0.0f, 0.0f),//ï¿½ï¿½]ï¿½Ì’ï¿½ï¿½S
-			Vec3(0.0f, 0.0f, 0.0f),//ï¿½ï¿½]ï¿½Ìƒxï¿½Nï¿½gï¿½ï¿½
-			Vec3(0.0f, -2.0f, 0.0f) //ï¿½Ú“ï¿½
+			Vec3(0.5f),//E½XE½PE½[E½E½
+			Vec3(0.0f, 0.0f, 0.0f),//E½E½]E½Ì’ï¿½E½S
+			Vec3(0.0f, 0.0f, 0.0f),//E½E½]E½ÌƒxE½NE½gE½E½
+			Vec3(0.0f, -2.0f, 0.0f) //E½Ú“ï¿½
 		);		
 		m_Draw->SetMeshToTransformMatrix(spanMat);
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â‚ï¿½ï¿½ï¿½
+		//•¶š—ñ‚ğ‚Â‚¯‚é
+		auto ptrString = AddComponent<StringSprite>();
+		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
+		ptrString->SetBackColor(m_ColBlack);
+		ptrString->GetFontSize();
+
+		//E½E½E½E½E½E½E½E½Â‚ï¿½E½E½
 		//auto ptrString = AddComponent<StringSprite>();
 		//ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
 		////ptrString->SetBackColor(m_ColBlack);
@@ -37,12 +43,14 @@ namespace basecross {
 
 		m_Velo = AddComponent<BCGravity>();
 
-		//ï¿½eï¿½pï¿½tï¿½Hï¿½[ï¿½}ï¿½ï¿½ï¿½Xï¿½ğ“¾‚ï¿½
+		//E½eE½pE½tE½HE½[E½}E½E½E½XE½ğ“¾‚ï¿½
 		m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetMakedRadius(0.25f);
 		//m_Collision->SetDrawActive(true);
 
 		AddTag(L"Player");
+
+		SetHasBomb(15);
 	}
 
 	void Player::OnUpdate()
@@ -100,14 +108,14 @@ namespace basecross {
 
 		if (m_IsDead && !m_IsDeadInit)
 		{
-			//ï¿½ï¿½ï¿½Å‚ï¿½
-			//int result = MessageBox(NULL, L"ï¿½Qï¿½[ï¿½ï¿½ï¿½Iï¿½[ï¿½oï¿½[ï¿½I", L"GameOver", MB_OK);
+			//auto myCamera = static_pointer_cast<MyCamera>(OnGetDrawCamera());
+			//GetTypeStage<GameStage>()->NewRespawnPosition(Vec3(0.0f, 3.0f, 0.0f));
+			//m_Transform->SetPosition(GetTypeStage<GameStage>()->GetRespawnPosition());
+			//myCamera->SetEye(Vec3(-0.5f, 4.0f, -110.0f));
+			//myCamera->SetAt(Vec3(-0.5f, 4.0f, 0.0f));
+			m_IsDeadInit = true;
+
 			GetTypeStage<GameStage>()->GameOver();
-			/*auto myCamera = static_pointer_cast<MyCamera>(OnGetDrawCamera());
-			GetTypeStage<GameStage>()->NewRespawnPosition(Vec3(0.0f, 3.0f, 0.0f));
-			m_Transform->SetPosition(GetTypeStage<GameStage>()->GetRespawnPosition());
-			myCamera->SetEye(Vec3(-0.5f, 4.0f, -110.0f));
-			myCamera->SetAt(Vec3(-0.5f, 4.0f, 0.0f));*/
 
 
 		}
@@ -192,7 +200,7 @@ namespace basecross {
 		bombVecStr += L"BVZ=" + Util::FloatToWStr(bombVec.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
 		bool isDead = false;
-		if (pos.y < camera->GetEye().y - 5) isDead = true;
+		if (pos.y < camera->GetEye().y - 6) isDead = true;
 		else isDead = false;
 		wstring deadStr(L"");
 		if (isDead) deadStr = L"DIED\n";
@@ -204,7 +212,7 @@ namespace basecross {
 
 		wstring str = positionStr + stateName + velocityStr + hasBombStr + cameraStr + deadStr + fpsStr + bombVecStr;
 
-		//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Rï¿½ï¿½ï¿½|ï¿½[ï¿½lï¿½ï¿½ï¿½gï¿½Ìæ“¾
+		//E½E½E½E½E½E½RE½E½E½|E½[E½lE½E½E½gE½Ìæ“¾
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 		ptrString->SetDrawActive(true);

@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
+@brief E½QE½[E½E½E½XE½eE½[E½WE½E½E½E½
 */
 
 #include "stdafx.h"
@@ -9,20 +9,18 @@
 namespace basecross {
 	class Block;
 	//--------------------------------------------------------------------------------------
-	//	ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½
+	//	E½QE½[E½E½E½XE½eE½[E½WE½NE½E½E½XE½E½E½E½
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
 		const Vec3 eye(-0.5f, 4.0f, -34.0f);
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ï¿½rï¿½ï¿½ï¿½[ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),0.0f);
+		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.0f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
-		//ï¿½}ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Cï¿½gï¿½Ìì¬
 		auto PtrMultiLight = CreateLight<MultiLight>();
-		//ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Ìƒï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½wï¿½ï¿½
 		PtrMultiLight->SetDefaultLighting();
 	}
 
@@ -215,7 +213,7 @@ namespace basecross {
 			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}*/
-		//ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½}ï¿½bï¿½vï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h
+		//E½VE½E½E½E½E½}E½bE½vE½E½E½E½E½[E½h
 		//if (m_LoadedMaxHeight < static_cast<int>(atY) + m_LoadStageSize.y) {
 		//	m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
 		//	if (m_LoadedMaxHeight >= m_Map.size()) {
@@ -231,7 +229,7 @@ namespace basecross {
 		//		}
 		//	}
 		//}
-		////ï¿½ï¿½ï¿½[ï¿½hï¿½ï¿½ï¿½È‚ï¿½ï¿½ê‡ï¿½Í‚ï¿½ï¿½ï¿½ï¿½ÅIï¿½ï¿½
+		////E½E½E½[E½hE½E½E½È‚ï¿½E½êE¿½Í‚ï¿½E½E½E½ÅIE½E½
 		//else if(m_LoadedMaxHeight == static_cast<int>(atY) + m_LoadStageSize.y){
 		//	return;
 		//}
@@ -285,7 +283,7 @@ namespace basecross {
 		}
 		m_CameraAtY = atY;
 		m_Walls->DrawMap(Vec2(m_Map[0].size(), m_CameraAtY + m_LoadStageSize.y), Vec2(0, m_CameraAtY - m_LoadStageSize.y));
-		//ï¿½ÍˆÍŠOï¿½É“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½uï¿½ï¿½ï¿½bï¿½Nï¿½ï¿½ï¿½íœ
+		//E½ÍˆÍŠOE½É“ï¿½E½E½E½E½E½uE½E½E½bE½NE½E½E½ú«E
 		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
 			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
 			float y = objTrans->GetPosition().y;
@@ -334,13 +332,13 @@ namespace basecross {
 	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize) {
 
 		Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
-		//ï¿½ï¿½
+		//E½E½
 		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y, 0), Vec3(mapSize.x, 1, 1));
-		//ï¿½ï¿½
+		//E½E½
 		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y - mapSize.y + 1, 0), Vec3(mapSize.x, 1, 1));
-		//ï¿½E
+		//E½E
 		AddGameObject<Block>(L"", Vec3(startPos.x + mapSize.x - 1, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
-		//ï¿½ï¿½
+		//E½E½
 		AddGameObject<Block>(L"", Vec3(startPos.x, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
 	}
 	
