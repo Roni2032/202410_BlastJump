@@ -26,15 +26,13 @@ namespace basecross{
 		if (gPlayer != nullptr) {
 			auto player = static_pointer_cast<Player>(gPlayer);
 			if (player == nullptr) return;
-			//player->SetBombVec(Vec3(cos(testDeg),sin(testDeg),0));
-			//testDeg += XM_PIDIV2 / 60.0f;
 			Vec3 throwVec = player->GetBombVec().normalize();
 			if (throwVec.length() != 0) {
 				if (!m_Draw->GetDrawActive()) {
 					m_Draw->SetDrawActive(true);
 				}
 				float rad = atan2f(-throwVec.x, throwVec.y);
-				m_Trans->SetPosition(throwVec);
+				m_Trans->SetPosition(Vec3(0,0,-1) + throwVec);
 				m_Trans->SetRotation(Vec3(0,0,rad));
 			}
 			else {

@@ -22,7 +22,6 @@ namespace basecross{
 		auto col = AddComponent<CollisionSphere>();
 		col->SetAfterCollision(AfterCollision::None);
 		
-		
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
 		trans->SetScale(Vec3(0.5f) + Vec3(0.2f) * (m_AddBombNum - DEFAULT_BOMB_NUM));
@@ -33,7 +32,7 @@ namespace basecross{
 	void BombItem::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Player")) {
 			//Š”‚ğ‘‚â‚·
-			static_pointer_cast<Player>(Other)->AddHasBomb();
+			static_pointer_cast<Player>(Other)->AddHasBombV2(m_AddBombNum);
 			GetStage()->RemoveGameObject<BombItem>(GetThis<BombItem>());
 		}
 	}
