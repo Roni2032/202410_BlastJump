@@ -22,10 +22,18 @@ namespace basecross {
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage {
+	public:
+		enum GameMode {
+			NotBomb,
+			InGame,
+			Clear,
+			Over
+		};
+	private:
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
-		int m_CameraAtY = 0;
+		float m_CameraAtY = 0;
 		vector<vector<int>> m_Map;
 		Vec3 m_MapLeftTop;
 		wstring m_MapName;
@@ -33,7 +41,8 @@ namespace basecross {
 
 		int m_BombNum;
 		float m_MainTimer;
-		bool isGameOver = false;
+		GameMode m_Mode;
+
 
 		shared_ptr<BCNumber> m_TimerSprite[2];
 		shared_ptr<BCNumber> m_PlayerHasBombs;
@@ -57,11 +66,16 @@ namespace basecross {
 	public:
 		//構築と破棄
 		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,7,0)){}
+			m_LoadStageSize(Vec3(20,7,0)),
+			m_BombNum(0),
+			m_MainTimer(0),
+			m_Mode(GameMode::NotBomb)
+		{}
 		virtual ~GameStage() {}
 		//初期化
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		virtual void OnDestroy()override;
 
 		shared_ptr<Player> m_Player;
 
@@ -86,8 +100,12 @@ namespace basecross {
 		Vec3 GetRespawnPosition() {
 			return m_RespawnPosition;
 		}
-		void UpdateLoadedHight(float hight) {
-			m_LoadedMaxHeight = hight;
+		
+		GameMode GetGameMode() {
+			return m_Mode;
+		}
+		void SetGameMode(GameMode mode) {
+			m_Mode = mode;
 		}
 		void GameClear();
 		void GameOver();

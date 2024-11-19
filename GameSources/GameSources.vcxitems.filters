@@ -19,6 +19,9 @@
     <Filter Include="workHashimoto">
       <UniqueIdentifier>{07c42c35-dd0c-4088-8b34-059d822494f8}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Floor">
+      <UniqueIdentifier>{ea270f3f-4822-4be1-ac49-8a3389e29a2e}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Bomb">
       <UniqueIdentifier>{8d47161f-77d3-48b8-86d0-c3a941a322b9}</UniqueIdentifier>
     </Filter>
@@ -40,15 +43,12 @@
     <Filter Include="TrackingEnemy">
       <UniqueIdentifier>{c504b0b7-173e-49f5-a7c9-81e64ab23145}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Block">
-      <UniqueIdentifier>{ea270f3f-4822-4be1-ac49-8a3389e29a2e}</UniqueIdentifier>
+    <Filter Include="Stage">
+      <UniqueIdentifier>{9e2c1619-6ff8-4a95-879a-f9fabfe9bbc9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h">
@@ -70,7 +70,7 @@
       <Filter>Bomb</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h">
-      <Filter>Block</Filter>
+      <Filter>Floor</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h">
       <Filter>workHashimoto</Filter>
@@ -112,12 +112,18 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackingEnemy.h">
       <Filter>TrackingEnemy</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h">
+      <Filter>Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
+      <Filter>Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
+      <Filter>Stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp">
@@ -139,7 +145,7 @@
       <Filter>Bomb</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp">
-      <Filter>Block</Filter>
+      <Filter>Floor</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp">
       <Filter>workHashimoto</Filter>
@@ -180,6 +186,15 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackingEnemy.cpp">
       <Filter>TrackingEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp">
+      <Filter>Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
+      <Filter>Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
+      <Filter>Stage</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

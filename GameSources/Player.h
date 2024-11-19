@@ -60,7 +60,7 @@ namespace basecross {
 		float m_ThrowCoolTime = 0.0f;
 		float m_BombShotSpeed = 10.0f;
 		Vec3 m_BombVec = Vec3(0.0f);
-		uint8_t m_HasBomb = 0;
+		uint8_t m_HasBomb = 16;
 
 		bool m_IsDead = false;
 		bool m_IsDeadInit = false;
@@ -188,7 +188,7 @@ namespace basecross {
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		//virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
 		void DrawString();

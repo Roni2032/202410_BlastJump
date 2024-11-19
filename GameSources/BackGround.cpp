@@ -10,8 +10,7 @@ namespace basecross{
 	void BackGround::OnCreate() {
 		auto draw = AddComponent<PNTStaticDraw>();
 		draw->SetMeshResource(L"DEFAULT_SQUARE");
-		
-		draw->SetDiffuse(Col4(0, 0, 1, 1));
+		draw->SetTextureResource(L"BACKGROUND_TEX");
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
 		trans->SetScale(Vec3(15.0f,m_Scale.y,1));
@@ -30,7 +29,7 @@ namespace basecross{
 			for (int i = -1; i < 3; i++) {
 				float cameraHight = camera->GetHeight();
 				Vec3 at = camera->GetAt();
-				m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(0, 0, 1) + Vec3(0,m_LoopDistance,0) * i, Vec3(cameraHight)));
+				m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(0, 0, 1) + Vec3(0,m_LoopDistance,0) * static_cast<float>(i), Vec3(cameraHight)));
 			}
 		}
 	}

@@ -1,23 +1,26 @@
-
+ï»¿
 #include "stdafx.h"
 #include "Project.h"
 
 using namespace basecross;
 
 
-// ‚±‚ÌƒR[ƒh ƒ‚ƒWƒ…[ƒ‹‚ÉŠÜ‚Ü‚ê‚éŠÖ”‚ÌéŒ¾‚ð“]‘—‚µ‚Ü‚·:
+// ï¿½ï¿½ï¿½ÌƒRï¿½[ï¿½h ï¿½ï¿½ï¿½Wï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ÉŠÜ‚Ü‚ï¿½ï¿½Öï¿½ï¿½ÌéŒ¾ï¿½ï¿½]ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½:
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 
-//’è”
-const wchar_t* pClassName = L"BaseCrossFullClass";
-const wchar_t* pWndTitle = L"blastJumping";
+//ï¿½è”
+const wchar_t* pClassName = L"Heatroid";
+const wchar_t* pWndTitle = L"Heatroid";
+//ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½[ï¿½hï¿½ÌŽï¿½ï¿½Ì•ï¿½ï¿½Æï¿½ï¿½ï¿½
+int g_ClientWidth = 1280;
+int g_ClientHeight = 800;
 
 
 //--------------------------------------------------------------------------------------
 //
-//  ŠÖ”: MyRegisterClass()
+//  ï¿½Öï¿½: MyRegisterClass()
 //
-//  –Ú“I: ƒEƒBƒ“ƒhƒE ƒNƒ‰ƒX‚ð“o˜^‚µ‚Ü‚·B
+//  ï¿½Ú“I: ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½E ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½oï¿½^ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 //
 //--------------------------------------------------------------------------------------
 ATOM MyRegisterClass(HINSTANCE hInstance)
@@ -43,179 +46,173 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 
 //--------------------------------------------------------------------------------------
 //
-//   ŠÖ”: InitInstance(HINSTANCE, int)
+//   ï¿½Öï¿½: InitInstance(HINSTANCE, int)
 //
-//   –Ú“I: ƒCƒ“ƒXƒ^ƒ“ƒX ƒnƒ“ƒhƒ‹‚ð•Û‘¶‚µ‚ÄAƒƒCƒ“ ƒEƒBƒ“ƒhƒE‚ðì¬‚µ‚Ü‚·B
+//   ï¿½Ú“I: ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½X ï¿½nï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½ÄAï¿½ï¿½ï¿½Cï¿½ï¿½ ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 //
-//   ƒRƒƒ“ƒg:
+//   ï¿½Rï¿½ï¿½ï¿½ï¿½ï¿½g:
 //
-//        ‚±‚ÌŠÖ”‚ÅAƒOƒ[ƒoƒ‹•Ï”‚ÅƒCƒ“ƒXƒ^ƒ“ƒX ƒnƒ“ƒhƒ‹‚ð•Û‘¶‚µA
-//        ƒƒCƒ“ ƒvƒƒOƒ‰ƒ€ ƒEƒBƒ“ƒhƒE‚ðì¬‚¨‚æ‚Ñ•\Ž¦‚µ‚Ü‚·B
+//        ï¿½ï¿½ï¿½ÌŠÖï¿½ï¿½ÅAï¿½Oï¿½ï¿½ï¿½[ï¿½oï¿½ï¿½ï¿½Ïï¿½ï¿½ÅƒCï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½X ï¿½nï¿½ï¿½ï¿½hï¿½ï¿½ï¿½ï¿½Û‘ï¿½ï¿½ï¿½ï¿½A
+//        ï¿½ï¿½ï¿½Cï¿½ï¿½ ï¿½vï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½Ñ•\ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 //--------------------------------------------------------------------------------------
 HWND InitInstance(HINSTANCE hInstance, int nCmdShow, bool isFullScreen, int iClientWidth, int iClientHeight)
 {
 
 	HWND hWnd = 0;
-	// ƒEƒBƒ“ƒhƒE‚Ìì¬
-	if (isFullScreen) { // ƒtƒ‹ƒXƒNƒŠ[ƒ“
-						// ‰æ–Ê‘S‘Ì‚Ì•‚Æ‚‚³‚ðŽæ“¾
-						//‚à‚µ‰æ–Ê‘S‘Ì‚Ì‰ð‘œ“x‚Åˆ—‚·‚éê‡‚ÍˆÈ‰º‚ð—LŒø‚É
-						//ƒƒ‚ƒŠ‚ðˆ³”—‚·‚é‚Ì‚Å“®ì‘¬“x’ˆÓI
-						//        iClientWidth = GetSystemMetrics(SM_CXSCREEN);
-						//        iClientHeight = GetSystemMetrics(SM_CYSCREEN);
+	// ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Ìì¬
+	if (isFullScreen) {
+		// ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½
+		//ï¿½{ï¿½[ï¿½_ï¿½[ï¿½ï¿½ï¿½Xï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½gï¿½p
+		iClientWidth = GetSystemMetrics(SM_CXSCREEN);
+		iClientHeight = GetSystemMetrics(SM_CYSCREEN);
 		hWnd = CreateWindow(
-			pClassName,			// “o˜^‚³‚ê‚Ä‚¢‚éƒNƒ‰ƒX–¼
-			pWndTitle,			// ƒEƒCƒ“ƒhƒE–¼
-			WS_POPUP,			// ƒEƒCƒ“ƒhƒEƒXƒ^ƒCƒ‹iƒ|ƒbƒvƒAƒbƒvƒEƒCƒ“ƒhƒE‚ðì¬j
-			0,					// ƒEƒCƒ“ƒhƒE‚Ì‰¡•ûŒü‚ÌˆÊ’u
-			0,					// ƒEƒCƒ“ƒhƒE‚Ìc•ûŒü‚ÌˆÊ’u
-			iClientWidth,		// ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒEƒCƒ“ƒhƒE‚Ì•
-			iClientHeight,		// ƒtƒ‹ƒXƒNƒŠ[ƒ“ƒEƒCƒ“ƒhƒE‚Ì‚‚³
-			nullptr,				// eƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹i‚È‚µj
-			nullptr,				// ƒƒjƒ…[‚âŽqƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-			hInstance,			// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒnƒ“ƒhƒ‹
-			nullptr				// ƒEƒCƒ“ƒhƒE‚Ìì¬ƒf[ƒ^
+			pClassName,			// ï¿½oï¿½^ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½
+			pWndTitle,			// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½
+			WS_POPUP,			// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Xï¿½^ï¿½Cï¿½ï¿½ï¿½iï¿½|ï¿½bï¿½vï¿½Aï¿½bï¿½vï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½ì¬ï¿½j
+			0,					// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì‰ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÊ’u
+			0,					// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìcï¿½ï¿½ï¿½ï¿½ï¿½ÌˆÊ’u
+			iClientWidth,		// ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì•ï¿½
+			iClientHeight,		// ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìï¿½ï¿½ï¿½
+			nullptr,				// ï¿½eï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½ï¿½iï¿½È‚ï¿½ï¿½j
+			nullptr,				// ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½ï¿½qï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½
+			hInstance,			// ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½
+			nullptr				// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìì¬ï¿½fï¿½[ï¿½^
 		);
 		if (!hWnd) {
-			//Ž¸”s‚µ‚½
-			MessageBox(nullptr, L"ƒEƒCƒ“ƒhƒEì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-			return 0;   //ƒGƒ‰[I—¹
+			//ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
+			MessageBox(nullptr, L"ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ì¬ï¿½ÉŽï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½", L"ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
+			return 0;   //ï¿½Gï¿½ï¿½ï¿½[ï¿½Iï¿½ï¿½
 		}
 	}
 	else {
-		//ƒEƒCƒ“ƒhƒE‚ÌƒTƒCƒY’²®
+		//ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ÌƒTï¿½Cï¿½Yï¿½ï¿½ï¿½ï¿½
 		RECT rc = { 0, 0, iClientWidth, iClientHeight };
 		AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
-		//ƒEƒCƒ“ƒhƒE‚Ìì¬
+		//ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìì¬
 		hWnd = CreateWindow(
-			pClassName,				// “o˜^‚³‚ê‚Ä‚¢‚éƒNƒ‰ƒX–¼
-			pWndTitle,				// ƒEƒCƒ“ƒhƒE–¼
-			WS_OVERLAPPEDWINDOW,	// ƒEƒCƒ“ƒhƒEƒXƒ^ƒCƒ‹iƒI[ƒo[ƒ‰ƒbƒvƒEƒCƒ“ƒhƒE‚ðì¬j
-			CW_USEDEFAULT,			//ˆÊ’u‚ÍWindows‚É”C‚¹‚é
-			CW_USEDEFAULT,			//ˆÊ’u‚ÍWindows‚É”C‚¹‚é
-			rc.right - rc.left,		//•Žw’è
-			rc.bottom - rc.top,		//‚‚³Žw’è
-			nullptr,					// eƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹i‚È‚µj
-			nullptr,					// ƒƒjƒ…[‚âŽqƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-			hInstance,				// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒCƒ“ƒXƒ^ƒ“ƒX‚Ìƒnƒ“ƒhƒ‹
-			nullptr					// ƒEƒCƒ“ƒhƒE‚Ìì¬ƒf[ƒ^
+			pClassName,				// ï¿½oï¿½^ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½
+			pWndTitle,				// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½
+			WS_OVERLAPPEDWINDOW,	// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Xï¿½^ï¿½Cï¿½ï¿½ï¿½iï¿½Iï¿½[ï¿½oï¿½[ï¿½ï¿½ï¿½bï¿½vï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½ì¬ï¿½j
+			CW_USEDEFAULT,			//ï¿½Ê’uï¿½ï¿½Windowsï¿½É”Cï¿½ï¿½ï¿½ï¿½
+			CW_USEDEFAULT,			//ï¿½Ê’uï¿½ï¿½Windowsï¿½É”Cï¿½ï¿½ï¿½ï¿½
+			rc.right - rc.left,		//ï¿½ï¿½ï¿½wï¿½ï¿½
+			rc.bottom - rc.top,		//ï¿½ï¿½ï¿½ï¿½ï¿½wï¿½ï¿½
+			nullptr,					// ï¿½eï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½ï¿½iï¿½È‚ï¿½ï¿½j
+			nullptr,					// ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½ï¿½qï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½
+			hInstance,				// ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½Xï¿½^ï¿½ï¿½ï¿½Xï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½
+			nullptr					// ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìì¬ï¿½fï¿½[ï¿½^
 		);
 		if (!hWnd) {
-			//Ž¸”s‚µ‚½
-			MessageBox(nullptr, L"ƒEƒCƒ“ƒhƒEì¬‚ÉŽ¸”s‚µ‚Ü‚µ‚½", L"ƒGƒ‰[", MB_OK);
-			return 0;   //ƒGƒ‰[I—¹
+			//ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
+			MessageBox(nullptr, L"ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ì¬ï¿½ÉŽï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½", L"ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
+			return 0;   //ï¿½Gï¿½ï¿½ï¿½[ï¿½Iï¿½ï¿½
 		}
 	}
-	//ƒEƒCƒ“ƒhƒE‚Ì•\Ž¦
+	ShowCursor(FALSE);
+	//ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ì•\ï¿½ï¿½
 	ShowWindow(
-		hWnd,       //Žæ“¾‚µ‚½ƒEƒCƒ“ƒhƒE‚Ìƒnƒ“ƒhƒ‹
-		nCmdShow    //WinMain‚É“n‚³‚ê‚½ƒpƒ‰ƒ[ƒ^
+		hWnd,       //ï¿½æ“¾ï¿½ï¿½ï¿½ï¿½ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½Ìƒnï¿½ï¿½ï¿½hï¿½ï¿½
+		nCmdShow    //WinMainï¿½É“nï¿½ï¿½ï¿½ê‚½ï¿½pï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½^
 	);
 	UpdateWindow(hWnd);
 	return hWnd;
 }
 
-
 //--------------------------------------------------------------------------------------
 //	int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth, int iClientHeight);
-//	—p“r: ƒƒCƒ“ƒ‹[ƒv
+//	ï¿½pï¿½r: ï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½v
 //--------------------------------------------------------------------------------------
 int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth, int iClientHeight) {
-	//I—¹ƒR[ƒh
+	//ï¿½Iï¿½ï¿½ï¿½Rï¿½[ï¿½h
 	int RetCode = 0;
-	//ƒEƒCƒ“ƒhƒEî•ñBƒƒbƒZ[ƒWƒ{ƒbƒNƒX•\Ž¦ƒ`ƒFƒbƒN‚ÉŽg—p
+	//ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½Bï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½{ï¿½bï¿½Nï¿½Xï¿½\ï¿½ï¿½ï¿½`ï¿½Fï¿½bï¿½Nï¿½ÉŽgï¿½p
 	WINDOWINFO WinInfo;
 	ZeroMemory(&WinInfo, sizeof(WinInfo));
-	//—áŠOˆ—ŠJŽn
+	//ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½Jï¿½n
 	try {
-		//COM‚Ì‰Šú‰»
-		//ƒTƒEƒ“ƒh‚È‚Ç‚ÅŽg—p‚·‚é
+		//COMï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+		//ï¿½Tï¿½Eï¿½ï¿½ï¿½hï¿½È‚Ç‚ÅŽgï¿½pï¿½ï¿½ï¿½ï¿½
 		if (FAILED(::CoInitialize(nullptr))) {
-			// ‰Šú‰»Ž¸”s
-			throw exception("Com‰Šú‰»‚ÉŽ¸”s‚µ‚Ü‚µ‚½B");
+			// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½s
+			throw exception("Comï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÉŽï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½ï¿½B");
 		}
-		////ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ƒNƒ‰ƒX‚Ì\’z
+		////ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½ï¿½ï¿½Xï¿½Ì\ï¿½z
 		App::CreateApp(hInstance, hWnd, isFullScreen, iClientWidth, iClientHeight);
-		//ƒV[ƒ“‚Ìì¬
-		//–ß‚è’l‚ÌScenePtr‚Í”Ä—p“I‚ÉŽg‚¦‚é
+		//ï¿½Vï¿½[ï¿½ï¿½ï¿½Ìì¬
+		//ï¿½ß‚ï¿½lï¿½ï¿½ScenePtrï¿½Í”Ä—pï¿½Iï¿½ÉŽgï¿½ï¿½ï¿½ï¿½
 		auto ScenePtr = App::GetApp()->CreateScene<Scene>();
-		//ƒƒbƒZ[ƒWƒ‹[ƒv
+		//ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½[ï¿½v
 		MSG msg = { 0 };
-		//ƒL[ƒ{[ƒh“ü—Í—p
-		//‚±‚±‚ÉÝ’è‚µ‚½ƒL[ƒ{[ƒh“ü—Í‚ð“¾‚é
+		//ï¿½Lï¿½[ï¿½{ï¿½[ï¿½hï¿½ï¿½ï¿½Í—p
+		//ï¿½ï¿½ï¿½ï¿½ï¿½ÉÝ’è‚µï¿½ï¿½ï¿½Lï¿½[ï¿½{ï¿½[ï¿½hï¿½ï¿½ï¿½Í‚ð“¾‚ï¿½
 		vector<DWORD> UseKeyVec = {
-			VK_SPACE,
-			VK_LSHIFT,
-			VK_RIGHT,
-			VK_LEFT,
-			VK_UP,
-			VK_DOWN,
-			0x58, //X
-			0x5A, //Z
+			VK_PRIOR,VK_NEXT,VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT,VK_SPACE,
+			VK_LBUTTON, VK_RBUTTON, VK_MBUTTON, VK_LCONTROL,
+			'W','A','S','D','X','B'
 		};
 		while (WM_QUIT != msg.message) {
 			if (!App::GetApp()->ResetInputState(hWnd, UseKeyVec)) {
-				//ƒL[ó‘Ô‚ª‰½‚à‚È‚¯‚ê‚ÎƒEƒCƒ“ƒhƒEƒƒbƒZ[ƒW‚ð“¾‚é
+				//ï¿½Lï¿½[ï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½ï¿½ÎƒEï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ð“¾‚ï¿½
 				if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE)) {
-					//ƒL[ƒ{[ƒh‚Æƒ}ƒEƒXó‘Ô‚ðƒŠƒZƒbƒg
+					//ï¿½Lï¿½[ï¿½{ï¿½[ï¿½hï¿½Æƒ}ï¿½Eï¿½Xï¿½ï¿½Ô‚ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g
 					TranslateMessage(&msg);
 					DispatchMessage(&msg);
 				}
 			}
-			//XV•`‰æˆ—
+			//ï¿½Xï¿½Vï¿½`ï¿½æˆï¿½ï¿½
 			App::GetApp()->UpdateDraw(1);
 		}
-		//msg.wParam‚É‚ÍI—¹ƒR[ƒh‚ª“ü‚Á‚Ä‚¢‚é
+		//msg.wParamï¿½É‚ÍIï¿½ï¿½ï¿½Rï¿½[ï¿½hï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½
 		RetCode = (int)msg.wParam;
 	}
 	catch (BaseException& e) {
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBox(hWnd, e.what_w().c_str(), L"ƒGƒ‰[", MB_OK);
+			//ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
+			MessageBox(hWnd, e.what_w().c_str(), L"ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		else {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBox(nullptr, e.what_w().c_str(), L"ƒGƒ‰[", MB_OK);
+			//ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
+			MessageBox(nullptr, e.what_w().c_str(), L"ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		RetCode = 1;
 	}
 	catch (BaseMBException& e) {
-		//ƒ}ƒ‹ƒ`ƒoƒCƒgƒo[ƒWƒ‡ƒ“‚ÌƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚ðŒÄ‚Ô
+		//ï¿½}ï¿½ï¿½ï¿½`ï¿½oï¿½Cï¿½gï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½{ï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ä‚ï¿½
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBoxA(hWnd, e.what_m().c_str(), "ƒGƒ‰[", MB_OK);
+			//ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
+			MessageBoxA(hWnd, e.what_m().c_str(), "ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		else {
-			//ŽÀsŽ¸”s‚µ‚½
-			MessageBoxA(nullptr, e.what_m().c_str(), "ƒGƒ‰[", MB_OK);
+			//ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
+			MessageBoxA(nullptr, e.what_m().c_str(), "ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		RetCode = 1;
 	}
 	catch (exception& e) {
-		//STLƒGƒ‰[
-		//ƒ}ƒ‹ƒ`ƒoƒCƒgƒo[ƒWƒ‡ƒ“‚ÌƒƒbƒZ[ƒWƒ{ƒbƒNƒX‚ðŒÄ‚Ô
+		//STLï¿½Gï¿½ï¿½ï¿½[
+		//ï¿½}ï¿½ï¿½ï¿½`ï¿½oï¿½Cï¿½gï¿½oï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½Ìƒï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½{ï¿½bï¿½Nï¿½Xï¿½ï¿½ï¿½Ä‚ï¿½
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			MessageBoxA(hWnd, e.what(), "ƒGƒ‰[", MB_OK);
+			MessageBoxA(hWnd, e.what(), "ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		else {
-			MessageBoxA(nullptr, e.what(), "ƒGƒ‰[", MB_OK);
+			MessageBoxA(nullptr, e.what(), "ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		RetCode = 1;
 	}
 	catch (...) {
-		//Œ´ˆö•s–¾Ž¸”s‚µ‚½
+		//ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½
 		if (GetWindowInfo(hWnd, &WinInfo)) {
-			MessageBox(hWnd, L"Œ´ˆö•s–¾‚ÌƒGƒ‰[‚Å‚·", L"ƒGƒ‰[", MB_OK);
+			MessageBox(hWnd, L"ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ÌƒGï¿½ï¿½ï¿½[ï¿½Å‚ï¿½", L"ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		else {
-			MessageBox(nullptr, L"Œ´ˆö•s–¾‚ÌƒGƒ‰[‚Å‚·", L"ƒGƒ‰[", MB_OK);
+			MessageBox(nullptr, L"ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ÌƒGï¿½ï¿½ï¿½[ï¿½Å‚ï¿½", L"ï¿½Gï¿½ï¿½ï¿½[", MB_OK);
 		}
 		RetCode = 1;
 	}
-	//ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ìíœ
+	//ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìíœ
 	App::DeleteApp();
-	//—áŠOˆ—I—¹
-	//COM‚ÌƒŠƒŠ[ƒX
+	//ï¿½ï¿½Oï¿½ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½
+	//COMï¿½Ìƒï¿½ï¿½ï¿½ï¿½[ï¿½X
 	::CoUninitialize();
 	return RetCode;
 }
@@ -223,7 +220,7 @@ int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth
 
 //--------------------------------------------------------------------------------------
 //	int APIENTRY _tWinMain();
-//	—p“r: ƒGƒ“ƒgƒŠƒ|ƒCƒ“ƒg
+//	ï¿½pï¿½r: ï¿½Gï¿½ï¿½ï¿½gï¿½ï¿½ï¿½|ï¿½Cï¿½ï¿½ï¿½g
 //--------------------------------------------------------------------------------------
 int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	_In_opt_ HINSTANCE hPrevInstance,
@@ -233,47 +230,60 @@ int APIENTRY _tWinMain(_In_ HINSTANCE hInstance,
 	UNREFERENCED_PARAMETER(hPrevInstance);
 	UNREFERENCED_PARAMETER(lpCmdLine);
 
-	// ƒfƒoƒbƒOŽžAdelete‚à‚ê‚Ìƒ`ƒFƒbƒN—p
+	// ï¿½fï¿½oï¿½bï¿½Oï¿½ï¿½ï¿½Adeleteï¿½ï¿½ï¿½ï¿½Ìƒ`ï¿½Fï¿½bï¿½Nï¿½p
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	//ƒƒP[ƒ‹‚ÌÝ’è
+	//ï¿½ï¿½ï¿½Pï¿½[ï¿½ï¿½ï¿½ÌÝ’ï¿½
 	setlocale(LC_ALL, "JPN");
 
-	//ƒEƒCƒ“ƒhƒE‚Ì•‚Æ‚‚³
-	int iClientWidth = 1280;
-	int iClientHeight = 800;
-	// ƒtƒ‹ƒXƒNƒŠ[ƒ“‚É‚·‚é‚©‚Ç‚¤‚©‚Ì”»’è
-	// ƒRƒ}ƒ“ƒhƒ‰ƒCƒ“‚É/f‚ªÝ’è‚³‚ê‚Ä‚¢‚½‚çƒtƒ‹ƒXƒNƒŠ[ƒ“‚É‚·‚é
-	bool isFullScreen = false;
+	// ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½É‚ï¿½ï¿½é‚©ï¿½Ç‚ï¿½ï¿½ï¿½ï¿½Ì”ï¿½ï¿½ï¿½
+	// ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½ï¿½/fï¿½ï¿½ï¿½Ý’è‚³ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½tï¿½ï¿½ï¿½Xï¿½Nï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½É‚ï¿½ï¿½ï¿½
+	bool isFullScreen = true;
 	wstring wstrcmd = lpCmdLine;
 	if (wstrcmd == L"/f" || wstrcmd == L"/F") {
-		isFullScreen = true;     // ƒtƒ‰ƒO‚ðtrue‚ÉÝ’è
+		isFullScreen = true;     // ï¿½tï¿½ï¿½ï¿½Oï¿½ï¿½trueï¿½ÉÝ’ï¿½
 	}
 
 	MyRegisterClass(hInstance);
-	// ƒAƒvƒŠƒP[ƒVƒ‡ƒ“‚Ì‰Šú‰»‚ðŽÀs‚µ‚Ü‚·:
-	HWND hWnd = InitInstance(hInstance, nCmdShow, isFullScreen, iClientWidth, iClientHeight);
+	// ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sï¿½ï¿½ï¿½Ü‚ï¿½:
+	HWND hWnd = InitInstance(hInstance, nCmdShow, isFullScreen, g_ClientWidth, g_ClientHeight);
 
 	if (!hWnd)
 	{
 		return FALSE;
 	}
 
-	return  MainLoop(hInstance, hWnd, isFullScreen, iClientWidth, iClientHeight);
+	return  MainLoop(hInstance, hWnd, isFullScreen, g_ClientWidth, g_ClientHeight);
 
 }
 
-
-
+//--------------------------------------------------------------------------------------
+//
+//  ï¿½Öï¿½: MakeWindowModeRectFunc()
+//
+//  ï¿½Ú“I: ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½[ï¿½hï¿½ÉˆÚsï¿½ï¿½ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½ì¬ï¿½ï¿½ï¿½ï¿½
+//
+//--------------------------------------------------------------------------------------
+void MakeWindowModeRectFunc(RECT& rc) {
+	rc = { 0, 0, g_ClientWidth, g_ClientHeight };
+	AdjustWindowRect(&rc, WS_OVERLAPPEDWINDOW, FALSE);
+	int CXWidth = GetSystemMetrics(SM_CXSCREEN);
+	int CYHeight = GetSystemMetrics(SM_CYSCREEN);
+	int RCWidth = rc.right - rc.left;
+	int RCHeight = rc.bottom - rc.top;
+	int OffsetLeft = CXWidth / 2 - RCWidth / 2;
+	int OffsetTop = CYHeight / 2 - RCHeight / 2;
+	OffsetRect(&rc, OffsetLeft, OffsetTop);
+}
 
 //--------------------------------------------------------------------------------------
 //
-//  ŠÖ”: WndProc(HWND, UINT, WPARAM, LPARAM)
+//  ï¿½Öï¿½: WndProc(HWND, UINT, WPARAM, LPARAM)
 //
-//  –Ú“I:    ƒƒCƒ“ ƒEƒBƒ“ƒhƒE‚ÌƒƒbƒZ[ƒW‚ðˆ—‚µ‚Ü‚·B
+//  ï¿½Ú“I:    ï¿½ï¿½ï¿½Cï¿½ï¿½ ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Ìƒï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
 //
-//  WM_COMMAND	- ƒAƒvƒŠƒP[ƒVƒ‡ƒ“ ƒƒjƒ…[‚Ìˆ—
-//  WM_PAINT	- ƒƒCƒ“ ƒEƒBƒ“ƒhƒE‚Ì•`‰æ
-//  WM_DESTROY	- ’†Ž~ƒƒbƒZ[ƒW‚ð•\Ž¦‚µ‚Ä–ß‚é
+//  WM_COMMAND	- ï¿½Aï¿½vï¿½ï¿½ï¿½Pï¿½[ï¿½Vï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½Ìï¿½ï¿½ï¿½
+//  WM_PAINT	- ï¿½ï¿½ï¿½Cï¿½ï¿½ ï¿½Eï¿½Bï¿½ï¿½ï¿½hï¿½Eï¿½Ì•`ï¿½ï¿½
+//  WM_DESTROY	- ï¿½ï¿½ï¿½~ï¿½ï¿½ï¿½bï¿½Zï¿½[ï¿½Wï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ä–ß‚ï¿½
 //
 //--------------------------------------------------------------------------------------
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -289,9 +299,34 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		PostQuitMessage(0);
 		break;
-	case WM_KEYDOWN:                // ƒL[‚ª‰Ÿ‚³‚ê‚½
-		if (wParam == VK_ESCAPE) {  // ‰Ÿ‚³‚ê‚½‚Ì‚ÍESCƒL[‚¾
-			DestroyWindow(hWnd);	//ƒEƒCƒ“ƒhƒE‚ð”jŠü‚·‚é
+	case WM_KEYDOWN:
+		// ï¿½Lï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½
+		switch (wParam) {
+		case VK_ESCAPE:
+			//ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½jï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+			DestroyWindow(hWnd);
+			break;
+		case VK_RETURN:
+			if (GetAsyncKeyState(VK_CONTROL)) {
+				//Ctrl+Enterï¿½Åƒï¿½ï¿½[ï¿½hï¿½Ø‘ï¿½
+				if (App::AppCheck()) {
+					if (App::GetApp()->IsFullScreen()) {
+						//ï¿½Eï¿½Cï¿½ï¿½ï¿½hï¿½Eï¿½ï¿½ï¿½[ï¿½hï¿½ÉˆÚs
+						RECT rc;
+						MakeWindowModeRectFunc(rc);
+						App::GetApp()->SetWindowMode(rc);
+					}
+					else {
+						App::GetApp()->SetFullScreenMode();
+					}
+				}
+			}
+			break;
+		}
+		break;
+	case WM_SIZE:
+		if (App::AppCheck()) {
+			App::GetApp()->OnSize();
 		}
 		break;
 	default:
@@ -299,5 +334,6 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 	}
 	return 0;
 }
+
 
 

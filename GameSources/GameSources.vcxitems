@@ -19,6 +19,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BombItem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EnemyState.h" />
@@ -36,6 +37,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)SoundManager.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)TrackingEnemy.h" />
   </ItemGroup>
   <ItemGroup>
@@ -44,6 +46,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BombItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EnemyState.cpp" />
@@ -60,6 +63,7 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SoundManager.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)StageObjects.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)TrackingEnemy.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
   </ItemGroup>

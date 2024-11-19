@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief プレイヤーなど実体
+@brief ・ｽv・ｽ・ｽ・ｽC・ｽ・ｽ・ｽ[・ｽﾈど趣ｿｽ・ｽ・ｽ
 */
 
 #include "stdafx.h"
@@ -10,22 +10,22 @@ namespace basecross {
 
 	void Player::OnCreate()
 	{
-		//初期位置などの設定
+		//・ｽ・ｽ・ｽ・ｽ・ｽﾊ置・ｽﾈどの設抵ｿｽ
 		m_Transform = GetComponent<Transform>();
-		m_Transform->SetScale(0.5f, 0.5f, 0.5f);	//直径25センチの球体
+		m_Transform->SetScale(0.5f, 0.5f, 0.5f);	//・ｽ・ｽ・ｽa25・ｽZ・ｽ・ｽ・ｽ`・ｽﾌ具ｿｽ・ｽ・ｽ
 		m_Transform->SetRotation(0.0f, 0.0f, 0.0f);
-		m_Transform->SetPosition(Vec3(0, 1.0f, 0));
-		//描画コンポーネントの設定
+		m_Transform->SetPosition(Vec3(0, 2.0f, 0));
+		//・ｽ`・ｽ・ｽR・ｽ・ｽ・ｽ|・ｽ[・ｽl・ｽ・ｽ・ｽg・ｽﾌ設抵ｿｽ
 		m_Draw = AddComponent<BcPNTStaticDraw>();
-		//描画するメッシュを設定
+		//・ｽ`・ｽ謔ｷ・ｽ驛・ｿｽb・ｽV・ｽ・ｽ・ｽ・ｽﾝ抵ｿｽ
 		m_Draw->SetMultiMeshResource(L"PLAYER_MD");
 		m_Draw->SetTextureResource(L"PLAYER_MD_TEX");
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f),//スケール
-			Vec3(0.0f, 0.0f, 0.0f),//回転の中心
-			Vec3(0.0f, 0.0f, 0.0f),//回転のベクトル
-			Vec3(0.0f, -2.0f, 0.0f) //移動
+			Vec3(0.5f),//・ｽX・ｽP・ｽ[・ｽ・ｽ
+			Vec3(0.0f, 0.0f, 0.0f),//・ｽ・ｽ]・ｽﾌ抵ｿｽ・ｽS
+			Vec3(0.0f, 0.0f, 0.0f),//・ｽ・ｽ]・ｽﾌベ・ｽN・ｽg・ｽ・ｽ
+			Vec3(0.0f, -2.0f, 0.0f) //・ｽﾚ難ｿｽ
 		);		
 		m_Draw->SetMeshToTransformMatrix(spanMat);
 
@@ -35,12 +35,18 @@ namespace basecross {
 		ptrString->SetBackColor(m_ColBlack);
 		ptrString->GetFontSize();
 
+		//・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾂゑｿｽ・ｽ・ｽ
+		//auto ptrString = AddComponent<StringSprite>();
+		//ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
+		////ptrString->SetBackColor(m_ColBlack);
+		//ptrString->GetFontSize();
+
 		m_Velo = AddComponent<BCGravity>();
 
-		//各パフォーマンスを得る
+		//・ｽe・ｽp・ｽt・ｽH・ｽ[・ｽ}・ｽ・ｽ・ｽX・ｽｾゑｿｽ
 		m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetMakedRadius(0.25f);
-		m_Collision->SetDrawActive(true);
+		//m_Collision->SetDrawActive(true);
 
 		AddTag(L"Player");
 
@@ -51,7 +57,7 @@ namespace basecross {
 	{
 		DrawString();
 
-		m_Pos = m_Transform->GetPosition();
+		m_Pos = m_Transform->GetWorldPosition();
 
 		m_KeyState = App::GetApp()->GetInputDevice().GetKeyState();
 		m_Controler = App::GetApp()->GetInputDevice().GetControlerVec();
@@ -59,9 +65,10 @@ namespace basecross {
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
 
-		m_Transform->SetPosition(m_Pos);
+		m_Transform->SetWorldPosition(m_Pos);
 
 		//m_Draw->SetDiffuse(m_State->GetDiffColor());
+		m_BombVec = Vec3(0);
 
 		if (InputKey(keyPush, VK_RIGHT)) m_BombVec.x = m_BombShotSpeed;
 		else if (InputKey(keyUp, VK_RIGHT)) m_BombVec.x = 0.0f;
@@ -81,6 +88,17 @@ namespace basecross {
 		if (InputButton(0, b_Push, XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = -m_BombShotSpeed;
 		else if (InputButton(0, b_Up, XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = 0.0f;
 
+		auto ctrl = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+		if (ctrl.bConnected) {
+			Vec2 ctrlVec = Vec2(ctrl.fThumbRX, ctrl.fThumbRY);
+			if (ctrlVec.length() != 0) {
+				m_BombVec = ctrlVec * m_BombShotSpeed;
+			}
+
+			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+				SetState(make_shared<PlayerStateThrow>());
+			}
+		}
 		if (GetThrowCoolTime() > 0.0f) { m_ThrowCoolTime -= 0.1f; }
 
 		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBombV2(4); }
@@ -96,26 +114,30 @@ namespace basecross {
 			//myCamera->SetEye(Vec3(-0.5f, 4.0f, -110.0f));
 			//myCamera->SetAt(Vec3(-0.5f, 4.0f, 0.0f));
 			m_IsDeadInit = true;
+
+			GetTypeStage<GameStage>()->GameOver();
+
+
 		}
 	}
 
-	//void Player::OnCollisionEnter(shared_ptr<GameObject>& Other)
-	//{
-	//	if (Other->FindTag(L"Stage")) { Other->OnCollisionEnter(GetThis<GameObject>()); }
-	//}
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other)
+	{
+		if (Other->FindTag(L"Stage")) { Other->OnCollisionEnter(GetThis<GameObject>()); }
+	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
 		if (Other->FindTag(L"Stage"))
 		{			
-			//Other->OnCollisionExcute(GetThis<GameObject>());
+			Other->OnCollisionExcute(GetThis<GameObject>());
 
 			auto block = Other->GetComponent<Transform>();
 			auto blockPosition = block->GetPosition();
 			auto blockScale = block->GetScale();
 
 			auto player = GetComponent<Transform>();
-			auto playerPosition = player->GetPosition();
+			auto playerPosition = player->GetWorldPosition();
 			auto playerScale = player->GetScale();
 
 			if ((playerPosition.y > blockPosition.y) && ((playerPosition.x + playerScale.x * 0.5f) > blockPosition.x) && 
@@ -130,14 +152,18 @@ namespace basecross {
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
 	{
 		//if (Other->FindTag(L"Stage")) { Other->OnCollisionExit(GetThis<GameObject>()); }
-		if (Other->FindTag(L"Stage")) { SetIsJumping(true); }
+		if (Other->FindTag(L"Stage")) {
+			SetIsJumping(true); 
+			Other->OnCollisionExit(GetThis<GameObject>());
+		}
 	}
 
 	void Player::DrawString()
 	{
+		return;
 		const uint8_t numberOfDecimalPlaces = 2;
 
-		auto pos = GetComponent<Transform>()->GetPosition();
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		wstring positionStr(L"Position: ");
 		positionStr += L"X=" + Util::FloatToWStr(pos.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
 		positionStr += L"Y=" + Util::FloatToWStr(pos.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
@@ -186,7 +212,7 @@ namespace basecross {
 
 		wstring str = positionStr + stateName + velocityStr + hasBombStr + cameraStr + deadStr + fpsStr + bombVecStr;
 
-		//文字列コンポーネントの取得
+		//・ｽ・ｽ・ｽ・ｽ・ｽ・ｽR・ｽ・ｽ・ｽ|・ｽ[・ｽl・ｽ・ｽ・ｽg・ｽﾌ取得
 		auto ptrString = GetComponent<StringSprite>();
 		ptrString->SetText(str);
 		ptrString->SetDrawActive(true);
@@ -231,7 +257,7 @@ namespace basecross {
 			player->SetIsJumping(true);
 		}
 
-		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetIsJumping() == false))
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A)  && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
 			player->SetIsJumping(true);
@@ -298,7 +324,7 @@ namespace basecross {
 			m_Pos = player->GetPlayerPos();
 
 			m_Stage = player->GetStage();
-			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.0f);
+			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.5f);
 
 			player->SubtractHasBomb();
 
