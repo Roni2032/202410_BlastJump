@@ -24,7 +24,7 @@ namespace basecross{
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
 
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
 	}

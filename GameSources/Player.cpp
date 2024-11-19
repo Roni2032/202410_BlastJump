@@ -30,17 +30,17 @@ namespace basecross {
 		m_Draw->SetMeshToTransformMatrix(spanMat);
 
 		//�����������
-		auto ptrString = AddComponent<StringSprite>();
-		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
-		ptrString->SetBackColor(m_ColBlack);
-		ptrString->GetFontSize();
+		//auto ptrString = AddComponent<StringSprite>();
+		//ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
+		////ptrString->SetBackColor(m_ColBlack);
+		//ptrString->GetFontSize();
 
 		m_Velo = AddComponent<BCGravity>();
 
 		//�e�p�t�H�[�}���X�𓾂�
 		m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetMakedRadius(0.25f);
-		m_Collision->SetDrawActive(true);
+		//m_Collision->SetDrawActive(true);
 
 		AddTag(L"Player");
 	}
@@ -49,7 +49,7 @@ namespace basecross {
 	{
 		DrawString();
 
-		m_Pos = m_Transform->GetPosition();
+		m_Pos = m_Transform->GetWorldPosition();
 
 		m_KeyState = App::GetApp()->GetInputDevice().GetKeyState();
 		m_Controler = App::GetApp()->GetInputDevice().GetControlerVec();
@@ -57,9 +57,10 @@ namespace basecross {
 		m_State->HandleInput(GetThis<Player>());
 		m_State->PlayerUpdate(GetThis<Player>());
 
-		m_Transform->SetPosition(m_Pos);
+		m_Transform->SetWorldPosition(m_Pos);
 
 		//m_Draw->SetDiffuse(m_State->GetDiffColor());
+		m_BombVec = Vec3(0);
 
 		if (InputKey(keyPush, VK_RIGHT)) m_BombVec.x = m_BombShotSpeed;
 		else if (InputKey(keyUp, VK_RIGHT)) m_BombVec.x = 0.0f;
@@ -79,16 +80,26 @@ namespace basecross {
 		if (InputButton(0, b_Push, XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = -m_BombShotSpeed;
 		else if (InputButton(0, b_Up, XINPUT_GAMEPAD_DPAD_DOWN)) m_BombVec.y = 0.0f;
 
+		auto ctrl = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+		if (ctrl.bConnected) {
+			Vec2 ctrlVec = Vec2(ctrl.fThumbRX, ctrl.fThumbRY);
+			if (ctrlVec.length() != 0) {
+				m_BombVec = ctrlVec * m_BombShotSpeed;
+			}
+
+			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
+				SetState(make_shared<PlayerStateThrow>());
+			}
+		}
 		if (GetThrowCoolTime() > 0.0f) { m_ThrowCoolTime -= 0.1f; }
 
 		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBombV2(4); }
 
-		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - 5) m_IsDead = true;
+		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - 6) m_IsDead = true;
 		else m_IsDead = false;
 
 		if (m_IsDead && !m_IsDeadInit)
 		{
-<<<<<<< HEAD
 			//���ł�
 			//int result = MessageBox(NULL, L"�Q�[���I�[�o�[�I", L"GameOver", MB_OK);
 			GetTypeStage<GameStage>()->GameOver();
@@ -98,34 +109,27 @@ namespace basecross {
 			myCamera->SetEye(Vec3(-0.5f, 4.0f, -110.0f));
 			myCamera->SetAt(Vec3(-0.5f, 4.0f, 0.0f));*/
 
-=======
-			//auto myCamera = static_pointer_cast<MyCamera>(OnGetDrawCamera());
-			//GetTypeStage<GameStage>()->NewRespawnPosition(Vec3(0.0f, 3.0f, 0.0f));
-			//m_Transform->SetPosition(GetTypeStage<GameStage>()->GetRespawnPosition());
-			//myCamera->SetEye(Vec3(-0.5f, 4.0f, -110.0f));
-			//myCamera->SetAt(Vec3(-0.5f, 4.0f, 0.0f));
-			m_IsDeadInit = true;
->>>>>>> 39d59da (ベクトル取得をUpdateに)
+
 		}
 	}
 
-	//void Player::OnCollisionEnter(shared_ptr<GameObject>& Other)
-	//{
-	//	if (Other->FindTag(L"Stage")) { Other->OnCollisionEnter(GetThis<GameObject>()); }
-	//}
+	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other)
+	{
+		if (Other->FindTag(L"Stage")) { Other->OnCollisionEnter(GetThis<GameObject>()); }
+	}
 
 	void Player::OnCollisionExcute(shared_ptr<GameObject>& Other)
 	{
 		if (Other->FindTag(L"Stage"))
 		{			
-			//Other->OnCollisionExcute(GetThis<GameObject>());
+			Other->OnCollisionExcute(GetThis<GameObject>());
 
 			auto block = Other->GetComponent<Transform>();
 			auto blockPosition = block->GetPosition();
 			auto blockScale = block->GetScale();
 
 			auto player = GetComponent<Transform>();
-			auto playerPosition = player->GetPosition();
+			auto playerPosition = player->GetWorldPosition();
 			auto playerScale = player->GetScale();
 
 			if ((playerPosition.y > blockPosition.y) && ((playerPosition.x + playerScale.x * 0.5f) > blockPosition.x) && 
@@ -140,14 +144,18 @@ namespace basecross {
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
 	{
 		//if (Other->FindTag(L"Stage")) { Other->OnCollisionExit(GetThis<GameObject>()); }
-		if (Other->FindTag(L"Stage")) { SetIsJumping(true); }
+		if (Other->FindTag(L"Stage")) {
+			SetIsJumping(true); 
+			Other->OnCollisionExit(GetThis<GameObject>());
+		}
 	}
 
 	void Player::DrawString()
 	{
+		return;
 		const uint8_t numberOfDecimalPlaces = 2;
 
-		auto pos = GetComponent<Transform>()->GetPosition();
+		auto pos = GetComponent<Transform>()->GetWorldPosition();
 		wstring positionStr(L"Position: ");
 		positionStr += L"X=" + Util::FloatToWStr(pos.x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
 		positionStr += L"Y=" + Util::FloatToWStr(pos.y, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
@@ -241,7 +249,7 @@ namespace basecross {
 			player->SetIsJumping(true);
 		}
 
-		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A) && (player->GetIsJumping() == false))
+		if (player->InputButton(0, player->b_Pressed, XINPUT_GAMEPAD_A)  && (player->GetIsJumping() == false))
 		{
 			player->PlayerJump(player->GetJumpPower());
 			player->SetIsJumping(true);
@@ -308,7 +316,7 @@ namespace basecross {
 			m_Pos = player->GetPlayerPos();
 
 			m_Stage = player->GetStage();
-			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.0f);
+			m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.5f);
 
 			player->SubtractHasBomb();
 
