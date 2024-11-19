@@ -13,7 +13,7 @@ namespace basecross{
 		drawComp->SetTextureResource(L"BOMB_MD_TEX");
 		Mat4x4 matrix;
 		matrix.affineTransformation(
-			Vec3(0.5f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
+			Vec3(1.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
 		);
 		drawComp->SetMeshToTransformMatrix(matrix);
 
@@ -66,7 +66,7 @@ namespace basecross{
 		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 
-		SoundManager::Instance().PlaySE(L"BOMB_SD");
+		SoundManager::Instance().PlaySE(L"BOMB_SD",0.1f);
 
 		if (m_GameStage->GetGameMode() == GameStage::GameMode::NotBomb) {
 			m_GameStage->SetGameMode(GameStage::GameMode::InGame);
@@ -119,7 +119,7 @@ namespace basecross{
 		if (Other->FindTag(L"Floor")) {
 			auto block = static_pointer_cast<FloorBlock>(Other);
 			if (block != nullptr) {
-				block->HitExplode(reflectPower.length() * 10.0f);
+				block->HitExplode(reflectPower.length() * 8.0f);
 				//block->HitExplode(100);
 			}
 		}

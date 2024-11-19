@@ -16,7 +16,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//�r���[�̃J�����̐ݒ�
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),1.0f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(),0.0f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -28,6 +28,7 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
+			SoundManager::Instance().PlayBGM(L"BGM_SD",0.05f);
 			Block::CollisionObjects.clear();
 			CreateViewLight();
 			CreateResource();
@@ -81,6 +82,9 @@ namespace basecross {
 				}
 			}
 		}
+	}
+	void GameStage::OnDestroy() {
+		SoundManager::Instance().StopBGM();
 	}
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -413,6 +417,9 @@ namespace basecross {
 	}
 
 	void GameStage::GameClear() {
+		if (m_Mode != GameMode::InGame) return;
+
+		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
 		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 
@@ -420,6 +427,10 @@ namespace basecross {
 
 	}
 	void GameStage::GameOver() {
+		if (m_Mode != GameMode::InGame) return;
+		
+		//SoundManager::Instance().PlaySE(L"LOSER_SD");
+		SoundManager::Instance().StopBGM();
 		AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
 		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
 

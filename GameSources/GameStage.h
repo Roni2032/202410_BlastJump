@@ -75,6 +75,7 @@ namespace basecross {
 		//‰Šú‰»
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		virtual void OnDestroy()override;
 
 		shared_ptr<Player> m_Player;
 
