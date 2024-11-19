@@ -58,10 +58,12 @@ namespace basecross {
 
 		bool m_IsBombCreate = false;
 		float m_ThrowCoolTime = 0.0f;
+		float m_BombShotSpeed = 10.0f;
 		Vec3 m_BombVec = Vec3(0.0f);
-		uint8_t m_HasBomb = 0;
+		uint8_t m_HasBomb = 16;
 
 		bool m_IsDead = false;
+		bool m_IsDeadInit = false;
 
 	public:
 		// コンストラクタ：初期状態を受け取り設定する
@@ -170,6 +172,9 @@ namespace basecross {
 		float GetThrowCoolTime() { return m_ThrowCoolTime; }
 		void SetThrowCoolTime(float f) { m_ThrowCoolTime = f; }
 
+		float GetBombShotSpeed() { return m_BombShotSpeed; }
+		void SetBombShotSpeed(float f) { m_BombShotSpeed = f; }
+
 		Vec3 GetBombVec() { return m_BombVec; }
 		void SetBombVec(Vec3 vec) { m_BombVec = vec; }
 
@@ -183,7 +188,7 @@ namespace basecross {
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-		//virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
 		void DrawString();

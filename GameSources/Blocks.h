@@ -9,16 +9,21 @@
 namespace basecross{
 	class InstanceBlock : public GameObject {
 		wstring m_TexKey;
+
 		shared_ptr<PNTStaticInstanceDraw> m_Draw;
+		shared_ptr<Camera> m_Camera;
+
 		vector<vector<int>> m_Maps;
-		float m_DrawMaxHeight;
 		vector<shared_ptr<GameObject>> m_CollisionObjects;
 
+		float m_DrawMaxHeight;
+		float m_CameraAtY;
 		int m_SizeY;
 		Vec2 m_StartPos;
+
 	public:
 		InstanceBlock(const shared_ptr<Stage>& stage,const wstring& texKey,int sizeY) :
-			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY),m_DrawMaxHeight(-1)
+			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY),m_DrawMaxHeight(-1),m_CameraAtY(0)
 		{
 		}
 
@@ -58,7 +63,7 @@ namespace basecross{
 		virtual void Start(){}
 		virtual void Update(){}
 
-		static vector<weak_ptr<Transform>> m_MoveObjects;
+		static vector<weak_ptr<Transform>> CollisionObjects;
 	};
 
 	class FloorBlock : public Block {
@@ -80,6 +85,31 @@ namespace basecross{
 		void HitExplode(int damage);
 
 		void CheckDurability();
+	};
+
+	class MoveBlock : public FloorBlock {
+		Vec3 m_MoveStartPos;
+		Vec3 m_MoveEndPos;
+		Vec3 m_TargetPos;
+		float m_MoveSpeed;
+
+		shared_ptr<Transform> m_Trans;
+	public:
+		MoveBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, float speed, Vec3 moveRange) :
+			MoveBlock(ptr,texKey,pos,speed, pos + moveRange, pos - moveRange){}
+
+		MoveBlock(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,float speed,Vec3 start,Vec3 end) :
+			FloorBlock(ptr,texKey,pos),
+			m_MoveStartPos(start),m_MoveEndPos(end),
+			m_MoveSpeed(speed)
+		{}
+
+		virtual void Start()override;
+		virtual void Update()override;
+
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
+		virtual void OnCollisionExit(shared_ptr<GameObject>& Other)override;
+
 	};
 }
 //end basecross

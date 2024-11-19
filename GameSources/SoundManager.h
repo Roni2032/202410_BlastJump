@@ -11,11 +11,14 @@ namespace basecross{
 		vector<wstring> m_SoundKeys;
 		shared_ptr<XAudio2Manager> m_Audio;
 		shared_ptr<SoundItem> m_Bgm;
+
+		SoundManager() {}
 	public:
-		SoundManager(){}
+		
 		virtual ~SoundManager(){}
 
 		void RegisterSounds();
+		void RegisterSound(const wstring& key, const wstring& fileName);
 
 		static SoundManager& Instance();
 		void PlaySE(const wstring& key,const float volume = 1.0f);

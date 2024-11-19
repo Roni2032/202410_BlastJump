@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -9,20 +9,20 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½
 	//--------------------------------------------------------------------------------------
 	void GameStageM::CreateViewLight() {
 		const Vec3 eye(0.0f, 3.0f, -100.0f);
 		const Vec3 at(0.0f,3.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		//ï¿½rï¿½ï¿½ï¿½[ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		auto PtrCamera = ObjectFactory::Create<Camera>();
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ï¿½}ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Cï¿½gï¿½Ìì¬
 		auto PtrMultiLight = CreateLight<MultiLight>();
-		//ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		//ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Ìƒï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½wï¿½ï¿½
 		PtrMultiLight->SetDefaultLighting();
 	}
 
@@ -53,13 +53,24 @@ namespace basecross {
 			GameStage::OnCreate();
 			//AddGameObject<BackGroundManager>(9.0f);
 
-			//SoundManager::Instance().StopBGM();
-			AddGameObject<Bomb>(Vec3(0, 5, 0));
+			AddGameObject<BackGroundManager>(9.0f);
+
 		}
 		catch (...) {
 			throw;
 		}
 	}
 
+	void GameStageM::OnUpdate() {
+		GameStage::OnUpdate();
+
+		/*float e = App::GetApp()->GetElapsedTime();
+		timer += e;
+		if (timer > 10.0f) {
+			timer = 0;
+			static_pointer_cast<MyCamera>(GetView()->GetTargetCamera())->SetStageAt(10.0f);
+			m_Player->GetComponent<Transform>()->SetPosition(0, 10.0f, 0);
+		}*/
+	}
 }
 //end basecross

@@ -12,6 +12,7 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 #include "GameStage.h"
+#include "TitleStage.h"
 #include "GameStageM.h"
 #include "GameStageH.h"
 #include "GameStageK.h"
@@ -31,3 +32,4 @@
 #include "BombItem.h"
 #include "TrackingEnemy.h"
 #include "EnemyState.h"
+#include "BombThrowArrow.h"

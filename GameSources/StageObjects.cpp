@@ -1,6 +1,6 @@
 /*!
 @file Character.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½^ï¿½[ï¿½È‚Çï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -12,6 +12,8 @@ namespace basecross{
 		auto draw = AddComponent<PNTStaticModelDraw>();
 
 		draw->SetMultiMeshResource(L"GOAL_MD");
+		draw->SetTextureResource(L"GOAL_MD_TEX");
+
 		draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
 		matrix.affineTransformation(
@@ -22,7 +24,7 @@ namespace basecross{
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
 
-		col->SetDrawActive(true);
+		//col->SetDrawActive(true);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
 	}
