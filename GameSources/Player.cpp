@@ -43,6 +43,8 @@ namespace basecross {
 		m_Collision->SetDrawActive(true);
 
 		AddTag(L"Player");
+
+		SetHasBomb(15);
 	}
 
 	void Player::OnUpdate()
@@ -83,7 +85,7 @@ namespace basecross {
 
 		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBombV2(4); }
 
-		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - 5) m_IsDead = true;
+		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - 6) m_IsDead = true;
 		else m_IsDead = false;
 
 		if (m_IsDead && !m_IsDeadInit)
@@ -172,7 +174,7 @@ namespace basecross {
 		bombVecStr += L"BVZ=" + Util::FloatToWStr(bombVec.z, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L"\n";
 
 		bool isDead = false;
-		if (pos.y < camera->GetEye().y - 5) isDead = true;
+		if (pos.y < camera->GetEye().y - 6) isDead = true;
 		else isDead = false;
 		wstring deadStr(L"");
 		if (isDead) deadStr = L"DIED\n";
