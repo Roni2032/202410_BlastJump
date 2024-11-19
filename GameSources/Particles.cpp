@@ -9,6 +9,27 @@
 namespace basecross{
 
 	void ExplodeParticle::AddParticleData() {
+		
+		/*auto particles = AddParticleInstance(32, L"EXPLODE1_TEX");
+		particles->SetMaxTime(1.0f);
+		particles->SetColor(Col4(1, 0.485f, 0.276f, 1));
+		for (auto& particle : particles->GetSpriteDate()) {
+			particle.SetVelocity(Vec3(
+				Util::RandZeroToOne() * 2.0f - 1.0f,
+				Util::RandZeroToOne() * 2.0f - 1.0f,
+				Util::RandZeroToOne() * 2.0f - 1.0f
+			));
+		}
+		particles = AddParticleInstance(32, L"EXPLODE2_TEX");
+		particles->SetMaxTime(1.0f);
+		particles->SetColor(Col4(1, 0.0f, 0.0f, 1));
+		for (auto& particle : particles->GetSpriteDate()) {
+			particle.SetVelocity(Vec3(
+				Util::RandZeroToOne() * 1.0f - 0.5f,
+				Util::RandZeroToOne() * 1.0f - 0.5f,
+				Util::RandZeroToOne() * 1.0f - 0.5f
+			));
+		}*/
 		auto particles = AddParticle(32, L"EXPLODE1_TEX");
 		for (auto& particle : particles) {
 			particle->SetMaxTime(1.0f);
@@ -47,6 +68,10 @@ namespace basecross{
 				Util::RandZeroToOne() * 4.0f - 2.0f
 			));
 		}
+	}
+
+	void ExplodeAoE::AddParticleData() {
+
 	}
 }
 //end basecross

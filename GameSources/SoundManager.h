@@ -1,0 +1,30 @@
+/*!
+@file Character.h
+@brief キャラクターなど
+*/
+
+#pragma once
+#include "stdafx.h"
+
+namespace basecross{
+	class SoundManager{
+		vector<wstring> m_SoundKeys;
+		shared_ptr<XAudio2Manager> m_Audio;
+		shared_ptr<SoundItem> m_Bgm;
+
+		SoundManager() {}
+	public:
+		
+		virtual ~SoundManager(){}
+
+		void RegisterSounds();
+		void RegisterSound(const wstring& key, const wstring& fileName);
+
+		static SoundManager& Instance();
+		void PlaySE(const wstring& key,const float volume = 1.0f);
+		void PlayBGM(const wstring& key, const float volume = 1.0f);
+		void StopBGM();
+	};
+
+}
+//end basecross

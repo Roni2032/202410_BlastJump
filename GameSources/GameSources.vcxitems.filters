@@ -34,15 +34,21 @@
     <Filter Include="Camera">
       <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Enemy">
-      <UniqueIdentifier>{8e37aeba-f2b7-466d-8d18-ea65ad8b1d70}</UniqueIdentifier>
+    <Filter Include="Goal/CheckPoint">
+      <UniqueIdentifier>{e33e3eb2-66e9-4f87-a730-40a2f05d3b1b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Manager">
+      <UniqueIdentifier>{7f33c4d2-2684-488e-92fa-8ddd9c50ca55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="TrackingEnemy">
+      <UniqueIdentifier>{c504b0b7-173e-49f5-a7c9-81e64ab23145}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Stage">
+      <UniqueIdentifier>{9e2c1619-6ff8-4a95-879a-f9fabfe9bbc9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
       <Filter>Headers</Filter>
     </ClInclude>
     <ClInclude Include="$(MSBuildThisFileDirectory)Project.h">
@@ -90,15 +96,34 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
       <Filter>Camera</Filter>
     </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
-      <Filter>Enemy</Filter>
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h">
+      <Filter>Goal/CheckPoint</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)SoundManager.h">
+      <Filter>Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BackGround.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombItem.h">
+      <Filter>Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)EnemyState.h">
+      <Filter>TrackingEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackingEnemy.h">
+      <Filter>TrackingEnemy</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h">
+      <Filter>Bomb</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
+      <Filter>Stage</Filter>
+    </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
+      <Filter>Stage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
       <Filter>Sources</Filter>
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp">
@@ -146,8 +171,30 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp">
       <Filter>Camera</Filter>
     </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
-      <Filter>Enemy</Filter>
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageObjects.cpp">
+      <Filter>Goal/CheckPoint</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)SoundManager.cpp">
+      <Filter>Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BackGround.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombItem.cpp">
+      <Filter>Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)EnemyState.cpp">
+      <Filter>TrackingEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackingEnemy.cpp">
+      <Filter>TrackingEnemy</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp">
+      <Filter>Bomb</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
+      <Filter>Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
+      <Filter>Stage</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

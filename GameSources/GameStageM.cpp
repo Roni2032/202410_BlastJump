@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -9,20 +9,20 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½
 	//--------------------------------------------------------------------------------------
 	void GameStageM::CreateViewLight() {
-		const Vec3 eye(0.0f, 2.0f, -10.0f);
-		const Vec3 at(0.0f,2.0f,0.0f);
+		const Vec3 eye(0.0f, 3.0f, -100.0f);
+		const Vec3 at(0.0f,3.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		//ï¿½rï¿½ï¿½ï¿½[ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		auto PtrCamera = ObjectFactory::Create<Camera>();
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ï¿½}ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Cï¿½gï¿½Ìì¬
 		auto PtrMultiLight = CreateLight<MultiLight>();
-		//ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		//ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Ìƒï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½wï¿½ï¿½
 		PtrMultiLight->SetDefaultLighting();
 	}
 
@@ -50,32 +50,27 @@ namespace basecross {
 
 	void GameStageM::OnCreate() {
 		try {
-			CreateViewLight();
-			CreateResource();
+			GameStage::OnCreate();
+			//AddGameObject<BackGroundManager>(9.0f);
 
-			AddGameObject<Bomb>(Vec3(0, 5, 0));
-			AddGameObject<Bomb>(Vec3(1, 1, 0));
+			AddGameObject<BackGroundManager>(9.0f);
 
-			for (int i = 0; i < 5; i++) {
-				for (int j = 0; j < 5; j++) {
-					//AddGameObject<FloorBlock>(Vec3(-2.5f + j, 0, -2.5f + i));
-				}
-			}
-
-			//”’l•\¦
-			//shared_ptr<BCNumber> num = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(0, 0, 0), Vec2(200, 100), 4);
-			//num->UpdateNumber(rand() % 1000);
-
-			AddGameObject<BCSprite>(L"EXPLODE_TEX", Vec3(0, 0, 0), Vec2(100, 100));
-			//AddGameObject<BCParticleSprite>();
-			auto particle = AddGameObject<BCParticle>();
-			particle->Shot();
-			//AddGameObject<BombEffect>(false,1.0f,0.0f)->InsertFire(Vec3(0, 0, 0));
 		}
 		catch (...) {
 			throw;
 		}
 	}
 
+	void GameStageM::OnUpdate() {
+		GameStage::OnUpdate();
+
+		/*float e = App::GetApp()->GetElapsedTime();
+		timer += e;
+		if (timer > 10.0f) {
+			timer = 0;
+			static_pointer_cast<MyCamera>(GetView()->GetTargetCamera())->SetStageAt(10.0f);
+			m_Player->GetComponent<Transform>()->SetPosition(0, 10.0f, 0);
+		}*/
+	}
 }
 //end basecross

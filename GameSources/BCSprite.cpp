@@ -22,7 +22,7 @@ namespace basecross{
 			}
 		}
 		if (m_UseIndex == -1 || m_UseIndex < m_AnimationUV.size()) {
-			m_UseIndex = m_AnimationUV.size();
+			m_UseIndex = static_cast<int>(m_AnimationUV.size());
 		}
 		m_Vertices = { 
 			{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},

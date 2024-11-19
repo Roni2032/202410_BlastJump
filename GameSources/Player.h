@@ -7,7 +7,7 @@
 #include "stdafx.h"
 #include "BCGravity.h"
 
-namespace basecross{
+namespace basecross {
 
 	//前方宣言(各状態)
 	class Player;
@@ -39,7 +39,7 @@ namespace basecross{
 		shared_ptr<PlayerState> m_State;
 
 		KEYBOARD_STATE m_KeyState;
-		//CONTROLER_STATE m_Controler;
+		vector <basecross::CONTROLER_STATE> m_Controler;
 
 		shared_ptr<basecross::Transform> m_Transform;
 		Vec3 m_Pos = Vec3(0.0f);
@@ -47,16 +47,23 @@ namespace basecross{
 		Col4 m_ColBlack = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 		Col4 m_TestCol = Col4(0.0f, 0.0f, 0.0f, 1.0f);
 
-		shared_ptr<basecross::CollisionSphere> m_Collision;
+		shared_ptr<basecross::CollisionCapsule> m_Collision;
 
-		shared_ptr<BCGravity> m_Grav;
+		shared_ptr<BCGravity> m_Velo;
 
-		float m_WalkSpeed = 0.1f;
+		float m_WalkSpeed = 2.0f;
 
 		Vec3 m_JumpPower = Vec3(0.0f, 5.0f, 0.0f);
+		bool m_IsJumping = false;
 
 		bool m_IsBombCreate = false;
+		float m_ThrowCoolTime = 0.0f;
+		float m_BombShotSpeed = 10.0f;
 		Vec3 m_BombVec = Vec3(0.0f);
+		uint8_t m_HasBomb = 16;
+
+		bool m_IsDead = false;
+		bool m_IsDeadInit = false;
 
 	public:
 		// コンストラクタ：初期状態を受け取り設定する
@@ -88,7 +95,14 @@ namespace basecross{
 			keyUp,
 		};
 
-		bool InputKey(int keyState ,int keyCord)
+		enum ButtonState
+		{
+			b_Push = 0,
+			b_Pressed,
+			b_Up,
+		};
+
+		bool InputKey(int keyState, int keyCord)
 		{
 			switch (keyState)
 			{
@@ -112,54 +126,71 @@ namespace basecross{
 			}
 		}
 
-		Vec3 GetPlayerPos()
+		bool InputButton(int useControler, int buttonState, int button)
 		{
-			return m_Pos;
-		}
-		void SetPlayerPos(Vec3 pos)
-		{
-			m_Pos = pos;
+			if (m_Controler[useControler].bConnected)
+			{
+				switch (buttonState)
+				{
+				case 1:
+
+					return m_Controler[useControler].wPressedButtons & button;
+
+					break;
+
+				case 2:
+
+					return m_Controler[useControler].wReleasedButtons & button;
+
+					break;
+
+				default:
+
+					return m_Controler[useControler].wButtons & button;
+
+					break;
+				}
+			}
 		}
 
-		float GetWalkSpeed()
-		{
-			return m_WalkSpeed;
-		}
+		Vec3 GetPlayerPos() { return m_Pos; }
+		void SetPlayerPos(Vec3 pos) { m_Pos = pos; }
 
-		Vec3 GetJumpPower()
-		{
-			return m_JumpPower;
-		}
-		void PlayerJump(Vec3 velocity)
-		{
-			m_Grav->Jump(velocity);
-		}
-		float GetVerticalVelocity()
-		{
-			return m_Grav->GetVelocity().y;
-		}
+		float GetWalkSpeed() { return m_WalkSpeed; }
+
+		Vec3 GetJumpPower() { return m_JumpPower; }
+		void PlayerJump(Vec3 velocity) { m_Velo->Jump(velocity); }
+		float GetVerticalVelocity() { return m_Velo->GetVelocity().y; }
 		const float m_PlayerNormalGravity = -9.8f;
 
-		bool GetIsBombCreate()
-		{
-			return  m_IsBombCreate;
-		}
-		void SetIsBombCreate(bool b)
-		{
-			m_IsBombCreate = b;
-		}
+		bool GetIsJumping() { return m_IsJumping; }
+		void SetIsJumping(bool b) { m_IsJumping = b; }
 
-		Vec3 GetBombVec()
-		{
-			return m_BombVec;
-		}
-		void SetBombVec(Vec3 vec)
-		{
-			m_BombVec = vec;
-		}
+		bool GetIsBombCreate() { return  m_IsBombCreate; }
+		void SetIsBombCreate(bool b) { m_IsBombCreate = b; }
+
+		float GetThrowCoolTime() { return m_ThrowCoolTime; }
+		void SetThrowCoolTime(float f) { m_ThrowCoolTime = f; }
+
+		float GetBombShotSpeed() { return m_BombShotSpeed; }
+		void SetBombShotSpeed(float f) { m_BombShotSpeed = f; }
+
+		Vec3 GetBombVec() { return m_BombVec; }
+		void SetBombVec(Vec3 vec) { m_BombVec = vec; }
+
+		uint8_t GetHasBomb() { return m_HasBomb; }
+		void SetHasBomb(uint8_t n) { m_HasBomb = n; }
+		void AddHasBomb() { m_HasBomb++; }
+		void SubtractHasBomb() { m_HasBomb--; }
+		void AddHasBombV2(uint8_t n) { m_HasBomb += n; }
+
+		Vec3 m_cameraTest = Vec3(0.0f, 1.0f, 0.0f);
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other) override;
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other) override;
+		virtual void OnCollisionExit(shared_ptr<GameObject>& Other) override;
 		void DrawString();
 	};
 
@@ -193,6 +224,7 @@ namespace basecross{
 
 		float m_WalkSpeed = 0.0f;
 		Vec3 m_Pos;
+		float m_DeltaTime = App::GetApp()->GetElapsedTime();
 
 	public:
 
@@ -207,7 +239,7 @@ namespace basecross{
 			player->SetIsBombCreate(false);
 
 			m_Pos = player->GetPlayerPos();
-			m_Pos.x += m_WalkSpeed;
+			m_Pos.x += m_WalkSpeed * m_DeltaTime;
 			player->SetPlayerPos(m_Pos);
 		}
 

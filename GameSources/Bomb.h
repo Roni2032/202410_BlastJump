@@ -7,12 +7,23 @@
 #include "stdafx.h"
 
 namespace basecross{
+	
+	struct Explosion {
+		float m_Power;
+		float m_Range;
+
+		Explosion() : Explosion(0, 0){}
+		Explosion(float power,float range) : m_Power(power),m_Range(range){}
+
+	};
 	class Bomb : public GameObject {
+		Vec3 rotateSpeed;
 		float m_ExplodeTime;
 		float m_ExplodeTimer;
 
-		float m_ExplodeRange;
-		float m_ExplodePower;
+		Explosion m_ExplodeStatus;
+		//float m_ExplodeRange;
+		//float m_ExplodePower;
 
 		Vec3 m_ThrowVelocity;
 		Vec3 m_Pos;
@@ -33,7 +44,8 @@ namespace basecross{
 		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, Vec3 velocity, float explodeTime, float explodeRange, float explodePower) :
 			GameObject(ptr),
 			m_ExplodeTime(explodeTime), m_ExplodeTimer(0.0f),
-			m_ExplodeRange(explodeRange), m_ExplodePower(explodePower),
+			//m_ExplodeRange(explodeRange), m_ExplodePower(explodePower),
+			m_ExplodeStatus(Explosion(explodePower,explodeRange)),
 			m_Pos(pos), m_ThrowVelocity(velocity)
 		{}
 		virtual ~Bomb(){}
@@ -44,25 +56,20 @@ namespace basecross{
 
 		void Explode();
 
-		float GetRange() {
-			return m_ExplodeRange;
-		}
-		float GetPower() {
-			return m_ExplodePower;
-		}
 	};
 
 	class ExplodeCollider : public GameObject {
-		shared_ptr<Bomb> m_Bomb;
+		//shared_ptr<Bomb> m_Bomb;
+		Explosion m_Explosion;
 		Vec3 m_Pos;
 		int m_Tick;
 
 		float m_MinReboundRate;
 	public:
-		ExplodeCollider(const shared_ptr<Stage>& ptr,Vec3 pos,const shared_ptr<Bomb>& bomb):
+		ExplodeCollider(const shared_ptr<Stage>& ptr,Vec3 pos,Explosion explosion):
 			GameObject(ptr),
 			m_Pos(pos),
-			m_Bomb(bomb), m_MinReboundRate(0.5f),
+			m_Explosion(explosion), m_MinReboundRate(0.5f),
 			m_Tick(0)
 		{}
 
