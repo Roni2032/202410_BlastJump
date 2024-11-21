@@ -22,7 +22,7 @@ namespace basecross {
 		m_Draw->SetTextureResource(L"PLAYER_MD_TEX");
 		Mat4x4 spanMat;
 		spanMat.affineTransformation(
-			Vec3(0.5f),//・ｽX・ｽP・ｽ[・ｽ・ｽ
+			Vec3(0.45f),//・ｽX・ｽP・ｽ[・ｽ・ｽ
 			Vec3(0.0f, 0.0f, 0.0f),//・ｽ・ｽ]・ｽﾌ抵ｿｽ・ｽS
 			Vec3(0.0f, 0.0f, 0.0f),//・ｽ・ｽ]・ｽﾌベ・ｽN・ｽg・ｽ・ｽ
 			Vec3(0.0f, -2.0f, 0.0f) //・ｽﾚ難ｿｽ
@@ -35,18 +35,12 @@ namespace basecross {
 		ptrString->SetBackColor(m_ColBlack);
 		ptrString->GetFontSize();
 
-		//・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾂゑｿｽ・ｽ・ｽ
-		//auto ptrString = AddComponent<StringSprite>();
-		//ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
-		////ptrString->SetBackColor(m_ColBlack);
-		//ptrString->GetFontSize();
-
 		m_Velo = AddComponent<BCGravity>();
 
 		//・ｽe・ｽp・ｽt・ｽH・ｽ[・ｽ}・ｽ・ｽ・ｽX・ｽｾゑｿｽ
 		m_Collision = AddComponent<CollisionCapsule>();
-		m_Collision->SetMakedRadius(0.25f);
-		//m_Collision->SetDrawActive(true);
+		m_Collision->SetMakedRadius(0.35f);
+		m_Collision->SetDrawActive(true);
 
 		AddTag(L"Player");
 
@@ -99,6 +93,7 @@ namespace basecross {
 				SetState(make_shared<PlayerStateThrow>());
 			}
 		}
+
 		if (GetThrowCoolTime() > 0.0f) { m_ThrowCoolTime -= 0.1f; }
 
 		if (m_KeyState.m_bPressedKeyTbl[VK_SPACE]) { AddHasBombV2(4); }
@@ -151,7 +146,6 @@ namespace basecross {
 
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
 	{
-		//if (Other->FindTag(L"Stage")) { Other->OnCollisionExit(GetThis<GameObject>()); }
 		if (Other->FindTag(L"Stage")) {
 			SetIsJumping(true); 
 			Other->OnCollisionExit(GetThis<GameObject>());
@@ -160,7 +154,6 @@ namespace basecross {
 
 	void Player::DrawString()
 	{
-		return;
 		const uint8_t numberOfDecimalPlaces = 2;
 
 		auto pos = GetComponent<Transform>()->GetWorldPosition();
@@ -182,7 +175,6 @@ namespace basecross {
 		wstring hasBombStr(L"HasBomb: ");
 		hasBombStr += L"HB=" + Util::IntToWStr(hasBomb) + L"\n";
 
-		//auto camera = OnGetDrawCamera();
 		auto camera = static_pointer_cast<MyCamera>(OnGetDrawCamera());
 		wstring cameraStr(L"Camera: ");
 		cameraStr += L"CEX=" + Util::FloatToWStr(camera->GetEye().x, numberOfDecimalPlaces, Util::FloatModify::Fixed) + L", ";
@@ -316,7 +308,6 @@ namespace basecross {
 		bool m_IsBombCreate = player->GetIsBombCreate();
 		float m_ThrowCoolTime = player->GetThrowCoolTime();
 		Vec3 m_BombVec = player->GetBombVec();
-		//float m_BombShotSpeed = 8.0f;
 		uint8_t m_HasBomb = player->GetHasBomb();
 
 		if ((m_IsBombCreate == false) && (m_HasBomb > 0) && (m_ThrowCoolTime <= 0.0f))
