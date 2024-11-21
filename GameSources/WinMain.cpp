@@ -9,8 +9,8 @@ using namespace basecross;
 LRESULT CALLBACK	WndProc(HWND, UINT, WPARAM, LPARAM);
 
 //�萔
-const wchar_t* pClassName = L"Heatroid";
-const wchar_t* pWndTitle = L"Heatroid";
+const wchar_t* pClassName = L"blastJump";
+const wchar_t* pWndTitle = L"blastJump";
 //�E�B���h�E���[�h�̎��̕��ƍ���
 int g_ClientWidth = 1280;
 int g_ClientHeight = 800;

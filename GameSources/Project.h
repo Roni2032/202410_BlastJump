@@ -33,3 +33,4 @@
 #include "TrackingEnemy.h"
 #include "EnemyState.h"
 #include "BombThrowArrow.h"
+#include "BCCollision.h"

@@ -24,6 +24,7 @@ namespace basecross {
 	class GameStage : public Stage {
 	public:
 		enum GameMode {
+			View,
 			NotBomb,
 			InGame,
 			Clear,

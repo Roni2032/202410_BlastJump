@@ -25,6 +25,8 @@ namespace basecross{
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
 		trans->SetScale(Vec3(0.5f) + Vec3(0.2f) * (m_AddBombNum - DEFAULT_BOMB_NUM));
+
+		AddTag(L"Item");
 	}
 	void BombItem::OnUpdate() {
 
