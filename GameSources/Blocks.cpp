@@ -151,9 +151,9 @@ namespace basecross{
 		}
 
 		auto col = AddComponent<CollisionObb>();
-		//col->SetAfterCollision(AfterCollision::None);
+		col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
-		//col->SetDrawActive(true);
+		col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
@@ -167,40 +167,21 @@ namespace basecross{
 	void Block::OnUpdate() {
 		Update();
 	}
-	void Block::OnCollisionExcute(shared_ptr<GameObject>& Other) {
-		return;
+	void Block::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto col = Other->GetComponent<Collision>(false);
 		if (col != nullptr) {
 			if (col->GetAfterCollision() != AfterCollision::Auto) return;
 
-			auto otherTrans = Other->GetComponent<Transform>();
-			auto trans = GetComponent<Transform>();
-
-			Vec3 otherSize = otherTrans->GetScale();
-			Vec3 size = trans->GetScale();
-
-			Vec3 otherPos = otherTrans->GetWorldPosition();
-			Vec3 pos = trans->GetPosition();
-			Vec3 otherVelocity = otherTrans->GetVelocity();
-
-			float immersion = 10000.0f;
-			/*if (pos.x > otherPos.x + otherSize.x) {
-				float nneImersion
-			}
-			else if (pos.x + size.x < otherPos.x) {
-				otherPos.x = pos.x;
-			}
-
-			if (pos.y + otherSize.y < otherPos.y + otherSize.y) {
-				otherPos.y = pos.y - otherSize.y;
-			}
-			else if (pos.y > otherPos.y + otherSize.y) {
-				otherPos.y = pos.y + otherSize.y;
-			}*/
-
-			otherTrans->SetPosition(otherPos);
 		}
 	}
+	void Block::OnCollisionExcute(shared_ptr<GameObject>& Other) {
+		auto col = Other->GetComponent<Collision>(false);
+		if (col != nullptr) {
+			if (col->GetAfterCollision() != AfterCollision::Auto) return;
+
+		}
+	}
+		
 	void FloorBlock::Start() {
 		AddTag(L"Floor");
 		CheckDurability();
@@ -257,6 +238,7 @@ namespace basecross{
 	}
 
 	void MoveBlock::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		Block::OnCollisionEnter(Other);
 		if (Other->FindTag(L"Player")) {
 			Other->GetComponent<Transform>()->SetParent(GetThis<GameObject>());
 		}

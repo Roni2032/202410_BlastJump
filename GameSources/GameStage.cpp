@@ -26,21 +26,24 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
+			CreateViewLight();
+
 			SoundManager::Instance().PlayBGM(L"BGM_SD",0.05f);
 			Block::CollisionObjects.clear();
-			CreateViewLight();
 			CreateResource();
 			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
-			Block::CollisionObjects.push_back(m_Player->GetComponent<Transform>());
+			SetSharedGameObject(L"Player", m_Player);
 			CreateMap();
 			CreateParticle();
-			LoadMap();
+			LoadMap();			
 
 			AddGameObject<BombThrowArrow>(m_Player);
 			
 
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
+			float screenHight = camera->GetHeight();
+			//camera->SetStageAt(m_MapLeftTop.y - screenHight / 2.0f - 1);
 
 			//auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
 
