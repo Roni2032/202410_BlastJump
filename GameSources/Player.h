@@ -61,6 +61,7 @@ namespace basecross {
 		float m_BombShotSpeed = 10.0f;
 		Vec3 m_BombVec = Vec3(0.0f);
 		uint8_t m_HasBomb = 16;
+		uint8_t m_AirBombLimit = 1;
 
 		bool m_IsDead = false;
 		bool m_IsDeadInit = false;
@@ -183,6 +184,10 @@ namespace basecross {
 		void AddHasBomb() { m_HasBomb++; }
 		void SubtractHasBomb() { m_HasBomb--; }
 		void AddHasBombV2(uint8_t n) { m_HasBomb += n; }
+
+		uint8_t GetAirBombLimit() { return m_AirBombLimit; }
+		void SetAirBombLimit(uint8_t n) { m_AirBombLimit = n; }
+		void SubtractAirBombLimit() { m_AirBombLimit--; }
 
 		Vec3 m_cameraTest = Vec3(0.0f, 1.0f, 0.0f);
 

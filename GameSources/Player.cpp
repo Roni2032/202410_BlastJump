@@ -38,9 +38,13 @@ namespace basecross {
 		m_Velo = AddComponent<BCGravity>();
 
 		//・ｽe・ｽp・ｽt・ｽH・ｽ[・ｽ}・ｽ・ｽ・ｽX・ｽｾゑｿｽ
-		m_Collision = AddComponent<CollisionCapsule>();
-		m_Collision->SetMakedRadius(0.35f);
-		m_Collision->SetDrawActive(true);
+		//m_Collision = AddComponent<CollisionCapsule>();
+		//m_Collision->SetMakedRadius(0.35f);
+		//m_Collision->SetDrawActive(true);
+		auto coll = AddComponent<BCCollisionObb>(3.0f, L"Stage");
+		coll->SetSize(Vec3(0.75f, 1.5f, 0.75f));
+		coll->SetGap(Vec3(0.1f, 0.5f, 0.0f));
+		coll->AddSlipTag(L"Item");
 
 		AddTag(L"Player");
 
@@ -147,7 +151,8 @@ namespace basecross {
 	void Player::OnCollisionExit(shared_ptr<GameObject>& Other)
 	{
 		if (Other->FindTag(L"Stage")) {
-			SetIsJumping(true); 
+			SetIsJumping(true);
+			SetAirBombLimit(1);
 			Other->OnCollisionExit(GetThis<GameObject>());
 		}
 	}
@@ -310,7 +315,7 @@ namespace basecross {
 		Vec3 m_BombVec = player->GetBombVec();
 		uint8_t m_HasBomb = player->GetHasBomb();
 
-		if ((m_IsBombCreate == false) && (m_HasBomb > 0) && (m_ThrowCoolTime <= 0.0f))
+		if ((m_IsBombCreate == false) && (m_HasBomb > 0) && (m_ThrowCoolTime <= 0.0f) && !player->GetIsJumping())
 		{
 			m_Pos = player->GetPlayerPos();
 
@@ -321,6 +326,22 @@ namespace basecross {
 
 			player->SetThrowCoolTime(3.0f);
 			player->SetIsBombCreate(true);
+		}
+		else if ((m_IsBombCreate == false) && (m_HasBomb > 0) && (m_ThrowCoolTime <= 0.0f) && player->GetIsJumping())
+		{
+			if (player->GetAirBombLimit() > 0)
+			{
+				m_Pos = player->GetPlayerPos();
+
+				m_Stage = player->GetStage();
+				m_Stage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.5f);
+
+				player->SubtractHasBomb();
+				player->SubtractAirBombLimit();
+
+				player->SetThrowCoolTime(3.0f);
+				player->SetIsBombCreate(true);
+			}
 		}
 
 		player->SetState(make_shared<PlayerStateIdle>());
