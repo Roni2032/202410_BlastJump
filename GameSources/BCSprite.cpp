@@ -116,6 +116,8 @@ namespace basecross{
 			
 			number->UpdateUV(GetUV(singleDigit));
 			digits /= 10;
+			auto col = number->GetComponent<PCTSpriteDraw>();
+			col->SetDiffuse(Col4(0.0f,0.0f,0.0f,1.0f));
 			m_Numbers.push_back(number);
 		}
 		auto trans = GetComponent<Transform>();
@@ -133,7 +135,8 @@ namespace basecross{
 				{uvX * displayDigit,0.0f},
 				{uvX * (displayDigit + 1),0.0f},
 				{uvX * displayDigit,1.0f},
-				{uvX * (displayDigit + 1),1.0f}
+				{uvX * (displayDigit + 1
+				),1.0f}
 		};
 
 		return uv;
@@ -149,5 +152,6 @@ namespace basecross{
 			digits /= 10;
 		}
 	}
+
 }
 //end basecross
