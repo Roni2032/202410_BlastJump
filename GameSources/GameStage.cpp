@@ -9,7 +9,7 @@
 namespace basecross {
 	class Block;
 	//--------------------------------------------------------------------------------------
-	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｽ[・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
+	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｺﾛ・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
 		const Vec3 eye(-0.5f, 4.0f, -34.0f);
@@ -39,7 +39,6 @@ namespace basecross {
 
 			AddGameObject<BombThrowArrow>(m_Player);
 			
-
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
 			float screenHight = camera->GetHeight();
@@ -53,6 +52,7 @@ namespace basecross {
 			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -240.0f, 0), Vec2(200, 150));
 			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -220.0f, 0), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
+
 		}
 		catch (...) {
 			throw;
@@ -67,12 +67,17 @@ namespace basecross {
 
 		//m_TimerSprite[1]->UpdateNumber(minute);
 		//m_TimerSprite[0]->UpdateNumber(second);
+		if (m_Mode != GameMode::View) {
+			LoadMap();
 
-		LoadMap();
+			BlockUpdateActive();
 
-		BlockUpdateActive();
-
-		m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
+			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
+		}
+		else {
+			m_PlayerHasBombs->SetDrawActive(false);
+			
+		}
 
 		if (m_Mode != GameMode::InGame) {
 
@@ -101,6 +106,7 @@ namespace basecross {
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
 		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
+		app->RegisterTexture(L"BOMB_ITEM_TEX", texPath + L"BombItem.png");
 
 		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
