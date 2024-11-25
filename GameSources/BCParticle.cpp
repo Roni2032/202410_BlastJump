@@ -151,22 +151,31 @@ namespace basecross{
 			//	スプライトをビルボード化
 			//------------------------------------------------------------------
 			
-			//Vec3 cameraPos = m_Camera->GetEye();
-			//Vec3 spritePos = m_Trans->GetPosition();
-			//
-			//Vec3 diff = cameraPos - spritePos;
-			//diff = diff.normalize();
-			//float radXZ = atan2f(diff.z, diff.x);
-			//float radXY = atan2f(diff.y, diff.x);
-			//Vec3 sideVec = Vec3(cos(radXZ + XM_PI / 2.0f), 0.0f, sin(radXZ + XM_PI / 2.0f));
+			Vec3 cameraPos = m_Camera->GetEye();
+			Vec3 spritePos = m_Trans->GetPosition();
 
-			//Quat q = m_Trans->GetQuaternion().rotationY(radXZ);
-			////Quat q = (Quat)XMQuaternionRotationAxis(diff,radXZ);
+			Vec3 fwd = m_Trans->GetForward();
+			fwd = fwd.normalize();
+			
+			Vec3 diff = cameraPos - spritePos;
+			diff = diff.normalize();
+			
+			float inner = (diff.x * fwd.x + diff.y * fwd.y + diff.z * fwd.z) / (diff.length() * fwd.length());
+			float rad = acos(inner);
 
-			////
-			//////Quat q2 = (Quat)XMQuaternionRotationAxis(sideVec, radXY);
+			Vec3 vec = Vec3(diff.y * fwd.z - diff.z * fwd.y, diff.z * fwd.x - diff.x * fwd.z, diff.x * fwd.y - diff.y * fwd.x);
 
-			//m_Trans->SetQuaternion(q);
+			Quat q = Quat(vec.x * sin(rad / 2.0f), vec.y * sin(rad / 2.0f), vec.z * sin(rad / 2.0f), cos(rad / 2.0f));
+
+			m_Trans->SetQuaternion(q);
+
+			//垂直なベクトルを取得
+			/*a.y* b.z - a.z * b.y,
+				a.z* b.x - a.x * b.z,
+				a.x* b.y - a.y * b.x*/
+			//取得したベクトルを基に回転
+
+
 		}
 	}
 	void BCParticleSprite::StartParticle(const Vec3 pos) {
