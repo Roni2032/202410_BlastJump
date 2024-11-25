@@ -49,10 +49,8 @@ namespace basecross {
 			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
 
-			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, 400.0f, 0), Vec2(250, 150));
-			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-500.0f, 440.0f, 0), Vec2(80, 250), 2);
-			m_PlayerHasBombs->SetColor(0.0f, 0.0f, 1.0f);
-			
+			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -240.0f, 0), Vec2(200, 150));
+			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -220.0f, 0), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 		}
 		catch (...) {
