@@ -33,6 +33,9 @@ namespace basecross{
 		if (find(m_SoundKeys.begin(), m_SoundKeys.end(), key) != m_SoundKeys.end()) {
 			m_Audio->Start(key, 0, volume);
 		}
+		else {
+			int result = MessageBox(NULL, L"Key Not Found. key : ", L"ERROR", MB_OK);
+		}
 
 		
 	}
@@ -45,6 +48,9 @@ namespace basecross{
 				StopBGM();
 			}
 			m_Bgm = m_Audio->Start(key, XAUDIO2_LOOP_INFINITE, volume);
+		}
+		else {
+			int result = MessageBox(NULL, L"Key Not Found. key : ", L"ERROR", MB_OK);
 		}
 	}
 	void SoundManager::StopBGM() {

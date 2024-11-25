@@ -35,7 +35,7 @@ namespace basecross {
 		ptrString->SetBackColor(m_ColBlack);
 		ptrString->GetFontSize();
 
-		//・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾂゑｿｽ・ｽ・ｽ
+		//・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾂゑｿｽ・ｽ・ｽ3333
 		//auto ptrString = AddComponent<StringSprite>();
 		//ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
 		////ptrString->SetBackColor(m_ColBlack);
@@ -44,9 +44,14 @@ namespace basecross {
 		m_Velo = AddComponent<BCGravity>();
 
 		//・ｽe・ｽp・ｽt・ｽH・ｽ[・ｽ}・ｽ・ｽ・ｽX・ｽｾゑｿｽ
-		m_Collision = AddComponent<CollisionCapsule>();
+		/*m_Collision = AddComponent<CollisionCapsule>();
 		m_Collision->SetMakedRadius(0.25f);
-		//m_Collision->SetDrawActive(true);
+		m_Collision->SetDrawActive(true);*/
+
+		auto col = AddComponent<BCCollisionObb>(3.0f, L"Stage");
+		col->SetSize(Vec3(0.75f, 1.5f, 0.75f));
+		col->SetGap(Vec3(0.125f, 0.5f, 0.125f));
+		col->AddSlipTag(L"Item");
 
 		AddTag(L"Player");
 

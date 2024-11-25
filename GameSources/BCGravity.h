@@ -25,6 +25,7 @@ namespace basecross{
 			m_Velocity(0, 0, 0),m_GravityDirection(GRAVITY::Y) {}
 		virtual ~BCGravity() {}
 
+		void UpdateGravity();
 		virtual void OnCreate() override;
 		virtual void OnUpdate();
 		virtual void OnDraw() override {}

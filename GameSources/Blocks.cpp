@@ -27,9 +27,12 @@ namespace basecross{
 	void InstanceBlock::DrawMap(const Vec2 max, const Vec2 min) {
 		Vec2 drawSize(0);
 		Vec2 minCell = min;
+
+		bool isCollision = true;
 		if (max.length() == 0) {
 			drawSize.x = static_cast<float>(m_Maps[0].size());
 			drawSize.y = static_cast<float>(m_Maps.size());
+			isCollision = false;
 		}
 		else {
 			drawSize = max;
@@ -58,6 +61,7 @@ namespace basecross{
 				
 			}
 		}
+		if (!isCollision) return;
 		/*int objectCount = m_CollisionObjects.size();
 		for (const auto& matrix : m_Draw->GetMatrixVec()) {
 			Vec3 translation = matrix.getTranslation();
@@ -151,7 +155,7 @@ namespace basecross{
 		}
 
 		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
+		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
 		col->SetDrawActive(true);
 		AddTag(L"Stage");
@@ -229,7 +233,7 @@ namespace basecross{
 
 		pos += m_MoveSpeed * velocity * elapsed;
 
-		if ((m_TargetPos - pos).length() < 0.1f) {
+		if ((m_TargetPos - pos).length() < 0.05f) {
 			pos = m_TargetPos;
 
 			m_TargetPos = m_TargetPos == m_MoveStartPos ? m_MoveEndPos : m_MoveStartPos;

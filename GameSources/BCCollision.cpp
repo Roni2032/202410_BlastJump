@@ -7,7 +7,7 @@
 #include "Project.h"
 
 namespace basecross{
-
+	
 	void BCCollisionObb::OnCreate() {
 		m_Trans = GetGameObject()->GetComponent<Transform>();
 		m_Stage = GetGameObject()->GetStage();
@@ -15,6 +15,7 @@ namespace basecross{
 	}
 
 	void BCCollisionObb::OnUpdate() {
+
 		vector<shared_ptr<GameObject>> objs;
 		m_Stage->GetUsedTagObjectVec(m_WallTag, objs);
 		for (auto slipTag : m_SlipTags) {
@@ -28,6 +29,7 @@ namespace basecross{
 			Vec3 objSize = objTrans->GetScale();
 
 			Vec3 pos = m_Trans->GetWorldPosition() + m_CollisionGap;
+
 			Vec3 diff = objPos - pos;
 
 			if (diff.length() > m_CollisionDistance) {
@@ -50,14 +52,13 @@ namespace basecross{
 					m_ExcuteObject.push_back(obj);
 					obj->OnCollisionEnter(m_GameObject);
 					m_GameObject->OnCollisionEnter(obj);
-
 				}
 				else {
 					obj->OnCollisionExcute(m_GameObject);
 					m_GameObject->OnCollisionExcute(obj);
 
 				}
-				bool isSlip = false;
+				/*bool isSlip = false;
 				for (auto slipTag : m_SlipTags) {
 					if (obj->FindTag(slipTag)) {
 						isSlip = true;
@@ -66,7 +67,7 @@ namespace basecross{
 				if (!isSlip) {
 					pos = PushBackPosition(pos, objPos, objSize);
 					m_Trans->SetWorldPosition(pos);
-				}
+				}*/
 			}
 			else {
 				auto it = find(m_ExcuteObject.begin(), m_ExcuteObject.end(), obj);
@@ -77,7 +78,53 @@ namespace basecross{
 				}
 			}
 		}
+		
+		auto& object = m_GameObject;
+		sort(m_ExcuteObject.begin(), m_ExcuteObject.end(), [object](shared_ptr<GameObject>& a, shared_ptr<GameObject>& b) {
+			auto transA = a->GetComponent<Transform>();
+			auto transB = b->GetComponent<Transform>();
+			auto trans = object->GetComponent<Transform>();
+
+			Vec3 scaleA = transA->GetScale();
+			scaleA.y *= -1;
+			Vec3 scaleB = transB->GetScale();
+			scaleB.y *= -1;
+			Vec3 scale = trans->GetScale();
+			scale.y *= -1;
+
+			Vec3 posA = transA->GetPosition();
+			Vec3 posB = transB->GetPosition();
+			Vec3 pos = trans->GetPosition();
+
+			float diffA = ((posA + scaleA / 2.0f) - (pos + scale / 2.0f)).length();
+			float diffB = ((posB + scaleB / 2.0f) - (pos + scale / 2.0f)).length();
+
+
+			return diffA < diffB;
+			});
+
+		
+		for (auto obj : m_ExcuteObject) {
+			auto objTrans = obj->GetComponent<Transform>();
+
+			Vec3 objPos = objTrans->GetWorldPosition();
+			Vec3 objSize = objTrans->GetScale();
+
+			Vec3 pos = m_Trans->GetWorldPosition() + m_CollisionGap;
+
+			bool isSlip = false;
+			for (auto slipTag : m_SlipTags) {
+				if (obj->FindTag(slipTag)) {
+					isSlip = true;
+				}
+			}
+			if (!isSlip) {
+				pos = PushBackPosition(pos, objPos, objSize);
+				m_Trans->SetWorldPosition(pos);
+			}
+		}
 	}
+
 	bool BCCollisionObb::IsHit(Vec3 center, Vec3 wallCenter, Vec3 wallSize) {
 		if (abs(wallCenter.x - center.x) <= m_Size.x / 2.0f + wallSize.x / 2.0f &&
 			abs(wallCenter.y - center.y) <= m_Size.y / 2.0f + wallSize.y / 2.0f) {
@@ -87,14 +134,13 @@ namespace basecross{
 		return false;
 	}
 	Vec3 BCCollisionObb::PushBackPosition(Vec3 pos, Vec3 wallPos, Vec3 wallSize) {
-
+		
 		Vec3 diff = Vec3();
 		Vec3 diff2 = Vec3();
 		diff.x = abs((pos.x + m_Size.x) - wallPos.x);
 		diff2.x = abs((wallPos.x + wallSize.x) - pos.x);
 
 		diff.y = abs(pos.y - (wallPos.y - wallSize.y));
-
 		diff2.y = abs(wallPos.y - (pos.y - m_Size.y));
 
 		if (diff.x > diff2.x) {
@@ -108,10 +154,19 @@ namespace basecross{
 		if (Grv != nullptr) {
 			velocity = Grv->GetVelocity();
 		}
-		if (diff.x < diff.y) {
+		//めり込み量がx >= y(重力の移動量が小さい)の時に壁に張り付くと壁に乗ってしまう(yが優先されてしまう。xを優先すると床で引っかかる)
+		// 重力無効をなくすと床で引っかかりができる。
+		
+		//最終手段。使うことを禁じる
+		//auto stage = m_GameObject->GetTypeStage<GameStage>();
+		
+		//めり込みの比較
+		if (diff.x < diff.y /*|| stage->GetBlock(wallPos + Vec3(0,1,0)) != 0*/) {
+			//左押し出し
 			if (pos.x < wallPos.x) {
 				pos.x = wallPos.x - m_Size.x;
 			}
+			//右押し出し
 			else {
 				pos.x = wallPos.x + wallSize.x;
 			}
@@ -120,12 +175,14 @@ namespace basecross{
 			}
 		}
 		else {
+			//下押し出し
 			if (pos.y < wallPos.y) {
 				pos.y = wallPos.y - wallSize.y;
 				if (Grv != nullptr) {
 					Grv->SetVelocity(Vec3(velocity.x, 0, velocity.z));
 				}
 			}
+			//上押し出し
 			else {
 				pos.y = wallPos.y + m_Size.y;
 				if (Grv != nullptr) {
