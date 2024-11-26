@@ -150,32 +150,28 @@ namespace basecross{
 			//------------------------------------------------------------------
 			//	スプライトをビルボード化
 			//------------------------------------------------------------------
-			
+			Quat q = Quat();
 			Vec3 cameraPos = m_Camera->GetEye();
-			Vec3 spritePos = m_Trans->GetPosition();
+			Vec3 spritePos = m_Trans->GetWorldPosition();
 
-			Vec3 fwd = m_Trans->GetForward();
+			Vec3 fwd = Vec3(0, 0, -1);
 			fwd = fwd.normalize();
-			
+
 			Vec3 diff = cameraPos - spritePos;
 			diff = diff.normalize();
-			
-			float inner = (diff.x * fwd.x + diff.y * fwd.y + diff.z * fwd.z) / (diff.length() * fwd.length());
-			float rad = acos(inner);
 
-			Vec3 vec = Vec3(diff.y * fwd.z - diff.z * fwd.y, diff.z * fwd.x - diff.x * fwd.z, diff.x * fwd.y - diff.y * fwd.x);
+			if (diff.length() != 0 && fwd.length() != 0) {
+				diff = diff.normalize();
 
-			Quat q = Quat(vec.x * sin(rad / 2.0f), vec.y * sin(rad / 2.0f), vec.z * sin(rad / 2.0f), cos(rad / 2.0f));
+				float inner = (diff.x * fwd.x + diff.y * fwd.y + diff.z * fwd.z) / (diff.length() * fwd.length());
+				float rad = acos(inner);
 
-			m_Trans->SetQuaternion(q);
+				Vec3 verticalVec = Vec3(diff.y * fwd.z - diff.z * fwd.y, diff.z * fwd.x - diff.x * fwd.z, diff.x * fwd.y - diff.y * fwd.x);
 
-			//垂直なベクトルを取得
-			/*a.y* b.z - a.z * b.y,
-				a.z* b.x - a.x * b.z,
-				a.x* b.y - a.y * b.x*/
-			//取得したベクトルを基に回転
+				Quat newQ = Quat(verticalVec.x * sin(rad / 2.0f), verticalVec.y * sin(rad / 2.0f), verticalVec.z * sin(rad / 2.0f), cos(rad / 2.0f));
 
-
+				m_Trans->SetQuaternion(q * newQ);
+			}
 		}
 	}
 	void BCParticleSprite::StartParticle(const Vec3 pos) {
