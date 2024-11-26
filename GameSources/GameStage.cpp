@@ -12,8 +12,8 @@ namespace basecross {
 	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｺﾛ・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(-0.5f, 4.0f, -34.0f);
-		const Vec3 at(-0.5f,4.0f,0.0f);
+		const Vec3 eye(-0.0f, 4.0f, -34.0f);
+		const Vec3 at(-0.0f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.0f);
@@ -37,7 +37,8 @@ namespace basecross {
 			CreateParticle();
 			LoadMap();			
 
-			AddGameObject<BombThrowArrow>(m_Player);
+			//AddGameObject<BombThrowArrow>(m_Player);
+			AddGameObject<BombThrowOrbit>(m_Player,30);
 			
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
@@ -133,7 +134,7 @@ namespace basecross {
 			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
 			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
 			if (y == 0) {
-				m_MapLeftTop = startPos;
+				m_MapLeftTop = startPos + Vec3(0.5f,-0.5f,0);
 			}
 			for (int x = 0; x < cells.size(); x++) {
 				int cell = stoi(cells[x]);
@@ -399,7 +400,7 @@ namespace basecross {
 		}
 	}
 	Vec3 GameStage::GetMapIndex(Vec3 pos) {
-		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x, m_MapLeftTop.y - pos.y, 0);
+		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x + 0.5f, m_MapLeftTop.y - pos.y + 0.5f, 0);
 		return mapPos.floor(0);
 	}
 	int GameStage::GetBlock(Vec3 pos) {
