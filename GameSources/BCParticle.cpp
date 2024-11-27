@@ -150,23 +150,28 @@ namespace basecross{
 			//------------------------------------------------------------------
 			//	スプライトをビルボード化
 			//------------------------------------------------------------------
-			
-			//Vec3 cameraPos = m_Camera->GetEye();
-			//Vec3 spritePos = m_Trans->GetPosition();
-			//
-			//Vec3 diff = cameraPos - spritePos;
-			//diff = diff.normalize();
-			//float radXZ = atan2f(diff.z, diff.x);
-			//float radXY = atan2f(diff.y, diff.x);
-			//Vec3 sideVec = Vec3(cos(radXZ + XM_PI / 2.0f), 0.0f, sin(radXZ + XM_PI / 2.0f));
+			Quat q = Quat();
+			Vec3 cameraPos = m_Camera->GetEye();
+			Vec3 spritePos = m_Trans->GetWorldPosition();
 
-			//Quat q = m_Trans->GetQuaternion().rotationY(radXZ);
-			////Quat q = (Quat)XMQuaternionRotationAxis(diff,radXZ);
+			Vec3 fwd = Vec3(0, 0, -1);
+			fwd = fwd.normalize();
 
-			////
-			//////Quat q2 = (Quat)XMQuaternionRotationAxis(sideVec, radXY);
+			Vec3 diff = cameraPos - spritePos;
+			diff = diff.normalize();
 
-			//m_Trans->SetQuaternion(q);
+			if (diff.length() != 0 && fwd.length() != 0) {
+				diff = diff.normalize();
+
+				float inner = (diff.x * fwd.x + diff.y * fwd.y + diff.z * fwd.z) / (diff.length() * fwd.length());
+				float rad = acos(inner);
+
+				Vec3 verticalVec = Vec3(diff.y * fwd.z - diff.z * fwd.y, diff.z * fwd.x - diff.x * fwd.z, diff.x * fwd.y - diff.y * fwd.x);
+
+				Quat newQ = Quat(verticalVec.x * sin(rad / 2.0f), verticalVec.y * sin(rad / 2.0f), verticalVec.z * sin(rad / 2.0f), cos(rad / 2.0f));
+
+				m_Trans->SetQuaternion(q * newQ);
+			}
 		}
 	}
 	void BCParticleSprite::StartParticle(const Vec3 pos) {

@@ -17,16 +17,17 @@ namespace basecross{
 		draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
 		matrix.affineTransformation(
-			Vec3(0.3f,0.3f,0.3f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,-0.5f,0.0f)
+			Vec3(0.3f,0.15f,0.3f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,-0.25f,0.0f)
 		);
 		draw->SetMeshToTransformMatrix(matrix);
-
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
+		AddTag(L"Item");
+		//auto col = AddComponent<CollisionObb>();
+		//col->SetAfterCollision(AfterCollision::None);
 
 		//col->SetDrawActive(true);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
+		GetComponent<Transform>()->SetScale(Vec3(1.0f,2.0f,1.0f));
 	}
 	void Goal::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Player")) {

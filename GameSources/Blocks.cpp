@@ -27,9 +27,12 @@ namespace basecross{
 	void InstanceBlock::DrawMap(const Vec2 max, const Vec2 min) {
 		Vec2 drawSize(0);
 		Vec2 minCell = min;
+
+		bool isCollision = true;
 		if (max.length() == 0) {
 			drawSize.x = static_cast<float>(m_Maps[0].size());
 			drawSize.y = static_cast<float>(m_Maps.size());
+			isCollision = false;
 		}
 		else {
 			drawSize = max;
@@ -58,6 +61,7 @@ namespace basecross{
 				
 			}
 		}
+		if (!isCollision) return;
 		/*int objectCount = m_CollisionObjects.size();
 		for (const auto& matrix : m_Draw->GetMatrixVec()) {
 			Vec3 translation = matrix.getTranslation();
@@ -153,7 +157,7 @@ namespace basecross{
 		auto col = AddComponent<CollisionObb>();
 		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
-		//col->SetDrawActive(true);
+		col->SetDrawActive(true);
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
@@ -167,40 +171,21 @@ namespace basecross{
 	void Block::OnUpdate() {
 		Update();
 	}
-	void Block::OnCollisionExcute(shared_ptr<GameObject>& Other) {
-		return;
+	void Block::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto col = Other->GetComponent<Collision>(false);
 		if (col != nullptr) {
 			if (col->GetAfterCollision() != AfterCollision::Auto) return;
 
-			auto otherTrans = Other->GetComponent<Transform>();
-			auto trans = GetComponent<Transform>();
-
-			Vec3 otherSize = otherTrans->GetScale();
-			Vec3 size = trans->GetScale();
-
-			Vec3 otherPos = otherTrans->GetWorldPosition();
-			Vec3 pos = trans->GetPosition();
-			Vec3 otherVelocity = otherTrans->GetVelocity();
-
-			float immersion = 10000.0f;
-			/*if (pos.x > otherPos.x + otherSize.x) {
-				float nneImersion
-			}
-			else if (pos.x + size.x < otherPos.x) {
-				otherPos.x = pos.x;
-			}
-
-			if (pos.y + otherSize.y < otherPos.y + otherSize.y) {
-				otherPos.y = pos.y - otherSize.y;
-			}
-			else if (pos.y > otherPos.y + otherSize.y) {
-				otherPos.y = pos.y + otherSize.y;
-			}*/
-
-			otherTrans->SetPosition(otherPos);
 		}
 	}
+	void Block::OnCollisionExcute(shared_ptr<GameObject>& Other) {
+		auto col = Other->GetComponent<Collision>(false);
+		if (col != nullptr) {
+			if (col->GetAfterCollision() != AfterCollision::Auto) return;
+
+		}
+	}
+		
 	void FloorBlock::Start() {
 		AddTag(L"Floor");
 		CheckDurability();
@@ -248,7 +233,7 @@ namespace basecross{
 
 		pos += m_MoveSpeed * velocity * elapsed;
 
-		if ((m_TargetPos - pos).length() < 0.1f) {
+		if ((m_TargetPos - pos).length() < 0.05f) {
 			pos = m_TargetPos;
 
 			m_TargetPos = m_TargetPos == m_MoveStartPos ? m_MoveEndPos : m_MoveStartPos;
@@ -257,6 +242,7 @@ namespace basecross{
 	}
 
 	void MoveBlock::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		Block::OnCollisionEnter(Other);
 		if (Other->FindTag(L"Player")) {
 			Other->GetComponent<Transform>()->SetParent(GetThis<GameObject>());
 		}

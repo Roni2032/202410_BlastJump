@@ -10,13 +10,16 @@ namespace basecross{
 
 	void BombItem::OnCreate() {
 		auto draw = AddComponent<PNTStaticDraw>();
-		draw->SetMeshResource(L"BOMB_MD");
+		draw->SetMeshResource(L"DEFAULT_SQUARE");
+		draw->SetTextureResource(L"BOMB_ITEM_TEX");
+		SetAlphaActive(true);
+		/*draw->SetMeshResource(L"BOMB_MD");
 		draw->SetTextureResource(L"BOMB_MD_TEX");
 		Mat4x4 matrix;
 		matrix.affineTransformation(
 			Vec3(0.5f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
 		);
-		draw->SetMeshToTransformMatrix(matrix);
+		draw->SetMeshToTransformMatrix(matrix);*/
 
 
 		auto col = AddComponent<CollisionSphere>();
@@ -25,6 +28,8 @@ namespace basecross{
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
 		trans->SetScale(Vec3(0.5f) + Vec3(0.2f) * (m_AddBombNum - DEFAULT_BOMB_NUM));
+
+		AddTag(L"Item");
 	}
 	void BombItem::OnUpdate() {
 
@@ -33,6 +38,7 @@ namespace basecross{
 		if (Other->FindTag(L"Player")) {
 			//Š”‚ğ‘‚â‚·
 			static_pointer_cast<Player>(Other)->AddHasBombV2(m_AddBombNum);
+			GetTypeStage<GameStage>()->DestroyBlock(m_Pos,GetThis<GameObject>());
 			GetStage()->RemoveGameObject<BombItem>(GetThis<BombItem>());
 		}
 	}

@@ -4,33 +4,39 @@
 */
 
 #pragma once
-
 //#include <Effekseer.h>
 //#include <EffekseerRendererDX11.h>
 
 #include "ProjectShader.h"
 #include "ProjectBehavior.h"
 #include "Scene.h"
+
 #include "GameStage.h"
 #include "TitleStage.h"
 #include "GameStageM.h"
 #include "GameStageH.h"
 #include "GameStageK.h"
 
+#include "BCSprite.h"
+#include "BCParticle.h"
+#include "BCGravity.h"
+#include "Particles.h"
+#include "BCCollision.h"
+
 #include "Character.h"
 #include "Player.h"
-#include "Enemy.h"
-#include "BCSprite.h"
-#include "Bomb.h"
-#include "Blocks.h"
 #include "MyCamera.h"
-#include "BCParticle.h"
-#include "Particles.h"
-#include "BCGravity.h"
+
+#include "Bomb.h"
+#include "BombItem.h"
+#include "BombThrowArrow.h"
+
 #include "StageObjects.h"
+#include "Blocks.h"
+#include "BlockData.h"
+
 #include "SoundManager.h"
 #include "BackGround.h"
-#include "BombItem.h"
+
 #include "TrackingEnemy.h"
 #include "EnemyState.h"
-#include "BombThrowArrow.h"
