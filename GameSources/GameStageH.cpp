@@ -73,12 +73,12 @@ namespace basecross {
 		AddGameObject<Block>(cells[0], Vec3(startPos.x - 1, center.y + 0.5f, 0), Vec3(1, mapSize.y, 1));
 	}
 
-	void GameStageH::CreateEnemy(){
-		Vec3 AppearancePos = Vec3(1.0f,11.0f,0.0f);
-		Vec3 Size = Vec3(0.5f);
-		auto enemy = AddGameObject<Enemy>(AppearancePos,Size);
-		//SetSharedGameObject(L"Enemy",enemy);
-	}
+	//void GameStageH::CreateEnemy(){
+	//	Vec3 AppearancePos = Vec3(1.0f,11.0f,0.0f);
+	//	Vec3 Size = Vec3(0.5f);
+	//	auto enemy = AddGameObject<Enemy>(AppearancePos,Size);
+	//	//SetSharedGameObject(L"Enemy",enemy);
+	//}
 
 
 	void GameStageH::OnCreate() {
@@ -87,7 +87,7 @@ namespace basecross {
 			GameStage::OnCreate();
 			//CreateResource();
 			//CreateMap();
-			CreateEnemy();
+			//CreateEnemy();
 		}
 		catch (...) {
 			throw;
