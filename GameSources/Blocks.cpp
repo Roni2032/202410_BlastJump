@@ -120,7 +120,9 @@ namespace basecross{
 				}
 
 				if (isCollider) {
-					m_CollisionObjects.push_back(GetStage()->AddGameObject<Block>(L"", Vec3(x, y, 0), Vec3(1.0f)));
+					auto obj = GetStage()->AddGameObject<Block>(L"", Vec3(x, y, 0), Vec3(1.0f));
+					GetTypeStage<GameStage>()->RegisterBlock(Vec2(j, i), obj);
+					m_CollisionObjects.push_back(obj);
 				}
 			}
 		}

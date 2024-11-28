@@ -16,6 +16,7 @@ namespace basecross{
 
 	void BCCollisionObb::OnUpdate() {
 
+		m_PushBackObject.clear();
 		vector<shared_ptr<GameObject>> objs;
 		m_Stage->GetUsedTagObjectVec(m_WallTag, objs);
 		for (auto slipTag : m_SlipTags) {
@@ -53,21 +54,6 @@ namespace basecross{
 					obj->OnCollisionEnter(m_GameObject);
 					m_GameObject->OnCollisionEnter(obj);
 				}
-				else {
-					obj->OnCollisionExcute(m_GameObject);
-					m_GameObject->OnCollisionExcute(obj);
-
-				}
-				/*bool isSlip = false;
-				for (auto slipTag : m_SlipTags) {
-					if (obj->FindTag(slipTag)) {
-						isSlip = true;
-					}
-				}
-				if (!isSlip) {
-					pos = PushBackPosition(pos, objPos, objSize);
-					m_Trans->SetWorldPosition(pos);
-				}*/
 			}
 			else {
 				auto it = find(m_ExcuteObject.begin(), m_ExcuteObject.end(), obj);
@@ -105,10 +91,6 @@ namespace basecross{
 
 		
 		for (auto obj : m_ExcuteObject) {
-			auto objTrans = obj->GetComponent<Transform>();
-
-			Vec3 objPos = objTrans->GetWorldPosition();
-			Vec3 objSize = objTrans->GetScale();
 
 			Vec3 pos = m_Trans->GetWorldPosition() + m_CollisionGap;
 
@@ -119,9 +101,12 @@ namespace basecross{
 				}
 			}
 			if (!isSlip) {
-				pos = PushBackPosition(pos, objPos, objSize);
+				pos = PushBackPosition(pos, obj);
 				m_Trans->SetWorldPosition(pos);
 			}
+
+			obj->OnCollisionExcute(m_GameObject);
+			m_GameObject->OnCollisionExcute(obj);
 		}
 	}
 
@@ -133,8 +118,13 @@ namespace basecross{
 
 		return false;
 	}
-	Vec3 BCCollisionObb::PushBackPosition(Vec3 pos, Vec3 wallPos, Vec3 wallSize) {
-		
+	Vec3 BCCollisionObb::PushBackPosition(Vec3 pos, shared_ptr<GameObject>& wall) {
+		HitDir dir = HitDir::None;
+		auto objTrans = wall->GetComponent<Transform>();
+
+		Vec3 wallPos = objTrans->GetWorldPosition();
+		Vec3 wallSize = objTrans->GetScale();
+
 		Vec3 diff = Vec3();
 		Vec3 diff2 = Vec3();
 		diff.x = abs((pos.x + m_Size.x) - wallPos.x);
@@ -154,21 +144,18 @@ namespace basecross{
 		if (Grv != nullptr) {
 			velocity = Grv->GetVelocity();
 		}
-		//めり込み量がx >= y(重力の移動量が小さい)の時に壁に張り付くと壁に乗ってしまう(yが優先されてしまう。xを優先すると床で引っかかる)
-		// 重力無効をなくすと床で引っかかりができる。
-		
-		//最終手段。使うことを禁じる
-		//auto stage = m_GameObject->GetTypeStage<GameStage>();
 		
 		//めり込みの比較
-		if (diff.x < diff.y /*|| stage->GetBlock(wallPos + Vec3(0,1,0)) != 0*/) {
+		if (diff.x < diff.y) {
 			//左押し出し
 			if (pos.x < wallPos.x) {
 				pos.x = wallPos.x - m_Size.x;
+				dir = HitDir::Left;
 			}
 			//右押し出し
 			else {
 				pos.x = wallPos.x + wallSize.x;
+				dir = HitDir::Right;
 			}
 			if (Grv != nullptr) {
 				Grv->SetVelocity(Vec3(0, velocity.y, velocity.z));
@@ -178,6 +165,7 @@ namespace basecross{
 			//下押し出し
 			if (pos.y < wallPos.y) {
 				pos.y = wallPos.y - wallSize.y;
+				dir = HitDir::Down;
 				if (Grv != nullptr) {
 					Grv->SetVelocity(Vec3(velocity.x, 0, velocity.z));
 				}
@@ -185,13 +173,23 @@ namespace basecross{
 			//上押し出し
 			else {
 				pos.y = wallPos.y + m_Size.y;
+				dir = HitDir::Up;
 				if (Grv != nullptr) {
 					Grv->SetVelocity(Vec3(0, 0, velocity.z));
 				}
 			}
 		}
-
+		m_PushBackObject.push_back(CollisionData(wall, dir));
 		return pos - m_CollisionGap;
+	}
+
+	CollisionData BCCollisionObb::GetCollisionData(const shared_ptr<GameObject>& obj) {
+		for (auto& data : m_PushBackObject) {
+			if (obj == data.m_HitObject) {
+				return data;
+			}
+		}
+		return CollisionData();
 	}
 }
 //end basecross

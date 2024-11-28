@@ -5,6 +5,7 @@
 
 #include "stdafx.h"
 #include "Project.h"
+//m_MapDataを使ってデータ保存するように変更する
 
 namespace basecross {
 	class Block;
@@ -12,8 +13,8 @@ namespace basecross {
 	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｺﾛ・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
-		const Vec3 eye(-0.0f, 4.0f, -34.0f);
-		const Vec3 at(-0.0f,4.0f,0.0f);
+		const Vec3 eye(-0.5f, 4.0f, -34.0f);
+		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
 		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.0f);
@@ -104,8 +105,8 @@ namespace basecross {
 		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
 		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
 		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
-		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
-		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
+		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle_2.png");
+		app->RegisterTexture(L"EXPLODE_SPARK_TEX", texPath + L"explodeSpark.png");
 		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
 		app->RegisterTexture(L"BOMB_ITEM_TEX", texPath + L"BombItem.png");
 
@@ -129,12 +130,13 @@ namespace basecross {
 		Vec2 startPos;
 		
 		for (int y = 0; y < mapVec.size() - 1; y++) {
+			m_MapData.push_back({});
 			cells.clear();
-			vector<int> cow;
+			//vector<int> cow;
 			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
 			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
 			if (y == 0) {
-				m_MapLeftTop = startPos + Vec3(0.5f,-0.5f,0);
+				m_MapLeftTop = startPos + Vec3(0.0f,-0.5f,0);
 			}
 			for (int x = 0; x < cells.size(); x++) {
 				int cell = stoi(cells[x]);
@@ -145,9 +147,10 @@ namespace basecross {
 				else {
 					m_Walls->AddBlock(y, 0);
 				}
-				cow.push_back(cell);
+				m_MapData[y].push_back(BlockData(cell));
+				//cow.push_back(cell);
 			}
-			m_Map.push_back(cow);
+			//m_Map.push_back(cow);
 		}
 		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
 		auto camera = GetView()->GetTargetCamera();
@@ -158,12 +161,20 @@ namespace basecross {
 		LoadMap();
 	}
 
-	shared_ptr<GameObject> GameStage::CreateBlock(int blockNum, Vec3 pos) {
+	void GameStage::RegisterBlock(Vec2 mapIndex, const shared_ptr<GameObject>& obj) {
+		if (m_MapData[mapIndex.y][mapIndex.x].GetBlock() == nullptr) {
+			m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
+		}
+	}
+	shared_ptr<GameObject> GameStage::CreateBlock(Vec2 mapIndex, Vec3 pos) {
 		shared_ptr<GameObject> obj = nullptr;
-		switch (blockNum) {
+		switch (m_MapData[mapIndex.y][mapIndex.x].GetID()) {
 		case 1:
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
 			break;
+		/*case 2:
+			obj = AddGameObject<Block>(L"", pos, Vec3(1.0f));
+			break;*/
 		case 3:
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 50);
 			break;
@@ -193,7 +204,9 @@ namespace basecross {
 			break;
 
 		}
-
+		
+		m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
+		
 		return obj;
 	}
 	void GameStage::LoadMap() {
@@ -246,32 +259,32 @@ namespace basecross {
 		if (m_CameraAtY == 0) {
 			m_CameraAtY = atY;
 			for (int i = 0; i <= m_CameraAtY + m_LoadStageSize.y; i++) {
-				if (i >= m_Map.size()) {
+				if (i >= m_MapData.size()) {
 					break;
 				}
-				int y = static_cast<int>(m_Map.size()) - i - 1;
-				int sizeX = static_cast<int>(m_Map[y].size());
+				int y = static_cast<int>(m_MapData.size()) - i - 1;
+				int sizeX = static_cast<int>(m_MapData[y].size());
 				for (int x = 0; x < sizeX; x++) {
-					int size = static_cast<int>(m_Map[y].size());
-					auto obj = CreateBlock(m_Map[y][x], Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+					int size = static_cast<int>(m_MapData[y].size());
+					auto obj = CreateBlock(Vec2(x,y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
 					if (obj != nullptr) {
 						m_LoadedStageObjects.push_back(obj);
 					}
 				}
 			}
 
-			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
+			m_Walls->DrawMap(Vec2(m_MapData[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
 			return;
 		}
 		for (int i = m_CameraAtY + m_LoadStageSize.y + 1; i <= atY + m_LoadStageSize.y; i++) {
-			if (i >= m_Map.size()) return;
+			if (i >= m_MapData.size()) return;
 
-			for (int j = 0; j < m_Map[i].size(); j++) {
+			for (int j = 0; j < m_MapData[i].size(); j++) {
 
-				int loadIndexY = static_cast<int>(m_Map.size()) - i - 1;
-				float sizeX = static_cast<float>(m_Map[i].size());
-				Vec2 startPos = Vec2(sizeX / -2, m_Map.size() - 2);
-				auto obj = CreateBlock(m_Map[loadIndexY][j], Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+				int loadIndexY = static_cast<int>(m_MapData.size()) - i - 1;
+				float sizeX = static_cast<float>(m_MapData[i].size());
+				Vec2 startPos = Vec2(sizeX / -2, m_MapData.size() - 2);
+				auto obj = CreateBlock(Vec2(j,loadIndexY), Vec3(startPos.x + j, startPos.y - loadIndexY, 0));
 				if (obj != nullptr) {
 					m_LoadedStageObjects.push_back(obj);
 				}
@@ -281,18 +294,18 @@ namespace basecross {
 		for (int i = m_CameraAtY - m_LoadStageSize.y - 1; i >= atY - m_LoadStageSize.y; i--) {
 			if (i < 0) return;
 
-			for (int j = 0; j < m_Map[i].size(); j++) {
+			for (int j = 0; j < m_MapData[i].size(); j++) {
 
-				int loadIndexY = static_cast<int>(m_Map.size()) - i - 1;
-				Vec2 startPos = Vec2(m_Map[i].size() / -2.0f, m_Map.size() - 2);
-				auto obj = CreateBlock(m_Map[loadIndexY][j], Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
+				int loadIndexY = static_cast<int>(m_MapData.size()) - i - 1;
+				Vec2 startPos = Vec2(m_MapData[i].size() / -2.0f, m_MapData.size() - 2);
+				auto obj = CreateBlock(Vec2(j, loadIndexY), Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
 				if (obj != nullptr) {
 					m_LoadedStageObjects.push_back(obj);
 				}
 			}
 		}
 		m_CameraAtY = atY;
-		m_Walls->DrawMap(Vec2(m_Map[0].size(), m_CameraAtY + m_LoadStageSize.y), Vec2(0, m_CameraAtY - m_LoadStageSize.y));
+		m_Walls->DrawMap(Vec2(m_MapData[0].size(), m_CameraAtY + m_LoadStageSize.y), Vec2(0, m_CameraAtY - m_LoadStageSize.y));
 		//・ｽﾍ囲外・ｽﾉ難ｿｽ・ｽ・ｽ・ｽ・ｽ・ｽu・ｽ・ｽ・ｽb・ｽN・ｽ・ｽ・ｽ尞・
 		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
 			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
@@ -301,6 +314,7 @@ namespace basecross {
 			if (y < static_cast<int>(atY) - m_LoadStageSize.y) {
 				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
 				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
+				
 			}
 			if (y > static_cast<int>(atY) + m_LoadStageSize.y) {
 				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
@@ -403,10 +417,18 @@ namespace basecross {
 		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x + 0.5f, m_MapLeftTop.y - pos.y + 0.5f, 0);
 		return mapPos.floor(0);
 	}
-	int GameStage::GetBlock(Vec3 pos) {
+	shared_ptr<GameObject> GameStage::GetBlock(Vec3 pos) {
+		Vec3 mapPos = GetMapIndex(pos);
+		if (mapPos.y < 0 || mapPos.y >= m_MapData.size() ||
+			mapPos.x < 0 || mapPos.x >= m_MapData[mapPos.y].size()) {
+			return nullptr;
+		}
+		return m_MapData[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)].GetBlock();
+	}
+	int GameStage::GetBlockId(Vec3 pos) {
 		Vec3 mapPos = GetMapIndex(pos);
 		
-		return m_Map[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)];
+		return m_MapData[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)].GetID();
 	}
 
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
@@ -414,7 +436,8 @@ namespace basecross {
 			m_Player->GetComponent<Transform>()->SetParent(nullptr);
 		}
 		Vec3 mapPos = GetMapIndex(pos);
-		m_Map[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)] = 0;
+		//m_Map[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)] = 0;
+		m_MapData[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)].RemoveBlock();
 		auto it = find(m_LoadedStageObjects.begin(), m_LoadedStageObjects.end(), block);
 		if (it != m_LoadedStageObjects.end()) {
 			m_LoadedStageObjects.erase(it);
