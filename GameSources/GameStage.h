@@ -7,9 +7,11 @@
 #include "stdafx.h"
 #include "BCSprite.h"
 #include "Blocks.h"
+
 #include "Player.h"
 
 namespace basecross {
+	class BlockData;
 
 	struct BetWeen {
 		float m_High;
@@ -35,7 +37,8 @@ namespace basecross {
 		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
-		vector<vector<int>> m_Map;
+		//vector<vector<int>> m_Map;
+		vector<vector<BlockData>> m_MapData;
 		Vec3 m_MapLeftTop;
 		wstring m_MapName;
 		CsvFile m_CsvMap;
@@ -61,8 +64,6 @@ namespace basecross {
 		void CreateWallCollider(Vec2 startPos, Vec2 mapSize);
 		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
-		void CreateEnemy();
-		shared_ptr<GameObject> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
 		void BlockUpdateActive();
 	public:
@@ -78,12 +79,17 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 		virtual void OnDestroy()override;
+		void RegisterBlock(Vec2 mapIndex, const shared_ptr<GameObject>& obj);
+		shared_ptr<GameObject> CreateBlock(Vec2 mapIndex, Vec3 pos);
 
 		shared_ptr<Player> m_Player;
 
 		void PlayParticle(const wstring& key, Vec3 pos);
-		vector<vector<int>> GetMap() {
+		/*vector<vector<int>> GetMap() {
 			return m_Map;
+		}*/
+		vector<vector<BlockData>> GetMap() {
+			return m_MapData;
 		}
 
 		float GetBottomY() {
@@ -93,7 +99,8 @@ namespace basecross {
 			return m_MapLeftTop.y;
 		}
 		Vec3 GetMapIndex(Vec3 pos);
-		int GetBlock(Vec3 pos);
+		shared_ptr<GameObject> GetBlock(Vec3 pos);
+		int GetBlockId(Vec3 pos);
 		void DestroyBlock(Vec3 pos, shared_ptr<GameObject>& block);
 
 		void NewRespawnPosition(Vec3 pos) {
@@ -109,7 +116,6 @@ namespace basecross {
 		void SetGameMode(GameMode mode) {
 			m_Mode = mode;
 		}
-		//void CreateEnemy();
 		void GameClear();
 		void GameOver();
 	};

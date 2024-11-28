@@ -40,7 +40,7 @@ namespace basecross{
 			}
 		}
 	}
-
+	
 	void Orbit::OnCreate() {
 		m_Draw = AddComponent<PNTStaticDraw>();
 		m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
@@ -94,11 +94,46 @@ namespace basecross{
 				Vec3 pos = firstVelocity * time + bombGravity * (time * time) / 2.0f;
 				
 				m_Orbits[i]->SetPosition(pos);
-				/*Vec3 worldPos = m_Orbits[i]->GetComponent<Transform>()->GetWorldPosition();
 
-				if (GetTypeStage<GameStage>()->GetBlock(worldPos) != 0) {
-					isHit = true;
-				}*/
+				Vec3 worldPos = m_Orbits[i]->GetComponent<Transform>()->GetWorldPosition();
+				/*Vec3 center = worldPos - Vec3(0.5f, -0.5f, 0.0f);
+				float bombRadius = 0.5f;
+				vector<shared_ptr<GameObject>> findObj;
+				for (int i = -1; i < 2; i++) {
+					for (int j = -1; j < 2; j++) {
+						auto obj = GetTypeStage<GameStage>()->GetBlock(worldPos + Vec3(j, i, 0));
+						if (obj != nullptr) {
+							findObj.push_back(obj);
+						}
+					}
+				}
+				bool isCollision = false;
+				for (auto obj : findObj) {
+					if (obj->GetComponent<Collision>(false) == nullptr) continue;
+					auto objTrans = obj->GetComponent<Transform>();
+					Vec3 objPos = objTrans->GetPosition();
+					Vec3 objScale = objTrans->GetScale();
+
+					
+					if (objPos.x - bombRadius > center.x && objPos.x + objScale.x + bombRadius < center.x &&
+						objPos.y < center.y && objPos.y - objScale.y > center.y) {
+						isCollision = true;
+					}
+					if (objPos.x > center.x && objPos.x + objScale.x < center.x &&
+						objPos.y + bombRadius < center.y && objPos.y - objScale.y - bombRadius > center.y) {
+						isCollision = true;
+					}
+					vector<Vec3> vertexes = {
+						objPos,
+						objPos + Vec3(objScale.x,0,0),
+						objPos + Vec3(objScale.x,-objScale.y,0),
+						objPos + Vec3(0,-objScale.y,0),
+					};
+					for (auto vertex : vertexes) {
+						if ((vertex - center).length() < bombRadius) isCollision = true;
+					}
+				}
+				if (isCollision) isHit = true;*/
 			}
 		}
 	}
