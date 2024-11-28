@@ -127,6 +127,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BlockData.h">
       <Filter>Floor</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
+      <Filter>workHashimoto</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -207,6 +210,9 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BlockData.cpp">
       <Filter>Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
+      <Filter>workHashimoto</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
