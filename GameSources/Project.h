@@ -4,6 +4,7 @@
 */
 
 #pragma once
+#include <concepts>
 //#include <Effekseer.h>
 //#include <EffekseerRendererDX11.h>
 
