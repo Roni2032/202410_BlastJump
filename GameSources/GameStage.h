@@ -61,6 +61,7 @@ namespace basecross {
 		void CreateWallCollider(Vec2 startPos, Vec2 mapSize);
 		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
+		void CreateEnemy();
 		shared_ptr<GameObject> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
 		void BlockUpdateActive();
@@ -108,6 +109,7 @@ namespace basecross {
 		void SetGameMode(GameMode mode) {
 			m_Mode = mode;
 		}
+		//void CreateEnemy();
 		void GameClear();
 		void GameOver();
 	};

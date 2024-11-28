@@ -35,7 +35,8 @@ namespace basecross {
 			SetSharedGameObject(L"Player", m_Player);
 			CreateMap();
 			CreateParticle();
-			LoadMap();			
+			LoadMap();	
+			CreateEnemy();
 
 			//AddGameObject<BombThrowArrow>(m_Player);
 			AddGameObject<BombThrowOrbit>(m_Player,30);
@@ -106,7 +107,7 @@ namespace basecross {
 		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle1.png");
 		app->RegisterTexture(L"EXPLODE2_TEX", texPath + L"explodeParticle2.png");
-		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
+		//app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
 		app->RegisterTexture(L"BOMB_ITEM_TEX", texPath + L"BombItem.png");
 
 		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
@@ -162,7 +163,7 @@ namespace basecross {
 		shared_ptr<GameObject> obj = nullptr;
 		switch (blockNum) {
 		case 1:
-			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 100);
 			break;
 		case 3:
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 50);
@@ -171,7 +172,7 @@ namespace basecross {
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 10);
 			break;
 		case 5:
-			obj = AddGameObject<BombItem>(pos,4);
+			obj = AddGameObject<BombItem>(pos, 4);
 			break;
 		case 6:
 			obj = AddGameObject<Goal>(pos);
@@ -191,9 +192,10 @@ namespace basecross {
 		case 11:
 			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(0, -2, 0));
 			break;
-
+		//case 12:
+		//	obj = AddGameObject<Enemy>(pos,0.5f);
+		//	break;
 		}
-
 		return obj;
 	}
 	void GameStage::LoadMap() {
@@ -311,6 +313,13 @@ namespace basecross {
 		
 		
 	}
+	void GameStage::CreateEnemy() {
+		Vec3 AppearancePos = Vec3(1.0f, 11.0f, 0.0f);
+		Vec3 Size = Vec3(1.0f);
+		auto enemy = AddGameObject<Enemy>(AppearancePos, Size);
+		//SetSharedGameObject(L"Enemy",enemy);
+
+	}
 	void GameStage::BlockUpdateActive() {
 		for (auto& blockObject : GetGameObjectVec()) {
 			if (blockObject->FindTag(L"Stage")) {
@@ -423,7 +432,6 @@ namespace basecross {
 		
 		RemoveGameObject<GameObject>(block);
 	}
-
 	void GameStage::GameClear() {
 		if (m_Mode != GameMode::InGame) return;
 
@@ -447,3 +455,4 @@ namespace basecross {
 	}
 }
 //end basecross
+ 
