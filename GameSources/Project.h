@@ -40,3 +40,5 @@
 
 #include "TrackingEnemy.h"
 #include "EnemyState.h"
+
+#include "Enemy.h"
