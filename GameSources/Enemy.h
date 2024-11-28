@@ -17,7 +17,9 @@ namespace basecross {
 		shared_ptr<Shadowmap> m_ptrShadow;
 		shared_ptr<Transform> m_ptrTrans;
 		CsvFile m_Csvmap;
+		wstring m_MapName;
 		unique_ptr<StateMachine<Enemy>> m_StateEnemy;
+		vector<int> m_Block;
 		//hp
 		int m_hp;
 		//speed
@@ -42,12 +44,14 @@ namespace basecross {
 		Enemy(const shared_ptr<Stage>& StagePtr,
 			const Vec3& Position,
 			const Vec3& Scale);
+		//Enemy(const shared_ptr<Stage>& StatePtr, Vec3 Position);
 		virtual ~Enemy() {}
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		void Move();
 		void String();
 
+		void InternalMap();
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
 
