@@ -9,7 +9,7 @@
 
 namespace basecross {
 	class Block;
-	//--------------------------------------------------------------------------------------
+	//--------------------------------------------------------------------------------------	
 	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｺﾛ・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
@@ -36,7 +36,8 @@ namespace basecross {
 			SetSharedGameObject(L"Player", m_Player);
 			CreateMap();
 			CreateParticle();
-			LoadMap();			
+			LoadMap();		
+			CreateEnemy();
 
 			//AddGameObject<BombThrowArrow>(m_Player);
 			AddGameObject<BombThrowOrbit>(m_Player,30);
@@ -107,7 +108,7 @@ namespace basecross {
 		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle_2.png");
 		app->RegisterTexture(L"EXPLODE_SPARK_TEX", texPath + L"explodeSpark.png");
-		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
+		//app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
 		app->RegisterTexture(L"BOMB_ITEM_TEX", texPath + L"BombItem.png");
 
 		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
@@ -208,6 +209,13 @@ namespace basecross {
 		m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
 		
 		return obj;
+	}
+	void GameStage::CreateEnemy() {
+		Vec3 AppearancePos = Vec3(-0.25f,8.0f,0.0f);
+		Vec3 Size = Vec3(1.0f);
+		auto enemy = AddGameObject<Enemy>(AppearancePos, Size);
+	//SetSharedGameObject(L"Enemy",enemy);
+
 	}
 	void GameStage::LoadMap() {
 		auto camera = GetView()->GetTargetCamera();

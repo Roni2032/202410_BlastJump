@@ -65,6 +65,7 @@ namespace basecross {
 		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
 		void LoadMap();
+		void CreateEnemy();
 		void BlockUpdateActive();
 	public:
 		//\’z‚Æ”jŠü
