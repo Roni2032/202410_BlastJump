@@ -47,6 +47,7 @@ namespace basecross {
 		float m_MainTimer;
 		GameMode m_Mode;
 
+		int m_StageNumber;
 
 		shared_ptr<BCNumber> m_TimerSprite[2];
 		shared_ptr<BCNumber> m_PlayerHasBombs;
@@ -61,17 +62,17 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
-		void CreateWallCollider(Vec2 startPos, Vec2 mapSize);
 		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
 		void LoadMap();
 		void BlockUpdateActive();
 	public:
 		//ç\ízÇ∆îjä¸
-		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName),
+		GameStage(const wstring& mapName,const int stageNumber = 0) :Stage(),m_MapName(mapName),
 			m_LoadStageSize(Vec3(20,7,0)),
 			m_BombNum(0),
 			m_MainTimer(0),
+			m_StageNumber(stageNumber),
 			m_Mode(GameMode::NotBomb)
 		{}
 		virtual ~GameStage() {}
@@ -84,7 +85,14 @@ namespace basecross {
 
 		shared_ptr<Player> m_Player;
 
-		void PlayParticle(const wstring& key, Vec3 pos);
+		template<typename particleType>
+		void PlayParticle(const wstring& key, Vec3 pos) const{
+			auto particle = GetSharedGameObject<particleType>(key, false);
+			if (particle != nullptr) {
+				particle->Shot(pos);
+			}
+		}
+
 		/*vector<vector<int>> GetMap() {
 			return m_Map;
 		}*/
