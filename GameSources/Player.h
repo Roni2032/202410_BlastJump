@@ -229,7 +229,6 @@ namespace basecross {
 
 		float m_WalkSpeed = 0.0f;
 		Vec3 m_Pos;
-		float m_DeltaTime = App::GetApp()->GetElapsedTime();
 
 	public:
 
@@ -241,13 +240,14 @@ namespace basecross {
 		//•à‚«ó‘Ô‚Å‚ÌXVˆ—
 		void PlayerUpdate(shared_ptr<Player> player) override
 		{
+			float m_DeltaTime = App::GetApp()->GetElapsedTime();
 			player->SetIsBombCreate(false);
 
 			m_Pos = player->GetPlayerPos();
 			m_Pos.x += m_WalkSpeed * m_DeltaTime;
 			player->SetPlayerPos(m_Pos);
 		}
-
+		
 		wstring GetStateName() override
 		{
 			return L"Walk";

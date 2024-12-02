@@ -143,6 +143,7 @@ namespace basecross {
 				((playerPosition.x + playerScale.x * 0.5f) < (blockPosition.x + blockScale.x)))
 			{
 				SetIsJumping(false);
+				SetAirBombLimit(1);
 			}
 		}
 
@@ -152,7 +153,6 @@ namespace basecross {
 	{
 		if (Other->FindTag(L"Stage")) {
 			SetIsJumping(true);
-			SetAirBombLimit(1);
 			Other->OnCollisionExit(GetThis<GameObject>());
 		}
 	}
