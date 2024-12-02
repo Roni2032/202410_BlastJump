@@ -44,8 +44,7 @@ namespace basecross{
 	void Orbit::OnCreate() {
 		m_Draw = AddComponent<PNTStaticDraw>();
 		m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
-		//m_Draw->SetTextureResource(L"BOMB_THROW_TEX");
-		m_Draw->SetDiffuse(Col4(1, 1, 1, 1));
+		//m_Draw->SetTextureResource(L"ARROW_ORBIT_TEX");
 		SetAlphaActive(true);
 
 		m_Trans = GetComponent<Transform>();
@@ -55,6 +54,7 @@ namespace basecross{
 	void Orbit::SetPosition(Vec3 pos) {
 		m_Trans->SetPosition(pos);
 	}
+
 	void Orbit::OnUpdate() {
 		
 	}
@@ -70,7 +70,6 @@ namespace basecross{
 			}
 			m_Trans->SetParent(player);
 		}
-		
 	}
 
 	void BombThrowOrbit::OnUpdate() {
@@ -92,12 +91,21 @@ namespace basecross{
 					m_Orbits[i]->SetDrawActive(true);
 				}
 				Vec3 pos = firstVelocity * time + bombGravity * (time * time) / 2.0f;
-				
+				pos.z -= 0.5f;
 				m_Orbits[i]->SetPosition(pos);
+				time += renderTime;
+				Vec3 nextPos = firstVelocity * time + bombGravity * (time * time) / 2.0f;
+
+				Vec3 diff = nextPos - pos;
+				diff = diff.normalize();
+
+				float rad = atan2f(-diff.x, diff.y);
+
+				m_Orbits[i]->GetComponent<Transform>()->SetRotation(0, 0, rad);
 
 				Vec3 worldPos = m_Orbits[i]->GetComponent<Transform>()->GetWorldPosition();
-				/*Vec3 center = worldPos - Vec3(0.5f, -0.5f, 0.0f);
-				float bombRadius = 0.5f;
+				Vec3 center = worldPos;
+				float bombRadius = 0.25f;
 				vector<shared_ptr<GameObject>> findObj;
 				for (int i = -1; i < 2; i++) {
 					for (int j = -1; j < 2; j++) {
@@ -114,26 +122,12 @@ namespace basecross{
 					Vec3 objPos = objTrans->GetPosition();
 					Vec3 objScale = objTrans->GetScale();
 
-					
-					if (objPos.x - bombRadius > center.x && objPos.x + objScale.x + bombRadius < center.x &&
-						objPos.y < center.y && objPos.y - objScale.y > center.y) {
+					if (abs(objPos.x - center.x) < bombRadius + objScale.x / 2.0f &&
+						abs(objPos.y - center.y) < bombRadius + objScale.y / 2.0f) {
 						isCollision = true;
-					}
-					if (objPos.x > center.x && objPos.x + objScale.x < center.x &&
-						objPos.y + bombRadius < center.y && objPos.y - objScale.y - bombRadius > center.y) {
-						isCollision = true;
-					}
-					vector<Vec3> vertexes = {
-						objPos,
-						objPos + Vec3(objScale.x,0,0),
-						objPos + Vec3(objScale.x,-objScale.y,0),
-						objPos + Vec3(0,-objScale.y,0),
-					};
-					for (auto vertex : vertexes) {
-						if ((vertex - center).length() < bombRadius) isCollision = true;
 					}
 				}
-				if (isCollision) isHit = true;*/
+				if (isCollision) isHit = true;
 			}
 		}
 	}

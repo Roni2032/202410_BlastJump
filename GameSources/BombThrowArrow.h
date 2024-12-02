@@ -40,7 +40,6 @@ namespace basecross{
 		weak_ptr<Player> m_player;
 		shared_ptr<Transform> m_Trans;
 		vector<shared_ptr<Orbit>> m_Orbits;
-
 		int m_OrbitNum;
 	public:
 		BombThrowOrbit(const shared_ptr<Stage>& ptr, shared_ptr<Player> player,const int& num = 10) :
