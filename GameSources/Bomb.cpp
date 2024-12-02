@@ -64,7 +64,7 @@ namespace basecross{
 	void Bomb::Explode() {
 		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetWorldPosition(),m_ExplodeStatus);
 		
-		m_GameStage->PlayParticle(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition());
+		m_GameStage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition());
 
 		auto player = m_Player.lock();
 		if (player != nullptr) {

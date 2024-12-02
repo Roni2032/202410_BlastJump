@@ -18,6 +18,7 @@ namespace basecross{
 		Vec2 m_Size;
 		Vec3 m_Pos;
 
+		bool m_IsUseCenterSprite;
 		bool m_IsAnimation;
 		float m_AnimationChangeTime;
 		float m_AnimationTimer;
@@ -32,13 +33,14 @@ namespace basecross{
 		shared_ptr<PCTSpriteDraw> m_Draw;
 		shared_ptr<Transform> m_Transform;
 	public:
-		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size) : BCSprite(ptr,texKey,pos,size,{1,1},1,-1,false) {}
-		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,Vec2 cutUV,const float changeTime = 0.5f,const int useIndex = -1,const bool isAnimation = true) :
+		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,const bool useCenter = false) : BCSprite(ptr,texKey,pos,size,{1,1},useCenter,1,-1,false) {}
+		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,Vec2 cutUV, const bool useCenter = false,const float changeTime = 0.5f,const int useIndex = -1,const bool isAnimation = true) :
 			GameObject(ptr),
 			m_TexKey(texKey),
 			m_Pos(pos),m_Size(size),
 			m_cutUV(cutUV),
-			m_Index(0), m_UseIndex(useIndex), 
+			m_IsUseCenterSprite(useCenter),
+			m_Index(0), m_UseIndex(useIndex),
 			m_IsAnimation(isAnimation),
 			m_AnimationChangeTime(changeTime),m_AnimationTimer(0.0f)
 			{}
@@ -56,6 +58,8 @@ namespace basecross{
 		void SetInterval(float interval);
 		void SetUseIndex(int useIndex);
 		
+		void SetDiffuse(Col4 color);
+		Col4 GetDiffuse();
 	};
 
 

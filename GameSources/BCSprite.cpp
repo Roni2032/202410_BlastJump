@@ -24,12 +24,22 @@ namespace basecross{
 		if (m_UseIndex == -1 || m_UseIndex < m_AnimationUV.size()) {
 			m_UseIndex = static_cast<int>(m_AnimationUV.size());
 		}
-		m_Vertices = { 
-			{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
-			{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
-			{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
-			{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
-		};
+		if (m_IsUseCenterSprite) {
+			m_Vertices = {
+				{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+				{Vec3(m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+				{Vec3(-m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+				{Vec3(m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+			};
+		}
+		else {
+			m_Vertices = {
+				{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+				{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+				{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+				{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+			};
+		}
 		vector<uint16_t> indices = { 
 			0, 1, 2,
 			2, 1, 3
@@ -37,14 +47,16 @@ namespace basecross{
 
 
 		m_Draw = AddComponent<PCTSpriteDraw>(m_Vertices, indices);
-		m_Draw->SetTextureResource(m_TexKey);
+		if (m_TexKey != L"") {
+			m_Draw->SetTextureResource(m_TexKey);
+		}
+		SetAlphaActive(true);
 		m_Draw->SetSamplerState(SamplerState::LinearWrap);
 		m_Draw->SetDiffuse(Col4(1, 1, 1, 1));
 
 		m_Transform = GetComponent<Transform>();
 		m_Transform->SetPosition(m_Pos);
 		//GetComponent<Transform>()->SetRotation(m_rot);
-		SetAlphaActive(true);
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
@@ -84,12 +96,22 @@ namespace basecross{
 		if (m_Draw) {
 			m_Size = size;
 
-			m_Vertices = {
-				{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][0]},
-				{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][1]},
-				{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][2]},
-				{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][3]}
-			};
+			if (m_IsUseCenterSprite) {
+				m_Vertices = {
+					{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+					{Vec3(m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+					{Vec3(-m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+					{Vec3(m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+				};
+			}
+			else {
+				m_Vertices = {
+					{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+					{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+					{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+					{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+				};
+			}
 			m_Draw->UpdateVertices(m_Vertices);
 		}
 	}
@@ -104,7 +126,12 @@ namespace basecross{
 	void BCSprite::SetUseIndex(int useIndex) {
 
 	}
-
+	void BCSprite::SetDiffuse(Col4 color) {
+		m_Draw->SetDiffuse(color);
+	}
+	Col4 BCSprite::GetDiffuse() {
+		return m_Draw->GetDiffuse();
+	}
 
 	void BCNumber::OnCreate() {
 		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));

@@ -157,9 +157,9 @@ namespace basecross{
 		}
 
 		auto col = AddComponent<CollisionObb>();
-		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
 		col->SetDrawActive(true);
+		
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
@@ -172,6 +172,7 @@ namespace basecross{
 
 	void Block::OnUpdate() {
 		Update();
+		GetComponent<Transform>()->SetScale(1, 1, 1);
 	}
 	void Block::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto col = Other->GetComponent<Collision>(false);
@@ -201,6 +202,7 @@ namespace basecross{
 		CheckDurability();
 		if (m_Durability <= 0) {
 			GetTypeStage<GameStage>()->DestroyBlock(GetComponent<Transform>()->GetPosition(), GetThis<GameObject>());
+			//GetTypeStage<GameStage>()->PlayParticle<BlockDestroyParticle>(L"DESTROY_BLOCK_PCL", GetComponent<Transform>()->GetPosition());
 		}
 	}
 
