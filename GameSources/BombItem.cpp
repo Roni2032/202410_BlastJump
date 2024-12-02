@@ -13,17 +13,6 @@ namespace basecross{
 		draw->SetMeshResource(L"DEFAULT_SQUARE");
 		draw->SetTextureResource(L"BOMB_ITEM_TEX");
 		SetAlphaActive(true);
-		/*draw->SetMeshResource(L"BOMB_MD");
-		draw->SetTextureResource(L"BOMB_MD_TEX");
-		Mat4x4 matrix;
-		matrix.affineTransformation(
-			Vec3(0.5f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.5f, 0.0f)
-		);
-		draw->SetMeshToTransformMatrix(matrix);*/
-
-
-		auto col = AddComponent<CollisionSphere>();
-		col->SetAfterCollision(AfterCollision::None);
 		
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);

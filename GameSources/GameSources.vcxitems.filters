@@ -127,6 +127,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)BlockData.h">
       <Filter>Floor</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Fadeout.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
+      <Filter>Stage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -207,6 +211,10 @@
     </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BlockData.cpp">
       <Filter>Floor</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Fadeout.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp">
+      <Filter>Stage</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

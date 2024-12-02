@@ -7,9 +7,11 @@
 #include "stdafx.h"
 #include "BCSprite.h"
 #include "Blocks.h"
+
 #include "Player.h"
 
 namespace basecross {
+	class BlockData;
 
 	struct BetWeen {
 		float m_High;
@@ -35,7 +37,8 @@ namespace basecross {
 		shared_ptr<InstanceBlock> m_Walls;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
-		vector<vector<int>> m_Map;
+		//vector<vector<int>> m_Map;
+		vector<vector<BlockData>> m_MapData;
 		Vec3 m_MapLeftTop;
 		wstring m_MapName;
 		CsvFile m_CsvMap;
@@ -44,6 +47,7 @@ namespace basecross {
 		float m_MainTimer;
 		GameMode m_Mode;
 
+		int m_StageNumber;
 
 		shared_ptr<BCNumber> m_TimerSprite[2];
 		shared_ptr<BCNumber> m_PlayerHasBombs;
@@ -58,18 +62,17 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
-		void CreateWallCollider(Vec2 startPos, Vec2 mapSize);
 		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
-		shared_ptr<GameObject> CreateBlock(int blockNum, Vec3 pos);
 		void LoadMap();
 		void BlockUpdateActive();
 	public:
 		//ç\ízÇ∆îjä¸
-		GameStage(const wstring& mapName) :Stage(),m_MapName(mapName),
+		GameStage(const wstring& mapName,const int stageNumber = 0) :Stage(),m_MapName(mapName),
 			m_LoadStageSize(Vec3(20,7,0)),
 			m_BombNum(0),
 			m_MainTimer(0),
+			m_StageNumber(stageNumber),
 			m_Mode(GameMode::NotBomb)
 		{}
 		virtual ~GameStage() {}
@@ -77,12 +80,24 @@ namespace basecross {
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 		virtual void OnDestroy()override;
+		void RegisterBlock(Vec2 mapIndex, const shared_ptr<GameObject>& obj);
+		shared_ptr<GameObject> CreateBlock(Vec2 mapIndex, Vec3 pos);
 
 		shared_ptr<Player> m_Player;
 
-		void PlayParticle(const wstring& key, Vec3 pos);
-		vector<vector<int>> GetMap() {
+		template<typename particleType>
+		void PlayParticle(const wstring& key, Vec3 pos) const{
+			auto particle = GetSharedGameObject<particleType>(key, false);
+			if (particle != nullptr) {
+				particle->Shot(pos);
+			}
+		}
+
+		/*vector<vector<int>> GetMap() {
 			return m_Map;
+		}*/
+		vector<vector<BlockData>> GetMap() {
+			return m_MapData;
 		}
 
 		float GetBottomY() {
@@ -92,7 +107,8 @@ namespace basecross {
 			return m_MapLeftTop.y;
 		}
 		Vec3 GetMapIndex(Vec3 pos);
-		int GetBlock(Vec3 pos);
+		shared_ptr<GameObject> GetBlock(Vec3 pos);
+		int GetBlockId(Vec3 pos);
 		void DestroyBlock(Vec3 pos, shared_ptr<GameObject>& block);
 
 		void NewRespawnPosition(Vec3 pos) {

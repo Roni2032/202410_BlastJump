@@ -106,9 +106,11 @@ namespace basecross{
 	void BCParticleSprite::OnCreate() {
 		
 		m_Draw = AddComponent<PNTStaticDraw>();
-		
-		
-		m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
+		m_Draw->SetOriginalMeshUse(true);
+		vector<uint16_t> indexes;
+		MeshUtill::CreateSquare(1.0f, m_Vertexes, indexes);
+		m_Draw->CreateOriginalMesh(m_Vertexes, indexes);
+		//m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
 		m_Draw->SetTextureResource(m_TexKey);
 		
 		
@@ -123,11 +125,28 @@ namespace basecross{
 	void BCParticleSprite::OnUpdate() {
 		float elapsed = App::GetApp()->GetElapsedTime();
 		if (m_IsActive) {
+			//------------------------------------------------------------------
+			//	遅延
+			//------------------------------------------------------------------
+			if (m_DelayTime != 0) {
+				if (m_DelayTimer > m_DelayTime) {
+					SetDrawActive(true);
+				}
+				else {
+					m_DelayTimer += elapsed;
+					SetDrawActive(false);
+					return;
+				}
+			}
+			//------------------------------------------------------------------
+			//	移動
+			//------------------------------------------------------------------
 			Vec3 pos = m_Trans->GetPosition();
 			if (m_Velocity.y > m_Gravity) {
 				m_Velocity.y += m_Gravity * elapsed;
 			}
 			pos += m_Velocity * elapsed;
+			m_Velocity -= m_Velocity * (1.0f - m_DecelerationRate) * elapsed;
 
 			auto parent = m_ParentTrans.lock();
 			if (parent != nullptr) {
@@ -136,50 +155,122 @@ namespace basecross{
 			else {
 				m_Trans->SetPosition(pos);
 			}
-
+			
+			//------------------------------------------------------------------
+			//	サイズ
+			//------------------------------------------------------------------
+			Vec3 scale = m_Trans->GetScale();
+			scale += m_ScaleVelocity * elapsed;
+			if (scale.x < 0) {
+				scale.x = 0;
+			}
+			if (scale.y < 0) {
+				scale.y = 0;
+			}
+			if (scale.z < 0) {
+				scale.z = 0;
+			}
+			m_Trans->SetScale(scale);
+			//------------------------------------------------------------------
+			//	表示時間
+			//------------------------------------------------------------------
 			m_TotalTime += elapsed;
 			if (m_TotalTime > m_MaxTime) {
 				SetActive(false);
 			}
+			//------------------------------------------------------------------
+			//	色変化
+			//------------------------------------------------------------------
+			Col4 targetLengthColor = m_TargetColor - m_Color;
+			targetLengthColor.w = 0.0f;
+			if (targetLengthColor.length() > 0.1f) {
+				m_Color += (m_TargetColor - m_StartColor) * elapsed / m_ColorChangeTime;
+			}
+
 
 			if (m_Color.w <= 1.0f && m_Color.w >= 0.0f) {
 				m_Color.w += elapsed * (m_Alpha.m_Low - m_Alpha.m_High) / m_MaxTime;
-				SetColor(m_Color);
+			}
+			SetColor(m_Color);
+			//------------------------------------------------------------------
+			//	アニメーション
+			//------------------------------------------------------------------
+			if (m_IsAnimation) {
+				m_AnimationTimer += elapsed;
+				if (m_AnimationTimer > m_AnimationTime / m_AnimationUV.size()) {
+					m_RenderIndex++;
+					if (m_RenderIndex >= m_AnimationUV.size()) {
+						m_RenderIndex = 0;
+					}
+					UpdateAnimationUV(m_RenderIndex);
+					m_AnimationTimer = 0;
+				}
+			}
+			else {
+				m_AnimationTimer = 0;
+			}
+			//------------------------------------------------------------------
+			//	ビルボード化
+			//------------------------------------------------------------------
+			Quat q = Quat();
+			Vec3 cameraPos = m_Camera->GetEye();
+			Vec3 spritePos = m_Trans->GetWorldPosition();
+
+			Vec3 fwd = Vec3(0, 0, -1);
+			fwd = fwd.normalize();
+
+			Vec3 diff = cameraPos - spritePos;
+			diff = diff.normalize();
+
+			if (diff.length() != 0) {
+				diff = diff.normalize();
+
+				float inner = (diff.x * fwd.x + diff.y * fwd.y + diff.z * fwd.z) / (diff.length() * fwd.length());
+				float rad = acos(inner);
+
+				Vec3 verticalVec = Vec3(diff.y * fwd.z - diff.z * fwd.y, diff.z * fwd.x - diff.x * fwd.z, diff.x * fwd.y - diff.y * fwd.x);
+
+				Quat newQ = Quat(verticalVec.x * sin(rad / 2.0f), verticalVec.y * sin(rad / 2.0f), verticalVec.z * sin(rad / 2.0f), cos(rad / 2.0f));
+
+				q *= newQ;
 			}
 
 			//------------------------------------------------------------------
-			//	スプライトをビルボード化
+			//	回転
 			//------------------------------------------------------------------
-			
-			Vec3 cameraPos = m_Camera->GetEye();
-			Vec3 spritePos = m_Trans->GetPosition();
+			if (m_IsRotateMovement) {
+				float rad = atan2f(m_Velocity.y, m_Velocity.x);
+				Quat newQ = Quat(diff.x * sin(rad / 2.0f), diff.y * sin(rad / 2.0f), diff.z * sin(rad / 2.0f), cos(rad / 2.0f));
 
-			Vec3 fwd = m_Trans->GetForward();
-			fwd = fwd.normalize();
-			
-			Vec3 diff = cameraPos - spritePos;
-			diff = diff.normalize();
-			
-			float inner = (diff.x * fwd.x + diff.y * fwd.y + diff.z * fwd.z) / (diff.length() * fwd.length());
-			float rad = acos(inner);
-
-			Vec3 vec = Vec3(diff.y * fwd.z - diff.z * fwd.y, diff.z * fwd.x - diff.x * fwd.z, diff.x * fwd.y - diff.y * fwd.x);
-
-			Quat q = Quat(vec.x * sin(rad / 2.0f), vec.y * sin(rad / 2.0f), vec.z * sin(rad / 2.0f), cos(rad / 2.0f));
-
+				q *= newQ;
+			}
 			m_Trans->SetQuaternion(q);
-
-			//垂直なベクトルを取得
-			/*a.y* b.z - a.z * b.y,
-				a.z* b.x - a.x * b.z,
-				a.x* b.y - a.y * b.x*/
-			//取得したベクトルを基に回転
-
-
 		}
 	}
+	void BCParticleSprite::UpdateAnimationUV(int index) {
+		for (int i = 0; i < m_Vertexes.size(); i++) {
+			m_Vertexes[i].textureCoordinate = m_AnimationUV[index][i];
+		}
+		m_Draw->UpdateVertices(m_Vertexes);
+	}
+	void BCParticleSprite::AutoCutAnimationUV(Vec2 cut) {
+		for (int i = 0; i < cut.y; i++) {
+			for (int j = 0; j < cut.x; j++) {
+				vector<Vec2> uv = {
+					{(1.0f / cut.x) * j,(1.0f / cut.y) * i},
+					{(1.0f / cut.x) * (j + 1),(1.0f / cut.y) * i},
+					{(1.0f / cut.x) * j,(1.0f / cut.y) * (i + 1)},
+					{(1.0f / cut.x) * (j + 1),(1.0f / cut.y) * (i + 1)}
+				};
+
+				m_AnimationUV.push_back(uv);
+			}
+		}
+		m_IsAnimation = true;
+	}
+
 	void BCParticleSprite::StartParticle(const Vec3 pos) {
-		m_StartPos = pos;
+		m_StartPos = m_BaseStartPos + pos;
 		auto parent = m_ParentTrans.lock();
 		if (parent != nullptr) {
 			m_Trans->SetPosition(m_StartPos + parent->GetPosition());
@@ -187,13 +278,22 @@ namespace basecross{
 		else {
 			m_Trans->SetPosition(m_StartPos);
 		}
-		SetActive(true);
+		Init();
 	}
 	void BCParticleSprite::Init() {
 		m_TotalTime = 0.0f;
-		m_Color.w = 1.0f;
+		m_Color = m_BaseColor;
 		m_Velocity = m_BaseVelocity;
+		m_ScaleVelocity = m_BaseScaleVelocity;
 		SetColor(m_Color);
+		SetSize(m_Size);
+		m_StartColor = m_Color;
+
+		if (m_AnimationUV.size() != 0) {
+			UpdateAnimationUV(0);
+			m_RenderIndex = 0;
+		}
+		SetActive(true);
 	}
 	void BCParticleSprite::SetActive(bool active) {
 		if (m_IsActive != active) {
@@ -201,9 +301,6 @@ namespace basecross{
 		}
 		m_Draw->SetDrawActive(m_IsActive);
 
-		if (m_IsActive) {
-			Init();
-		}
 	}
 	void BCParticleSprite::SetColor(Col4 color) {
 		if (m_Color != color) {
