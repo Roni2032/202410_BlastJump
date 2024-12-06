@@ -220,7 +220,7 @@ namespace basecross{
 	}
 
 	void MoveBlock::Start() {
-		FloorBlock::Start();
+		Block::Start();
 
 		m_Trans = GetComponent<Transform>();
 
@@ -228,7 +228,7 @@ namespace basecross{
 	}
 
 	void MoveBlock::Update() {
-		FloorBlock::Update();
+		Block::Update();
 
 		float elapsed = App::GetApp()->GetElapsedTime();
 		Vec3 pos = m_Trans->GetPosition();
@@ -255,6 +255,51 @@ namespace basecross{
 		if (Other->FindTag(L"Player")) {
 			Other->GetComponent<Transform>()->SetParent(nullptr);
 		}
+	}
+
+	void ExplodeBlock::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		if (Other->FindTag(L"Player")) {
+			auto stage = GetTypeStage<GameStage>();
+			stage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetWorldPosition() - Vec3(0,0.5f,0), Explosion(m_Power, m_Range), Other);
+
+			auto otherCol = Other->GetComponent<BCCollisionObb>();
+			Vec3 diff = Vec3();
+			if (otherCol != nullptr) {
+				auto data = otherCol->GetCollisionData(GetThis<GameObject>());
+				switch (data.hitDir) {
+				case HitDir::Up:
+					diff = Vec3(0, 0.5f, 0);
+					break;
+				case HitDir::Down:
+					diff = Vec3(0, -0.5f, 0);
+					break;
+				case HitDir::Right:
+					diff = Vec3(0.5f, 0, 0);
+					break;
+				case HitDir::Left:
+					diff = Vec3(-0.5f, 0, 0);
+					break;
+
+				}
+			}
+			stage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition() + diff);
+
+			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
+		}
+	}
+
+	void ConditionalMoveBlock::Start() {
+		MoveBlock::Start();
+	}
+
+	void ConditionalMoveBlock::Update() {
+		bool isFunc = m_Func(GetTypeStage<GameStage>());
+		if (isFunc) {
+			MoveBlock::Update();
+		}
+
+		float elapsed = App::GetApp()->GetElapsedTime();
+		
 	}
 }
 //end basecross
