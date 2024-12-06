@@ -38,6 +38,7 @@
 
 #include "SoundManager.h"
 #include "BackGround.h"
+#include "StageLengthBar.h"
 
 #include "TrackingEnemy.h"
 #include "EnemyState.h"

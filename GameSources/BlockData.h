@@ -21,16 +21,14 @@ namespace basecross{
 		int m_Id;
 		shared_ptr<GameObject> m_Obj;
 		map<wstring, wstring> m_Data;
-		wstring m_AllData;
 
 		BlockData(int id,const wstring& data = L""):
 			m_Id(id),
-			m_AllData(data),
 			m_Obj(nullptr)
 		{
 			if (data != L"") {
 				vector<wstring> strData;
-				Util::WStrToTokenVector(strData, m_AllData, L'-');
+				Util::WStrToTokenVector(strData, data, L'/');
 				for (auto d : strData) {
 					vector<wstring> data;
 					Util::WStrToTokenVector(data, d, L':');
