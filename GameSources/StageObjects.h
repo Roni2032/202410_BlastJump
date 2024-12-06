@@ -15,6 +15,7 @@ namespace basecross{
 		virtual ~ Goal(){}
 
 		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
 	};
