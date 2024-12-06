@@ -131,6 +131,10 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
       <Filter>Stage</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Button.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageLengthBar.h">
+      <Filter>Goal/CheckPoint</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
@@ -215,6 +219,10 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Fadeout.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp">
       <Filter>Stage</Filter>
+    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)Button.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageLengthBar.cpp">
+      <Filter>Goal/CheckPoint</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
