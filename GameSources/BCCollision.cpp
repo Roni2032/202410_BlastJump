@@ -17,6 +17,7 @@ namespace basecross{
 	void BCCollisionObb::OnUpdate() {
 
 		m_PushBackObject.clear();
+		m_EnterObject.clear();
 		vector<shared_ptr<GameObject>> objs;
 		m_Stage->GetUsedTagObjectVec(m_WallTag, objs);
 		for (auto slipTag : m_SlipTags) {
@@ -51,8 +52,9 @@ namespace basecross{
 
 				if (find(m_ExcuteObject.begin(), m_ExcuteObject.end(), obj) == m_ExcuteObject.end()) {
 					m_ExcuteObject.push_back(obj);
-					obj->OnCollisionEnter(m_GameObject);
-					m_GameObject->OnCollisionEnter(obj);
+					m_EnterObject.push_back(obj);
+					//obj->OnCollisionEnter(m_GameObject);
+					//m_GameObject->OnCollisionEnter(obj);
 				}
 			}
 			else {
@@ -107,6 +109,10 @@ namespace basecross{
 
 			obj->OnCollisionExcute(m_GameObject);
 			m_GameObject->OnCollisionExcute(obj);
+		}
+		for (auto obj : m_EnterObject) {
+			obj->OnCollisionEnter(m_GameObject);
+			m_GameObject->OnCollisionEnter(obj);
 		}
 	}
 
