@@ -35,11 +35,13 @@ namespace basecross {
 	private:
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
+		shared_ptr<GameObject> m_Goal;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		//vector<vector<int>> m_Map;
 		vector<vector<BlockData>> m_MapData;
 		Vec3 m_MapLeftTop;
+		Vec3 m_MapRightBottom;
 		wstring m_MapName;
 		CsvFile m_CsvMap;
 
@@ -106,9 +108,17 @@ namespace basecross {
 		float GetTopY() {
 			return m_MapLeftTop.y;
 		}
+		Vec3 GetLeftTop() {
+			return m_MapLeftTop;
+		}
+		Vec3 GetRightBottom() {
+			return m_MapRightBottom;
+		}
 		Vec3 GetMapIndex(Vec3 pos);
 		shared_ptr<GameObject> GetBlock(Vec3 pos);
 		int GetBlockId(Vec3 pos);
+		int GetBlockId(Vec2 index);
+
 		void DestroyBlock(Vec3 pos, shared_ptr<GameObject>& block);
 
 		void NewRespawnPosition(Vec3 pos) {
@@ -126,6 +136,10 @@ namespace basecross {
 		}
 		void GameClear();
 		void GameOver();
+
+		bool IsInGame() {
+			return m_Mode == GameMode::InGame || m_Mode == GameMode::NotBomb;
+		}
 	};
 
 
