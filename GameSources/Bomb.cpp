@@ -62,33 +62,11 @@ namespace basecross{
 	}
 
 	void Bomb::Explode() {
-		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetWorldPosition(),m_ExplodeStatus);
+		m_GameStage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetWorldPosition(),m_ExplodeStatus,m_Player.lock());
 		
 		m_GameStage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition());
 
-		auto player = m_Player.lock();
-		if (player != nullptr) {
-			Vec3 otherPos = player->GetComponent<Transform>()->GetWorldPosition();
-			Vec3 ExplodeCorePos = GetComponent<Transform>()->GetWorldPosition();
-
-			Vec3 diff = otherPos - ExplodeCorePos;
-
-			float distance = sqrtf(static_cast<float>(pow(diff.x, 2) + pow(diff.y, 2)));
-			float reboundRate = distance / m_ExplodeStatus.m_Range;
-			if (reboundRate > 1.0f) {
-				reboundRate = 1.0f;
-			}
-			if (reboundRate < 0.5f) {
-				reboundRate = 0.5f;
-			}
-			Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_ExplodeStatus.m_Power;
-
-			auto gravity = player->GetComponent<BCGravity>(false);
-			if (gravity != nullptr) {
-
-				gravity->Jump(reflectPower);
-			}
-		}
+		
 		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 
@@ -124,7 +102,29 @@ namespace basecross{
 		trans->SetScale(Vec3(m_Explosion.m_Range));
 	}
 	void ExplodeCollider::OnUpdate() {
-		
+		auto player = m_Player.lock();
+		if (player != nullptr) {
+			Vec3 otherPos = player->GetComponent<Transform>()->GetWorldPosition();
+			Vec3 ExplodeCorePos = GetComponent<Transform>()->GetWorldPosition();
+
+			Vec3 diff = otherPos - ExplodeCorePos;
+
+			float distance = sqrtf(static_cast<float>(pow(diff.x, 2) + pow(diff.y, 2)));
+			float reboundRate = distance / m_Explosion.m_Range;
+			if (reboundRate > 1.0f) {
+				reboundRate = 1.0f;
+			}
+			if (reboundRate < 0.5f) {
+				reboundRate = 0.5f;
+			}
+			Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_Explosion.m_Power;
+
+			auto gravity = player->GetComponent<BCGravity>(false);
+			if (gravity != nullptr) {
+
+				gravity->Jump(reflectPower);
+			}
+		}
 		GetStage()->RemoveGameObject<ExplodeCollider>(GetThis<ExplodeCollider>());
 	}
 	void ExplodeCollider::OnCollisionEnter(shared_ptr<GameObject>& Other) {

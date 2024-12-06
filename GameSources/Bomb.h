@@ -66,12 +66,14 @@ namespace basecross{
 		int m_Tick;
 
 		float m_MinReboundRate;
+		weak_ptr<GameObject> m_Player;
 	public:
-		ExplodeCollider(const shared_ptr<Stage>& ptr,Vec3 pos,Explosion explosion):
+		ExplodeCollider(const shared_ptr<Stage>& ptr,Vec3 pos,Explosion explosion,const shared_ptr<GameObject>& player = nullptr):
 			GameObject(ptr),
 			m_Pos(pos),
 			m_Explosion(explosion), m_MinReboundRate(0.5f),
-			m_Tick(0)
+			m_Tick(0),
+			m_Player(player)
 		{}
 
 		virtual ~ExplodeCollider() {}
