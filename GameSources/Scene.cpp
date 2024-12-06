@@ -19,13 +19,13 @@ namespace basecross{
 			wstring modelPath = path + L"Models/";
 			wstring texPath = path + L"Texture/";
 
-			auto multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Goalkari.bmf");
-			app->RegisterResource(L"GOAL_MD", multiModel);
+			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"DoorOpen.bmf");
+			app->RegisterResource(L"GOAL_MD", boneModel);
 			app->RegisterTexture(L"GOAL_MD_TEX", modelPath + L"goaltex.png");
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
-			multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
+			auto multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
 			app->RegisterResource(L"PLAYER_MD", multiModel);
 			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 
@@ -37,7 +37,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToSelectStage");
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage"/*,make_shared<int>(1)*/);
 
 			SoundManager::Instance().RegisterSounds();
 		}
@@ -58,13 +58,13 @@ namespace basecross{
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
 			case 0:
-				ResetActiveStage<GameStage>(L"Stage01.csv",*stage);
+				ResetActiveStage<GameStage>(L"Stage02.csv",*stage);
 				break;
 			case 1:
-				ResetActiveStage<GameStage>(L"Stage02.csv", *stage);
+				ResetActiveStage<GameStage>(L"Stage03.csv", *stage);
 				break;
 			case 2:
-				ResetActiveStage<GameStage>(L"Stage03.csv", *stage);
+				ResetActiveStage<GameStage>(L"Stage04.csv", *stage);
 				break;
 			default:
 				ResetActiveStage<TitleStage>();

@@ -25,8 +25,8 @@ namespace basecross{
 			CreateViewLight();
 			CreateResource();
 
-			AddGameObject<BCSprite>(L"TITLE_UI", Vec3(-200, 275, 0), Vec2(500, 500));
-			AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(-50,-200,0), Vec2(300, 120));
+			AddGameObject<BCSprite>(L"TITLE_UI", Vec3(0, 150, 0), Vec2(500, 500),true);
+			AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(0,-300,0), Vec2(300, 120),true);
 		}
 		catch (...) {
 			throw;
@@ -37,7 +37,7 @@ namespace basecross{
 		auto ctrl = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 		if (ctrl.bConnected) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
 			}
 		}
 	}

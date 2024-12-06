@@ -24,11 +24,18 @@ namespace basecross {
 		try {
 			CreateViewLight();
 			CreateResource();
+			auto sprite = AddGameObject<BCSprite>(L"SELECT_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
+			sprite->SetDiffuse(Col4(1, 0, 0, 1));
+			/*auto button = AddGameObject<Button>(L"TITLE_UI", Vec3(0, 25, 0), Vec2(500, 500));
+			button->AddSelectEffect(SelectEffect::Expand);*/
+			auto button = AddGameObject<Button>(L"SELECT_1_UI", Vec3(-400, 0, 0), Vec2(240, 240));
+			button->AddSelectEffect(SelectEffect::Expand);
+			button = AddGameObject<Button>(L"SELECT_2_UI", Vec3(0, 0, 0), Vec2(240, 240));
+			button->AddSelectEffect(SelectEffect::Expand);
+			button = AddGameObject<Button>(L"SELECT_3_UI", Vec3(400, 0, 0), Vec2(240, 240));
+			button->AddSelectEffect(SelectEffect::Expand);
 
-			auto button = AddGameObject<Button>(L"TITLE_UI", Vec3(0, 25, 0), Vec2(500, 500));
-			button->AddSelectEffect(SelectEffect::Expand);
-			button = AddGameObject<Button>(L"PUSH_A_UI", Vec3(0, -320, 0), Vec2(300, 120));
-			button->AddSelectEffect(SelectEffect::Expand);
+
 		}
 		catch (...) {
 			throw;
@@ -87,6 +94,12 @@ namespace basecross {
 
 		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
 		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
+		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"SelectStageText.png");
+
+		app->RegisterTexture(L"SELECT_1_UI", uiPath + L"Select1.png");
+		app->RegisterTexture(L"SELECT_2_UI", uiPath + L"Select2.png");
+		app->RegisterTexture(L"SELECT_3_UI", uiPath + L"Select3.png");
+
 	}
 }
 //end basecross
