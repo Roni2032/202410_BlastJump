@@ -50,7 +50,7 @@ namespace basecross{
 				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
 				float x = m_StartPos.x + j;
-				float y = static_cast<float>(i);
+				float y = static_cast<float>(i) ;
 
 				y = floor(y, 0);
 
@@ -208,11 +208,14 @@ namespace basecross{
 
 	void FloorBlock::CheckDurability() {
 		auto drawComp = GetComponent<BcPNTStaticDraw>();
-		if (m_Durability < 33) {
-			drawComp->SetTextureResource(L"TEST33_TEX");
+		if (m_Durability <= 25) {
+			drawComp->SetTextureResource(L"TEST25_TEX");
 		}
-		else if (m_Durability < 66) {
-			drawComp->SetTextureResource(L"TEST66_TEX");
+		else if (m_Durability <= 50) {
+			drawComp->SetTextureResource(L"TEST50_TEX");
+		}
+		else if(m_Durability <= 75){
+			drawComp->SetTextureResource(L"TEST75_TEX");
 		}
 		else {
 			drawComp->SetTextureResource(L"TEST100_TEX");
@@ -285,6 +288,9 @@ namespace basecross{
 			stage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition() + diff);
 
 			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
+
+			//プレイヤーをスタン状態にする
+
 		}
 	}
 
