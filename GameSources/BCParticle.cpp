@@ -238,13 +238,13 @@ namespace basecross{
 			//------------------------------------------------------------------
 			//	‰ñ“]
 			//------------------------------------------------------------------
-			if (m_IsRotateMovement) {
+			/*if (m_IsRotateMovement) {
 				float rad = atan2f(m_Velocity.y, m_Velocity.x);
 				Quat newQ = Quat(diff.x * sin(rad / 2.0f), diff.y * sin(rad / 2.0f), diff.z * sin(rad / 2.0f), cos(rad / 2.0f));
 
 				q *= newQ;
 			}
-			m_Trans->SetQuaternion(q);
+			m_Trans->SetQuaternion(q);*/
 		}
 	}
 	void BCParticleSprite::UpdateAnimationUV(int index) {

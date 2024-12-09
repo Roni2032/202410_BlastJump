@@ -16,7 +16,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ÉrÉÖÅ[ÇÃÉJÉÅÉâÇÃê›íË
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.0f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.2f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -108,9 +108,10 @@ namespace basecross {
 		wstring texPath = path + L"Texture/";
 		wstring modelPath = path + L"Models/";
 		app->RegisterTexture(L"TEST_TEX", texPath + L"TestTex_wall.jpg");
-		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
-		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
-		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
+		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_Wall.png");
+		app->RegisterTexture(L"TEST75_TEX", texPath + L"TestTex_wall75.png");
+		app->RegisterTexture(L"TEST50_TEX", texPath + L"TestTex_wall50.png");
+		app->RegisterTexture(L"TEST25_TEX", texPath + L"TestTex_wall25.png");
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle_2.png");
 		app->RegisterTexture(L"EXPLODE_SPARK_TEX", texPath + L"explodeSpark.png");
 		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
@@ -322,8 +323,6 @@ namespace basecross {
 		auto camera = GetView()->GetTargetCamera();
 		float atY = camera->GetAt().y;
 
-		
-
 		/*if (m_LoadedMaxHeight == 0) {
 			for (int i = 0; i <= atY + m_LoadStageSize.y; i++) {
 				if (i >= m_Map.size()) {
@@ -367,7 +366,7 @@ namespace basecross {
 		//}
 		if (m_CameraAtY == 0) {
 			m_CameraAtY = atY;
-			for (int i = 0; i <= m_CameraAtY + m_LoadStageSize.y; i++) {
+			for (int i = 0; i < m_CameraAtY + m_LoadStageSize.y; i++) {
 				if (i >= m_MapData.size()) {
 					break;
 				}
@@ -375,7 +374,7 @@ namespace basecross {
 				int sizeX = static_cast<int>(m_MapData[y].size());
 				for (int x = 0; x < sizeX; x++) {
 					int size = static_cast<int>(m_MapData[y].size());
-					auto obj = CreateBlock(Vec2(x,y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+					auto obj = CreateBlock(Vec2(x,y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y + 1, 0));
 					if (obj != nullptr) {
 						m_LoadedStageObjects.push_back(obj);
 					}
@@ -393,7 +392,7 @@ namespace basecross {
 				int loadIndexY = static_cast<int>(m_MapData.size()) - i - 1;
 				float sizeX = static_cast<float>(m_MapData[i].size());
 				Vec2 startPos = Vec2(sizeX / -2, m_MapData.size() - 2);
-				auto obj = CreateBlock(Vec2(j,loadIndexY), Vec3(startPos.x + j, startPos.y - loadIndexY, 0));
+				auto obj = CreateBlock(Vec2(j,loadIndexY), Vec3(startPos.x + j, startPos.y - loadIndexY + 1, 0));
 				if (obj != nullptr) {
 					m_LoadedStageObjects.push_back(obj);
 				}

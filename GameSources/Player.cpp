@@ -30,10 +30,10 @@ namespace basecross {
 		m_Draw->SetMeshToTransformMatrix(spanMat);
 
 		//文字列をつける
-		auto ptrString = AddComponent<StringSprite>();
+		/*auto ptrString = AddComponent<StringSprite>();
 		ptrString->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
 		ptrString->SetBackColor(m_ColBlack);
-		ptrString->GetFontSize();
+		ptrString->GetFontSize();*/
 
 		//・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽ・ｽﾂゑｿｽ・ｽ・ｽ3333
 		//auto ptrString = AddComponent<StringSprite>();

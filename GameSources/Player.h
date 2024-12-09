@@ -239,7 +239,7 @@ namespace basecross {
 			player->SetIsBombCreate(false);
 
 			m_Pos = player->GetPlayerPos();
-			m_Pos.x += m_WalkSpeed * m_DeltaTime;
+			m_Pos.x += m_WalkSpeed * App::GetApp()->GetElapsedTime();
 			player->SetPlayerPos(m_Pos);
 		}
 
