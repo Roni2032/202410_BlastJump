@@ -49,7 +49,7 @@ namespace basecross{
 		wstring modelPath = path + L"Models/";
 		
 		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
-		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
+		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PressA.png");
 	}
 }
 //end basecross

@@ -110,19 +110,21 @@ namespace basecross{
 			Vec3 diff = otherPos - ExplodeCorePos;
 
 			float distance = sqrtf(static_cast<float>(pow(diff.x, 2) + pow(diff.y, 2)));
-			float reboundRate = distance / m_Explosion.m_Range;
-			if (reboundRate > 1.0f) {
-				reboundRate = 1.0f;
-			}
-			if (reboundRate < 0.5f) {
-				reboundRate = 0.5f;
-			}
-			Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_Explosion.m_Power;
+			if (distance < m_Explosion.m_Range) {
+				float reboundRate = distance / m_Explosion.m_Range;
+				if (reboundRate > 1.0f) {
+					reboundRate = 1.0f;
+				}
+				if (reboundRate < 0.5f) {
+					reboundRate = 0.5f;
+				}
+				Vec3 reflectPower = diff.normalize() * (1.0f - reboundRate) * m_Explosion.m_Power;
 
-			auto gravity = player->GetComponent<BCGravity>(false);
-			if (gravity != nullptr) {
+				auto gravity = player->GetComponent<BCGravity>(false);
+				if (gravity != nullptr) {
 
-				gravity->Jump(reflectPower);
+					gravity->Jump(reflectPower);
+				}
 			}
 		}
 		GetStage()->RemoveGameObject<ExplodeCollider>(GetThis<ExplodeCollider>());
@@ -147,7 +149,7 @@ namespace basecross{
 		if (Other->FindTag(L"Floor")) {
 			auto block = static_pointer_cast<FloorBlock>(Other);
 			if (block != nullptr) {
-				block->HitExplode(reflectPower.length() * 8.0f);
+				block->HitExplode(reflectPower.length() * 5.0f);
 				//block->HitExplode(100);
 			}
 		}
