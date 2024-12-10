@@ -16,13 +16,75 @@ namespace basecross{
 		for (int i = 0; i < m_SizeY; i++) {
 			m_Maps.push_back({});
 		}
-
-		m_Camera = OnGetDrawCamera();
-		m_CameraAtY = m_Camera->GetAt().y;
 	}
 	void InstanceBlock::AddBlock(int y, int cell) {
 		if (y >= m_SizeY) return;
 		m_Maps[y].push_back(cell);
+	}
+	void InstanceBlock::DrawMap(vector<vector<BlockData>>& map, Vec2 drawSize, Vec3 leftTop) {
+		auto stage = GetTypeStage<GameStage>();
+		m_Camera = OnGetDrawCamera();
+		Vec3 at = stage->GetMapIndex(m_Camera->GetAt());
+
+		float drawIndexMinY = at.y - drawSize.y;
+		float drawIndexMaxY = at.y + drawSize.y;
+
+		if (drawIndexMinY < 0) {
+			drawIndexMinY = 0;
+		}
+		if (drawIndexMaxY >= map.size()) {
+			drawIndexMaxY = map.size() - 1;
+		}
+		
+		drawSize.x = map[0].size();
+
+		m_Draw->ClearMatrixVec();
+		for (int y = drawIndexMinY; y <= drawIndexMaxY; y++) {
+			for (int x = 0; x < drawSize.x; x++) {
+				if (map[y][x].GetID() != 2) continue;
+
+				Mat4x4 matrix;
+				matrix.translation(stage->GetWorldPosition(Vec2(x, y)));
+
+				m_Draw->AddMatrix(matrix);
+
+				if (map[y][x].GetIsLoaded()) continue;
+				map[y][x].SetIsLoaded(true);
+
+				bool isCollider = false;
+				Vec2 aroundMap[] = {
+					Vec2(x + 1,y),
+					Vec2(x - 1,y),
+					Vec2(x,y + 1),
+					Vec2(x,y - 1)
+				};
+				for (Vec2 around : aroundMap) {
+					if (around.x < 0 || around.x >= map[y].size()) continue;
+					if (around.y < 0 || around.y >= map.size()) continue;
+
+					if (map[static_cast<int>(around.y)][static_cast<int>(around.x)].GetID() != 2) {
+						isCollider = true;
+						break;
+					}
+				}
+
+				if (isCollider) {
+					auto obj = GetStage()->AddGameObject<Block>(L"", stage->GetWorldPosition(Vec2(x,y)), Vec3(1.0f));
+					GetTypeStage<GameStage>()->RegisterBlock(Vec2(x, y), obj);
+				}
+			}
+		}
+
+		for (int y = 0; y < map.size(); y++) {
+			for (int x = 0; x < map[y].size(); x++) {
+				if (!map[y][x].GetIsLoaded()) continue;
+
+				if (y < drawIndexMinY || y > drawIndexMaxY) {
+					stage->RemoveGameObject<GameObject>(map[y][x].GetBlock());
+					map[y][x].SetIsLoaded(false);
+				}
+			}
+		}
 	}
 	void InstanceBlock::DrawMap(const Vec2 max, const Vec2 min) {
 		Vec2 drawSize(0);

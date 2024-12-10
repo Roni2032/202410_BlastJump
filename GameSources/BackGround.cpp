@@ -27,7 +27,7 @@ namespace basecross{
 		auto camera = m_Camera.lock();
 
 		float cameraHight = camera->GetHeight();
-		Vec3 at = camera->GetAt() - Vec3(5.5f, 0, 0);
+		Vec3 at = camera->GetAt() - Vec3(7.0f, 0, 0);
 		if (camera != nullptr) {
 			for (int j = 0; j < 2; j++) {
 				for (int i = -1; i < 3; i++) {

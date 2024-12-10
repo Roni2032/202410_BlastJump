@@ -21,7 +21,7 @@ namespace basecross{
 
 			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"DoorOpen.bmf");
 			app->RegisterResource(L"GOAL_MD", boneModel);
-			app->RegisterTexture(L"GOAL_MD_TEX", modelPath + L"goaltex.png");
+			app->RegisterTexture(L"GOAL_MD_TEX", modelPath + L"door.png");
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
@@ -58,7 +58,7 @@ namespace basecross{
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
 			case 0:
-				ResetActiveStage<GameStage>(L"Stage02.csv",*stage);
+				ResetActiveStage<GameStage>(L"Stage05.csv",*stage);
 				break;
 			case 1:
 				ResetActiveStage<GameStage>(L"Stage03.csv", *stage);

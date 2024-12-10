@@ -23,14 +23,14 @@ namespace basecross{
 		auto playerTrans = player->GetComponent<Transform>();
 		auto goalTrans = goal->GetComponent<Transform>();
 
-		Vec3 playerPos = playerTrans->GetPosition();
-		Vec3 goalPos = goalTrans->GetPosition();
+		Vec3 playerPos = playerTrans->GetWorldPosition();
+		Vec3 goalPos = goalTrans->GetWorldPosition();
 
 		float diffY = goalPos.y - playerPos.y;
 
 		float percent = (m_StageLength - diffY) / m_StageLength;
 
-		m_PlayerSprite->SetPos(Vec3(480.0f,BAR_MIN_POSITION_Y + m_BarLength * percent,0));
+		m_PlayerSprite->SetPos(Vec3(525.0f,BAR_MIN_POSITION_Y + m_BarLength * percent,0));
 	}
 }
 //end basecross

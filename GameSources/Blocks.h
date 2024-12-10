@@ -8,6 +8,7 @@
 namespace basecross{
 	class GameStage;
 	struct Explosion;
+	struct BlockData;
 
 	class InstanceBlock : public GameObject {
 		wstring m_TexKey;
@@ -37,6 +38,7 @@ namespace basecross{
 		void AddBlock(int y,int cell);
 		
 		void DrawMap(const Vec2 max = Vec2(0), const Vec2 min = Vec2(0));
+		void DrawMap(vector<vector<BlockData>>& map,Vec2 drawSize,Vec3 leftTop);
 	};
 	class Block : public GameObject {
 		wstring m_TexKey;

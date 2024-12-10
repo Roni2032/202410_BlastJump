@@ -14,6 +14,8 @@ namespace basecross{
 		Flash
 	};
 	class Button : public GameObject {
+
+		function<void()> m_Func;
 		shared_ptr<BCSprite> m_Sprite;
 		wstring m_TexKey;
 		Vec3 m_Pos;
@@ -37,6 +39,15 @@ namespace basecross{
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 
+		void Function(){
+			m_Func();
+		}
+		void SetFunction(function<void()> func) {
+			m_Func = func;
+		}
+		shared_ptr<PCTSpriteDraw> GetDrawComponent() {
+			return m_Sprite->GetComponent<PCTSpriteDraw>();
+		}
 		void AddSelectEffect(SelectEffect mode) {
 			m_Effect.push_back(mode);
 		}
@@ -50,13 +61,22 @@ namespace basecross{
 			m_IsSelect = true;
 		}
 
-
+		static void Function(int select) {
+			Button::Buttons[select]->Function();
+		}
 		static void SetActive(bool flag) {
 			for (auto& button : Button::Buttons) {
-				button->SetDrawActive(flag);
+				button->GetDrawComponent()->SetDrawActive(flag);
 			}
 		}
-
+		static void CheckOverIndex(int& select) {
+			if (select < 0) {
+				select = 0;
+			}
+			if (select >= Button::Buttons.size()) {
+				select = Button::Buttons.size() - 1;
+			}
+		}
 		static void SelectButton(int select) {
 			if (select < Button::Buttons.size()) {
 				Button::Buttons[select]->Select();
