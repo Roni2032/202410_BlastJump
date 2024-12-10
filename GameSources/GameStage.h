@@ -23,12 +23,13 @@ namespace basecross {
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
-	class GameStage : public Stage {
+	class GameStage : public Stage{
 	public:
 		enum GameMode {
 			View,
 			NotBomb,
 			InGame,
+			Menu,
 			Clear,
 			Over
 		};
@@ -36,6 +37,7 @@ namespace basecross {
 		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
 		shared_ptr<GameObject> m_Goal;
+		shared_ptr<GameObject> m_MenuBackGround;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		//vector<vector<int>> m_Map;
@@ -56,6 +58,7 @@ namespace basecross {
 
 		vector<BetWeen> m_scrollRange;
 
+		int m_MenuSelect;
 		
 
 		Vec3 m_RespawnPosition;
@@ -75,6 +78,7 @@ namespace basecross {
 			m_BombNum(0),
 			m_MainTimer(0),
 			m_StageNumber(stageNumber),
+			m_MenuSelect(0),
 			m_Mode(GameMode::NotBomb)
 		{}
 		virtual ~GameStage() {}
@@ -98,7 +102,7 @@ namespace basecross {
 		/*vector<vector<int>> GetMap() {
 			return m_Map;
 		}*/
-		vector<vector<BlockData>> GetMap() {
+		vector<vector<BlockData>>& GetMap() {
 			return m_MapData;
 		}
 
@@ -115,6 +119,7 @@ namespace basecross {
 			return m_MapRightBottom;
 		}
 		Vec3 GetMapIndex(Vec3 pos);
+		Vec3 GetWorldPosition(Vec2 pos);
 		shared_ptr<GameObject> GetBlock(Vec3 pos);
 		int GetBlockId(Vec3 pos);
 		int GetBlockId(Vec2 index);
@@ -140,6 +145,17 @@ namespace basecross {
 		bool IsInGame() {
 			return m_Mode == GameMode::InGame || m_Mode == GameMode::NotBomb;
 		}
+		bool IsFinishGame() {
+			return m_Mode == GameMode::Clear || m_Mode == GameMode::Over;
+		}
+		bool IsView() {
+			return m_Mode == GameMode::View;
+		}
+		bool IsOpenMenu() {
+			return m_Mode == GameMode::Menu;
+		}
+		void OpenMenu();
+		void CloseMenu();
 	};
 
 

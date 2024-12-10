@@ -19,11 +19,13 @@ namespace basecross{
 	//
 	struct BlockData {
 		int m_Id;
+		bool m_IsLoaded;
 		shared_ptr<GameObject> m_Obj;
 		map<wstring, wstring> m_Data;
 
 		BlockData(int id,const wstring& data = L""):
 			m_Id(id),
+			m_IsLoaded(false),
 			m_Obj(nullptr)
 		{
 			if (data != L"") {
@@ -36,7 +38,12 @@ namespace basecross{
 				}
 			}
 		}
-
+		bool GetIsLoaded() {
+			return m_IsLoaded;
+		}
+		void SetIsLoaded(bool flag) {
+			m_IsLoaded = flag;
+		}
 		int GetID() {
 			return m_Id;
 		}
