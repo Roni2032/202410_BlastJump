@@ -32,6 +32,7 @@ namespace basecross{
 		vector<VertexPositionColorTexture> m_Vertices;
 		shared_ptr<PCTSpriteDraw> m_Draw;
 		shared_ptr<Transform> m_Transform;
+
 	public:
 		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,const bool useCenter = false) : BCSprite(ptr,texKey,pos,size,{1,1},useCenter,1,-1,false) {}
 		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,Vec2 cutUV, const bool useCenter = false,const float changeTime = 0.5f,const int useIndex = -1,const bool isAnimation = true) :
@@ -60,6 +61,7 @@ namespace basecross{
 		
 		void SetDiffuse(Col4 color);
 		Col4 GetDiffuse();
+
 	};
 
 
@@ -94,6 +96,77 @@ namespace basecross{
 		virtual void OnUpdate();
 		
 		void UpdateNumber(int number);
+	};
+
+	//----------------------------------------------------------
+	//																																
+	//	Sprite操作コンポーネントクラス																										
+	//																																
+	//----------------------------------------------------------
+	class SpriteAction : public Component {
+		bool m_IsPlay;
+	protected:
+		shared_ptr<SpriteBaseDraw> m_Draw;
+		shared_ptr<Transform> m_Trans;
+	public:
+		SpriteAction(const shared_ptr<GameObject>& ptr) : Component(ptr),m_IsPlay(true){}
+		virtual ~SpriteAction() {}
+
+		virtual void OnCreate()override;
+		virtual void OnDraw()override {}
+
+		void Play() {
+			m_IsPlay = true;
+		}
+		void Stop() {
+			m_IsPlay = false;
+		}
+
+		bool GetIsPlay() {
+			return m_IsPlay;
+		}
+	};
+
+	class SpriteFlash : public SpriteAction {
+		float m_FlashSpeed;
+	public:
+		SpriteFlash(const shared_ptr<GameObject>& ptr,float flashSpeed) : SpriteAction(ptr),
+			m_FlashSpeed(flashSpeed){}
+		virtual ~SpriteFlash(){}
+
+		virtual void OnUpdate()override;
+
+		void SetFlashSpeed(float flashSpeed) {
+			m_FlashSpeed = flashSpeed;
+		}
+
+	};
+
+	class SpriteScaling : public SpriteAction {
+		float m_ScalingSpeed;
+		Vec3 defaultSize;
+		float m_Ratio;
+		float m_MaxRatio;
+		float m_MinRatio;
+
+	public:
+		SpriteScaling(const shared_ptr<GameObject>& ptr, float scalingSpeed, float max, float min) : SpriteAction(ptr), 
+			m_ScalingSpeed(scalingSpeed), m_MaxRatio(max), m_MinRatio(min),defaultSize(0,0,0),m_Ratio(1.0f) {}
+		virtual ~SpriteScaling() {}
+
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+		void SetScalingSpeed(float scalingSpeed) {
+			m_ScalingSpeed = scalingSpeed;
+		}
+		void SetMax(float max) {
+			m_MaxRatio = max;
+		}
+		void SetMin(float min) {
+			m_MinRatio = min;
+		}
+
 	};
 }
 //end basecross

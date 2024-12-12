@@ -237,7 +237,6 @@ namespace basecross {
 		void PlayerUpdate(shared_ptr<Player> player) override
 		{
 			player->SetIsBombCreate(false);
-
 			m_Pos = player->GetPlayerPos();
 			m_Pos.x += m_WalkSpeed * App::GetApp()->GetElapsedTime();
 			player->SetPlayerPos(m_Pos);

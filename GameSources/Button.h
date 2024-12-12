@@ -15,7 +15,7 @@ namespace basecross{
 	};
 	class Button : public GameObject {
 
-		function<void()> m_Func;
+		function<void(shared_ptr<Stage>& stage)> m_Func;
 		shared_ptr<BCSprite> m_Sprite;
 		wstring m_TexKey;
 		Vec3 m_Pos;
@@ -40,9 +40,9 @@ namespace basecross{
 		virtual void OnUpdate() override;
 
 		void Function(){
-			m_Func();
+			m_Func(GetStage());
 		}
-		void SetFunction(function<void()> func) {
+		void SetFunction(function<void(shared_ptr<Stage>& stage)> func) {
 			m_Func = func;
 		}
 		shared_ptr<PCTSpriteDraw> GetDrawComponent() {

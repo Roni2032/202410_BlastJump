@@ -176,5 +176,38 @@ namespace basecross{
 			digits /= 10;
 		}
 	}
+
+
+	void SpriteAction::OnCreate() {
+		m_Draw = GetGameObject()->GetComponent<SpriteBaseDraw>();
+		m_Trans = GetGameObject()->GetComponent<Transform>();
+	}
+
+	void SpriteFlash::OnUpdate() {
+		if (m_Draw != nullptr && GetIsPlay()) {
+			float elapsed = App::GetApp()->GetElapsedTime();
+			Col4 color = m_Draw->GetDiffuse();
+			color.w += m_FlashSpeed * elapsed;
+			if (color.w < 0 || color.w > 1) {
+				m_FlashSpeed *= -1;
+			}
+			m_Draw->SetDiffuse(color);
+		}
+	}
+	void SpriteScaling::OnCreate() {
+		SpriteAction::OnCreate();
+
+		defaultSize = m_Trans->GetScale();
+	}
+	void SpriteScaling::OnUpdate() {
+		if (m_Trans != nullptr && GetIsPlay()) {
+			float elapsed = App::GetApp()->GetElapsedTime();
+			m_Ratio += m_ScalingSpeed * elapsed;
+			if (m_Ratio < m_MinRatio || m_Ratio > m_MaxRatio) {
+				m_ScalingSpeed *= -1;
+			}
+			m_Trans->SetScale(defaultSize * m_Ratio);
+		}
+	}
 }
 //end basecross

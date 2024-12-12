@@ -11,18 +11,23 @@ namespace basecross{
 		vector<wstring> m_SoundKeys;
 		shared_ptr<XAudio2Manager> m_Audio;
 		shared_ptr<SoundItem> m_Bgm;
-
+		
+		map<wstring, shared_ptr<SoundItem>> m_PlayingSE;
 		SoundManager() {}
 	public:
 		
 		virtual ~SoundManager(){}
 
+		void Update();
 		void RegisterSounds();
 		void RegisterSound(const wstring& key, const wstring& fileName);
+		void PlayLoopSE(const wstring& key,const float volume = 1.0f);
+		void StopLoopSE(const wstring& key);
 
 		static SoundManager& Instance();
-		void PlaySE(const wstring& key,const float volume = 1.0f);
-		void PlayBGM(const wstring& key, const float volume = 1.0f);
+		shared_ptr<SoundItem> PlaySE(const wstring& key,const float volume = 1.0f);
+		shared_ptr<SoundItem> PlayBGM(const wstring& key, const float volume = 1.0f);
+		void StopAll();
 		void StopBGM();
 	};
 
