@@ -34,16 +34,15 @@ namespace basecross {
 			Over
 		};
 	private:
-		vector<shared_ptr<GameObject>> m_LoadedStageObjects;
 		shared_ptr<InstanceBlock> m_Walls;
 		shared_ptr<GameObject> m_Goal;
 		shared_ptr<GameObject> m_MenuBackGround;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
-		//vector<vector<int>> m_Map;
 		vector<vector<BlockData>> m_MapData;
 		Vec3 m_MapLeftTop;
 		Vec3 m_MapRightBottom;
+
 		wstring m_MapName;
 		CsvFile m_CsvMap;
 
@@ -53,10 +52,8 @@ namespace basecross {
 
 		int m_StageNumber;
 
-		shared_ptr<BCNumber> m_TimerSprite[2];
 		shared_ptr<BCNumber> m_PlayerHasBombs;
 
-		vector<BetWeen> m_scrollRange;
 
 		int m_MenuSelect;
 		
@@ -67,7 +64,6 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
-		void GetStageInfo(const wstring& strVec);
 		void CreateParticle();
 		void LoadMap();
 		void BlockUpdateActive();
