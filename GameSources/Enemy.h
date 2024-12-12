@@ -39,6 +39,8 @@ namespace basecross {
 		int m_Blo1;
 		int m_Blo2;
 		float m_BeforeVelo;
+		bool m_IsMoveRight;
+		bool m_IsMoveLeft;
 
 	public:
 		Enemy(const shared_ptr<Stage>& StagePtr,
@@ -51,11 +53,14 @@ namespace basecross {
 		void Move();
 		void String();
 
-		void InternalMap();
+		vector<Vec2> InternalMap();
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
 
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other)override;
+
+		virtual void OnCollisionExcute(shared_ptr<GameObject>& Other)override;
+
 		//ステート系
 		const unique_ptr<StateMachine<Enemy>>& GetStateMachine() {
 			return m_StateEnemy;
