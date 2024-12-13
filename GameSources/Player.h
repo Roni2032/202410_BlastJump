@@ -57,6 +57,7 @@ namespace basecross {
 		const Vec3 m_ModelTransMove = Vec3(0.0f, -2.0f, 0.0f);
 		const Vec3 m_ModelTransJump = Vec3(0.0f, -1.0f, 0.0f);
 		const Vec3 m_ModelTransThrow = Vec3(0.0f, -1.0f, 0.0f);
+		const Vec3 m_ModelTransWin = Vec3(0.0f, -1.0f, 0.0f);
 		void PlayerInitDraw()
 		{
 			m_Draw = AddComponent<PNTBoneModelDraw>();
@@ -321,7 +322,12 @@ namespace basecross {
 			);
 			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
-			if (cntlBombVec.y <= neutralZoneLine && cntlBombVec.y >= -neutralZoneLine)
+			if (cntlBombVec.y == 0.0f)
+			{
+				m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDown);
+				m_Draw->SetMeshResource(m_PlayerModelThrowDown);
+			}
+			else if (cntlBombVec.y <= neutralZoneLine && cntlBombVec.y >= -neutralZoneLine)
 			{
 				m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDefault);
 				m_Draw->SetMeshResource(m_PlayerModelThrowDefault);
@@ -348,7 +354,18 @@ namespace basecross {
 		{
 			const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
+			m_ModelRotVec.y = 0.0f;
+
 			if (getCurrentAnim == m_PlayerModelAnimWin) { return; }
+			m_ModelSpanMat.affineTransformation
+			(
+				m_ModelScale,
+				m_ModelRotOrigin,
+				m_ModelRotVec,
+				m_ModelTransWin
+			);
+			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
+
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimWin);
 			m_Draw->SetMeshResource(m_PlayerModelWin);
 		}
@@ -358,9 +375,10 @@ namespace basecross {
 		{
 			m_String = AddComponent<StringSprite>();
 			m_String->SetText(L"");
-			m_String->SetBackColor(Col4(0.0f, 0.0f, 0.0f, 1.0f));
+			m_String->SetBackColor(Col4(0.0f, 0.0f, 0.0f, 0.5f));
 			m_String->SetTextRect(Rect2D<float>(16.0f, 16.0f, 510.0f, 230.0f));
 			m_String->SetDrawActive(true);
+			SetDrawLayer(1);
 		}
 
 		void PlayerShowDebugLog()
