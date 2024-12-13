@@ -131,6 +131,9 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
       <Filter>Stage</Filter>
     </ClInclude>
+    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h">
+      <Filter>Player</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">

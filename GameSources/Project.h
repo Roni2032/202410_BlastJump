@@ -11,6 +11,8 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 
+#include "Input.h"
+
 #include "GameStage.h"
 #include "TitleStage.h"
 #include "SelectStage.h"
