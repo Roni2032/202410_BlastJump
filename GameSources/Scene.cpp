@@ -68,19 +68,16 @@ namespace basecross{
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
 		Button::Buttons.clear();
 		if (event->m_MsgStr == L"ToGameStage") {
-			//最初のアクティブステージの設定
-			//ResetActiveStage<GameStage>(L"Stage01.csv");
-			//ResetActiveStage<GameStageM>();
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
 			case 0:
-				ResetActiveStage<GameStage>(L"Stage05.csv",*stage);
+				ResetActiveStage<GameStage>(L"Stage05.csv",*stage,20);
 				break;
 			case 1:
-				ResetActiveStage<GameStage>(L"Stage03.csv", *stage);
+				ResetActiveStage<GameStage>(L"Stage03.csv", *stage,16);
 				break;
 			case 2:
-				ResetActiveStage<GameStage>(L"Stage04.csv", *stage);
+				ResetActiveStage<GameStage>(L"Stage04.csv", *stage,15);
 				break;
 			default:
 				ResetActiveStage<TitleStage>();

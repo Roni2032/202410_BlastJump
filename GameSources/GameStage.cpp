@@ -34,6 +34,7 @@ namespace basecross {
 			Block::CollisionObjects.clear();
 			CreateResource();
 			m_Player = AddGameObject<Player>();
+			m_Player->PlayerInitHasBomb(m_BombNum);
 
 			SetSharedGameObject(L"Player", m_Player);
 			CreateMap();
@@ -190,6 +191,9 @@ namespace basecross {
 			for (int x = 0; x < cells.size(); x++) {
 				vector<wstring> numStr;
 				Util::WStrToTokenVector(numStr, cells[x], L'>');
+				if (numStr[0] == L"") {
+					continue;
+				}
 				if (all_of(numStr[0].cbegin(), numStr[0].cend(),isdigit)) {
 					int cell = stoi(numStr[0]);
 
@@ -472,6 +476,7 @@ namespace basecross {
 		if (!IsInGame()) return;
 
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
+		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 		//sprite->SetDiffuse(Col4(1,0,0,1));
 		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));

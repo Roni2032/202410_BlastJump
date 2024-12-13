@@ -60,6 +60,7 @@ namespace basecross{
 	}
 
 	void BombThrowOrbit::OnCreate() {
+		auto draw = AddComponent<PNTStaticInstanceDraw>();
 		m_Trans = GetComponent<Transform>();
 		auto player = m_player.lock();
 		if (player != nullptr) {
