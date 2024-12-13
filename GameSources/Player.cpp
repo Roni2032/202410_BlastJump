@@ -43,7 +43,7 @@ namespace basecross {
 
 	bool Player::GetIsClear()
 	{
-		if (GetTypeStage<GameStage>()->GetGameMode() == 4) { return true; }
+		if (GetTypeStage<GameStage>()->GetGameMode() == 3) { return true; }
 		return false;
 	}
 
