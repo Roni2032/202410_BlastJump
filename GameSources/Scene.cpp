@@ -26,8 +26,23 @@ namespace basecross{
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
-			auto multiModel = MultiMeshResource::CreateStaticModelMultiMesh(modelPath, L"Player.bmf");
-			app->RegisterResource(L"PLAYER_MD", multiModel);
+			const auto boneModelIdle = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerIdole.bmf");
+			const auto boneModelMove = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerMove.bmf");
+			const auto boneModelJump = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerJump.bmf");
+			const auto boneModelThrowDefault = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerDefaultThrow.bmf");
+			const auto boneModelThrowUp = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowUp.bmf");
+			const auto boneModelThrowDown = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowDown.bmf");
+			const auto boneModelWin = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerWin.bmf");
+			const auto boneModelLose = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerLose.bmf");
+			app->RegisterResource(L"PLAYER_MD_IDLE", boneModelIdle);
+			app->RegisterResource(L"PLAYER_MD_MOVE", boneModelMove);
+			app->RegisterResource(L"PLAYER_MD_JUMP", boneModelJump);
+			app->RegisterResource(L"PLAYER_MD_THROW_DEFAULT", boneModelThrowDefault);
+			app->RegisterResource(L"PLAYER_MD_THROW_UP", boneModelThrowUp);
+			app->RegisterResource(L"PLAYER_MD_THROW_DOWN", boneModelThrowDown);
+			app->RegisterResource(L"PLAYER_MD_WIN", boneModelWin);
+			app->RegisterResource(L"PLAYER_MD_LOSE", boneModelLose);
+
 			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 
 			app->RegisterTexture(L"FADE_TEX", texPath + L"fade.png");
@@ -38,7 +53,7 @@ namespace basecross{
 			SetClearColor(Col);
 			//自分自身にイベントを送る
 			//これにより各ステージやオブジェクトがCreate時にシーンにアクセスできる
-			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage"/*,make_shared<int>(1)*/);
+			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
 			SoundManager::Instance().RegisterSounds();
 		}

@@ -1,6 +1,6 @@
-/*!
+ï»¿/*!
 @file GameStage.cpp
-@brief ƒQ[ƒ€ƒXƒe[ƒWÀ‘Ì
+@brief ã‚²ãƒ¼ãƒ ã‚¹ãƒ†ãƒ¼ã‚¸å®Ÿä½“
 */
 
 #include "stdafx.h"
@@ -9,44 +9,49 @@
 namespace basecross {
 
 	//--------------------------------------------------------------------------------------
-	//	ƒQ[ƒ€ƒXƒe[ƒWƒNƒ‰ƒXÀ‘Ì
+	//	ï¿½Qï¿½[ï¿½ï¿½ï¿½Xï¿½eï¿½[ï¿½Wï¿½Nï¿½ï¿½ï¿½Xï¿½ï¿½ï¿½ï¿½
 	//--------------------------------------------------------------------------------------
 	void GameStageK::CreateViewLight() {
-		const Vec3 eye(0.0f, 1.0f, -8.0f);
-		const Vec3 at(0.0f);
+		const Vec3 eye(0.0f, 3.0f, -100.0f);
+		const Vec3 at(0.0f, 3.0f, 0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		//ï¿½rï¿½ï¿½ï¿½[ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		auto PtrCamera = ObjectFactory::Create<Camera>();
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
-		//ƒ}ƒ‹ƒ`ƒ‰ƒCƒg‚Ìì¬
+		//ï¿½}ï¿½ï¿½ï¿½`ï¿½ï¿½ï¿½Cï¿½gï¿½Ìì¬
 		auto PtrMultiLight = CreateLight<MultiLight>();
-		//ƒfƒtƒHƒ‹ƒg‚Ìƒ‰ƒCƒeƒBƒ“ƒO‚ğw’è
+		//ï¿½fï¿½tï¿½Hï¿½ï¿½ï¿½gï¿½Ìƒï¿½ï¿½Cï¿½eï¿½Bï¿½ï¿½ï¿½Oï¿½ï¿½ï¿½wï¿½ï¿½
 		PtrMultiLight->SetDefaultLighting();
 	}
 
 	void GameStageK::CreateResource() {
 		auto& app = App::GetApp();
 		wstring path = app->GetDataDirWString();
-		wstring texPath = path + L"TestTex/Diamond.png";
-		app->RegisterTexture(L"DIAMOND_TX", texPath);
-		texPath = path + L"TestTex/SmoothStone.png";
-		app->RegisterTexture(L"SMOOTH_STONE_TX", texPath);
+		wstring uiPath = path + L"UITex/";
+		wstring texPath = path + L"Texture/";
+
+		wstring strPath = uiPath + L"TimerNum.png";
+		app->RegisterTexture(L"NUMBER_TEX", strPath);
+
+		strPath = texPath + L"gole1.png";
+		app->RegisterTexture(L"GOAL_TEX", strPath);
+
+		strPath = texPath + L"explodParticle.png";
+		app->RegisterTexture(L"EXPLODE_TEX", strPath);
+
+		strPath = texPath + L"explodeParticle1.png";
+		app->RegisterTexture(L"EXPLODE1_TEX", strPath);
+		strPath = texPath + L"explodeParticle2.png";
+		app->RegisterTexture(L"EXPLODE2_TEX", strPath);
+
 	}
 
 	void GameStageK::OnCreate() {
 		try {
-			CreateViewLight();
-			CreateResource();
+			GameStage::OnCreate();
 
-			Vec3 floorPos = Vec3(-5.0f, -1.5f, 0.0f);
-			for (int i = 0; i < 10; i++)
-			{
-				AddGameObject<Block>(L"DIAMOND_TX", floorPos);
-				floorPos.x += 1.0f;
-			}
-			AddGameObject<Player>(make_shared<PlayerStateIdle>());
 		}
 		catch (...) {
 			throw;
@@ -54,7 +59,9 @@ namespace basecross {
 	}
 
 	void GameStageK::OnUpdate() {
+		GameStage::OnUpdate();
 
+			timer = 0;
 	}
 
 }

@@ -32,6 +32,7 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageK.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Particles.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
