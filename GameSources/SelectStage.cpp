@@ -34,7 +34,7 @@ namespace basecross {
 			button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(400, 0, 0), Vec2(240, 240));
 			button->AddSelectEffect(SelectEffect::Expand);
 
-
+			SoundManager::Instance().PlayBGM(L"SELECT_BGM",0.1f);
 		}
 		catch (...) {
 			throw;
@@ -72,6 +72,7 @@ namespace basecross {
 			}
 
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
+				SoundManager::Instance().PlaySE(L"BUTTON_SD");
 				m_Fade = AddGameObject<Fade>(1.0f);
 			}
 		}
@@ -83,6 +84,9 @@ namespace basecross {
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage",stage);
 			}
 		}
+	}
+	void SelectStage::OnDestroy() {
+		SoundManager::Instance().StopAll();
 	}
 	void SelectStage::CreateResource() {
 		auto& app = App::GetApp();

@@ -7,6 +7,7 @@
 #include "Project.h"
 
 namespace basecross {
+
 	class Block;
 	//--------------------------------------------------------------------------------------
 	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｺﾛ・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
@@ -105,6 +106,7 @@ namespace basecross {
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
 					//メニュー決定
 					Button::Function(m_MenuSelect);
+					SoundManager::Instance().PlaySE(L"BUTTON_SD");
 				}
 				//選択
 				if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
@@ -157,7 +159,7 @@ namespace basecross {
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PressA_Restart.png");
 		app->RegisterTexture(L"PUSHA_TITLE_TEX", uiPath + L"PressY_Title.png");
-		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
+		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BomNum.png");
 		app->RegisterTexture(L"GOAL_SYMBLE_UI", uiPath + L"GoalSymble.png");
 		app->RegisterTexture(L"HEIGHT_BAR_UI", uiPath + L"HeightBar_2.png");
 		app->RegisterTexture(L"MENU_BACKGROUND_UI", uiPath + L"Menu_BackGround.png");
