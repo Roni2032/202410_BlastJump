@@ -196,7 +196,6 @@ namespace basecross {
 		Vec3 m_BombVec = Vec3(0.0f);
 
 		uint8_t m_HasBomb = 0;
-		void PlayerInitHasBomb(const uint8_t n) { m_HasBomb = n; }
 
 		const uint8_t m_AirBombLimit = 1;
 		uint8_t m_CurrentAirBombLimit = 0;
@@ -349,6 +348,15 @@ namespace basecross {
 			const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
 			if (getCurrentAnim == m_PlayerModelAnimWin) { return; }
+
+			m_ModelSpanMat.affineTransformation
+			(
+				m_ModelScale,
+				m_ModelRotOrigin,
+				Vec3(0,0,0),
+				m_ModelTransIdle
+			);
+			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimWin);
 			m_Draw->SetMeshResource(m_PlayerModelWin);
 		}
@@ -442,6 +450,7 @@ namespace basecross {
 
 		const uint8_t GetHasBomb() { return m_HasBomb; }
 		Vec3 GetBombVec() { return m_BombVec; }
+		void PlayerInitHasBomb(const uint8_t n) { m_HasBomb = n; }
 		void AddHasBomb(const uint8_t n) { m_HasBomb += n; }
 		void SubtractHasBomb(const uint8_t n) { m_HasBomb -= n; }
 	};

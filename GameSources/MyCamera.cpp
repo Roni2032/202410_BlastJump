@@ -44,7 +44,7 @@ namespace basecross{
 			else if (m_Stage->GetGameMode() == GameStage::GameMode::View) {
 
 			}
-			at.x = playerPos.x;
+			/*at.x = playerPos.x;
 			eye.x = playerPos.x;
 
 			if (at.x - m_CameraWidth / 2.0f < m_Stage->GetLeftTop().x ){
@@ -54,7 +54,7 @@ namespace basecross{
 			if (at.x + m_CameraWidth / 2.0f > m_Stage->GetRightBottom().x) {
 				at.x = m_Stage->GetRightBottom().x - m_CameraWidth / 2.0f;
 				eye.x = m_Stage->GetRightBottom().x - m_CameraWidth / 2.0f;
-			}
+			}*/
 			SetEye(eye);
 			SetAt(at);
 		}

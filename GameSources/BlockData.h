@@ -71,7 +71,7 @@ namespace basecross{
 			}
 		}
 		static float WstrToFloat(const wstring& data) {
-			return stoi(data);
+			return stof(data);
 		}
 		static int WstrToInt(const wstring& data) {
 			return stoi(data);
