@@ -17,7 +17,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.2f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.25f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -477,7 +477,7 @@ namespace basecross {
 		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
 		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 
-		m_Mode = GameMode::Clear;
+		ChangeMode(GameMode::Clear);
 
 	}
 	void GameStage::GameOver() {
@@ -491,18 +491,18 @@ namespace basecross {
 		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
 		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 
-		m_Mode = GameMode::Over;
+		ChangeMode(GameMode::Over);
 
 	}
 
 	void GameStage::OpenMenu() {
-		m_Mode = GameMode::Menu;
+		ChangeMode(GameMode::Menu);
 		Button::SetActive(true);
 		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(true);
 	}
 
 	void GameStage::CloseMenu() {
-		m_Mode = GameMode::InGame;
+		ChangeMode(GetBeforeMode());
 		Button::SetActive(false);
 		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(false);
 	}
