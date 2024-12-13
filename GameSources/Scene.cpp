@@ -18,6 +18,7 @@ namespace basecross{
 			wstring path = app->GetDataDirWString();
 			wstring modelPath = path + L"Models/";
 			wstring texPath = path + L"Texture/";
+			
 
 			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"DoorOpen.bmf");
 			app->RegisterResource(L"GOAL_MD", boneModel);

@@ -21,6 +21,8 @@ namespace basecross{
 		RegisterSound(L"LOSER_SD", L"make.wav");
 		RegisterSound(L"TITLE_BGM", L"TitleBGM.wav");
 		RegisterSound(L"BOMB_GET_SD", L"BombGet.wav");
+		RegisterSound(L"BUTTON_SD", L"Determinant.wav");
+		RegisterSound(L"SELECT_BGM", L"SelectSceneBGM.wav");
 	}
 	void SoundManager::RegisterSound(const wstring& key, const wstring& fileName) {
 		wstring path = App::GetApp()->GetDataDirWString() + L"Sounds/";
