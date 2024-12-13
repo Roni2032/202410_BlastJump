@@ -73,7 +73,7 @@ namespace basecross{
 		SoundManager::Instance().PlaySE(L"BOMB_SD",0.1f);
 
 		if (m_GameStage->GetGameMode() == GameStage::GameMode::NotBomb) {
-			m_GameStage->SetGameMode(GameStage::GameMode::InGame);
+			m_GameStage->ChangeMode(GameStage::GameMode::InGame);
 		}
 
 	}

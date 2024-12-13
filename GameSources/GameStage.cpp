@@ -17,7 +17,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ÉrÉÖÅ[ÇÃÉJÉÅÉâÇÃê›íË
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.2f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.25f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -47,8 +47,8 @@ namespace basecross {
 			camera->SetPlayer(m_Player);
 			float screenHight = camera->GetHeight();
 
-			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -240.0f, 0), Vec2(200, 150));
-			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -220.0f, 0), Vec2(80, 250), 2);
+			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -230.0f, 0), Vec2(200, 150));
+			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -190.0f, 0), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
 			m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 0, 0), Vec2(800, 800), true);
@@ -478,7 +478,7 @@ namespace basecross {
 		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
 		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 
-		m_Mode = GameMode::Clear;
+		ChangeMode(GameMode::Clear);
 
 	}
 	void GameStage::GameOver() {
@@ -492,18 +492,18 @@ namespace basecross {
 		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
 		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 
-		m_Mode = GameMode::Over;
+		ChangeMode(GameMode::Over);
 
 	}
 
 	void GameStage::OpenMenu() {
-		m_Mode = GameMode::Menu;
+		ChangeMode(GameMode::Menu);
 		Button::SetActive(true);
 		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(true);
 	}
 
 	void GameStage::CloseMenu() {
-		m_Mode = GameMode::InGame;
+		ChangeMode(GetBeforeMode());
 		Button::SetActive(false);
 		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(false);
 	}

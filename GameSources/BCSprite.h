@@ -33,17 +33,19 @@ namespace basecross{
 		shared_ptr<PCTSpriteDraw> m_Draw;
 		shared_ptr<Transform> m_Transform;
 
+		Vec2 m_ScreenSize;
 	public:
 		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,const bool useCenter = false) : BCSprite(ptr,texKey,pos,size,{1,1},useCenter,1,-1,false) {}
-		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,Vec2 cutUV, const bool useCenter = false,const float changeTime = 0.5f,const int useIndex = -1,const bool isAnimation = true) :
+		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size, Vec2 cutUV, const bool useCenter = false, const float changeTime = 0.5f, const int useIndex = -1, const bool isAnimation = true) :
 			GameObject(ptr),
 			m_TexKey(texKey),
-			m_Pos(pos),m_Size(size),
+			m_Pos(pos), m_Size(size),
 			m_cutUV(cutUV),
 			m_IsUseCenterSprite(useCenter),
 			m_Index(0), m_UseIndex(useIndex),
 			m_IsAnimation(isAnimation),
-			m_AnimationChangeTime(changeTime),m_AnimationTimer(0.0f)
+			m_AnimationChangeTime(changeTime), m_AnimationTimer(0.0f),
+			m_ScreenSize(0, 0)
 			{}
 		virtual ~BCSprite(){}
 
@@ -62,6 +64,21 @@ namespace basecross{
 		void SetDiffuse(Col4 color);
 		Col4 GetDiffuse();
 
+
+		//----------------------------------------------------------
+		//
+		//	位置設定テンプレート		
+		//																																
+		//----------------------------------------------------------
+		void ScreenCenter(const Vec2 diff = Vec2(0,0));
+		void ScreenTop(const Vec2 diff = Vec2(0, 0));
+		void ScreenTopLeft(const Vec2 diff = Vec2(0, 0));
+		void ScreenTopRight(const Vec2 diff = Vec2(0, 0));
+		void ScreenBottom(const Vec2 diff = Vec2(0, 0));
+		void ScreenBottomLeft(const Vec2 diff = Vec2(0, 0));
+		void ScreenBottomRight(const Vec2 diff = Vec2(0, 0));
+		void ScreenLeft(const Vec2 diff = Vec2(0, 0));
+		void ScreenRight(const Vec2 diff = Vec2(0, 0));
 	};
 
 

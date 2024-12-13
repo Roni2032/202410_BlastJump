@@ -57,6 +57,8 @@ namespace basecross{
 		m_Transform = GetComponent<Transform>();
 		m_Transform->SetPosition(m_Pos);
 		//GetComponent<Transform>()->SetRotation(m_rot);
+
+		m_ScreenSize = Vec2(1280, 800);
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
@@ -132,7 +134,40 @@ namespace basecross{
 	Col4 BCSprite::GetDiffuse() {
 		return m_Draw->GetDiffuse();
 	}
+	void BCSprite::ScreenCenter(const Vec2 diff) {
+		Vec3 newPos = Vec3();
+		if (m_IsUseCenterSprite) {
 
+		}
+		else {
+
+		}
+		m_Transform->SetPosition(newPos);
+	}
+	void BCSprite::ScreenTop(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenTopRight(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenTopLeft(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenBottom(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenBottomRight(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenBottomLeft(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenLeft(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenRight(const Vec2 diff) {
+
+	}
 	void BCNumber::OnCreate() {
 		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
 		float sizeX = m_Size.x / m_DisplayDigit;
