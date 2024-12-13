@@ -33,7 +33,8 @@ namespace basecross {
 			SoundManager::Instance().PlayBGM(L"BGM_SD",0.05f);
 			Block::CollisionObjects.clear();
 			CreateResource();
-			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			m_Player = AddGameObject<Player>();
+
 			SetSharedGameObject(L"Player", m_Player);
 			CreateMap();
 			CreateParticle();

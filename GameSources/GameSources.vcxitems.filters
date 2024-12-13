@@ -131,9 +131,14 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h">
       <Filter>Stage</Filter>
     </ClInclude>
+<<<<<<< HEAD
     <ClInclude Include="$(MSBuildThisFileDirectory)Button.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)StageLengthBar.h">
       <Filter>Goal/CheckPoint</Filter>
+=======
+    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h">
+      <Filter>Player</Filter>
+>>>>>>> kobayashi
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
