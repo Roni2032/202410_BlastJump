@@ -22,7 +22,7 @@ namespace basecross {
 
 		SubtractHasBomb(1);
 
-		if (m_IsJumping) { SubtractAirBombLimit(); }
+		if (IsPlayerOnAir() == true) { SubtractAirBombLimit(); }
 
 		m_ThrowCoolTime = 0.07f;
 		m_IsBombCreate = true;
