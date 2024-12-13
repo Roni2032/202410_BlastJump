@@ -46,7 +46,7 @@ namespace basecross{
 			Vec3 pos = trans->GetPosition();
 			Vec3 at = camera->GetAt();
 
-			if (at.y - m_LoopDistance >= pos.y) {
+			if (at.y - m_LoopDistance >= pos.y + 2.0f) {
 				trans->SetPosition(pos.x, pos.y + m_LoopDistance * 4.0f, pos.z);
 			}
 		}
