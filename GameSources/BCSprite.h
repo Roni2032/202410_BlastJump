@@ -126,7 +126,11 @@ namespace basecross{
 			return m_IsPlay;
 		}
 	};
-
+	//----------------------------------------------------------
+	//																																
+	//	Sprite操作 : 点滅																								
+	//																																
+	//----------------------------------------------------------
 	class SpriteFlash : public SpriteAction {
 		float m_FlashSpeed;
 	public:
@@ -141,7 +145,11 @@ namespace basecross{
 		}
 
 	};
-
+	//----------------------------------------------------------
+	//																																
+	//	Sprite操作 : 拡大縮小																								
+	//																																
+	//----------------------------------------------------------
 	class SpriteScaling : public SpriteAction {
 		float m_ScalingSpeed;
 		Vec3 defaultSize;
@@ -167,6 +175,31 @@ namespace basecross{
 			m_MinRatio = min;
 		}
 
+	};
+	//----------------------------------------------------------
+	//																																
+	//	Sprite操作 : フェードイン・フェードアウト																								
+	//																																
+	//----------------------------------------------------------
+	class SpriteFade : public SpriteAction {
+		float m_FadeSpeed;
+		bool m_IsFadeOut;
+		bool m_IsFinished;
+	public:
+		SpriteFade(const shared_ptr<GameObject>& ptr,float fadeSpeed) : SpriteAction(ptr),m_FadeSpeed(fadeSpeed),m_IsFadeOut(true),m_IsFinished(false){}
+		virtual ~SpriteFade(){}
+
+		virtual void OnUpdate()override;
+
+		void FadeOut() {
+			m_IsFadeOut = true;
+		}
+		void FadeIn() {
+			m_IsFadeOut = false;
+		}
+		bool IsFinish() {
+			return m_IsFinished;
+		}
 	};
 }
 //end basecross

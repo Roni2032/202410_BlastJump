@@ -209,5 +209,26 @@ namespace basecross{
 			m_Trans->SetScale(defaultSize * m_Ratio);
 		}
 	}
+
+	void SpriteFade::OnUpdate() {
+		if (m_Draw != nullptr && GetIsPlay()) {
+			float elapsed = App::GetApp()->GetElapsedTime();
+			if (!m_IsFadeOut) {
+				elapsed *= -1;
+			}
+			Col4 color = m_Draw->GetDiffuse();
+			if (!IsFinish()) {
+				color.w += elapsed * m_FadeSpeed;
+			}
+			if (color.w < 0 || color.w > 1)
+			{
+				m_IsFinished = true;
+			}
+			else {
+				m_IsFinished = false;
+			}
+			m_Draw->SetDiffuse(color);
+		}
+	}
 }
 //end basecross
