@@ -47,6 +47,12 @@ namespace basecross {
 		return false;
 	}
 
+	bool Player::GetIsInGame()
+	{
+		if (GetTypeStage<GameStage>()->IsInGame()) { return true; }
+		return false;
+	}
+
 	void Player::OnCreate()
 	{
 		PlayerInitDraw();

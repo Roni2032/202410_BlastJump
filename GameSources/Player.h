@@ -127,6 +127,8 @@ namespace basecross {
 				return;
 			}
 
+			if (GetIsInGame() == false) { return; }
+
 			Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 			float smoothWalkSpeed = cntlMoveVec.x * m_WalkSpeed;
 			float smoothWalkSpeedAir = m_AirLateralMovementSave * m_WalkSpeed;
@@ -238,6 +240,7 @@ namespace basecross {
 		void PlayerDeathLogicUpdate();
 
 		bool GetIsClear();
+		bool GetIsInGame();
 
 		void PlayerAnimationUpdateMove()
 		{
@@ -245,6 +248,7 @@ namespace basecross {
 			m_Draw->UpdateAnimation(deltaTime);
 
 			if (GetIsClear() == true) { return; }
+			if (GetIsInGame() == false) { return; }
 
 			const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
@@ -289,6 +293,7 @@ namespace basecross {
 		void PlayerAnimationChangeJump()
 		{
 			if (GetIsClear() == true) { return; }
+			if (GetIsInGame() == false) { return; }
 
 			m_ModelSpanMat.affineTransformation
 			(
@@ -306,6 +311,7 @@ namespace basecross {
 		void PlayerAnimationChangeThrow(const Vec2 cntlBombVec)
 		{
 			if (GetIsClear() == true) { return; }
+			if (GetIsInGame() == false) { return; }
 
 			const float neutralZoneLine = 0.75f;
 
