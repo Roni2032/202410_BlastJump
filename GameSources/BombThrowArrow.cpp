@@ -40,60 +40,31 @@ namespace basecross{
 			}
 		}
 	}
-	
-	void Orbit::OnCreate() {
-		m_Draw = AddComponent<PNTStaticDraw>();
-		m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
-		//m_Draw->SetTextureResource(L"ARROW_ORBIT_TEX");
-		SetAlphaActive(true);
-
-		m_Trans = GetComponent<Transform>();
-		m_Trans->SetScale(Vec3(0.1f));
-		
-	}
-	void Orbit::SetPosition(Vec3 pos) {
-		m_Trans->SetPosition(pos);
-	}
-
-	void Orbit::OnUpdate() {
-		
-	}
 
 	void BombThrowOrbit::OnCreate() {
 		auto draw = AddComponent<PNTStaticInstanceDraw>();
+		draw->SetMeshResource(L"DEFAULT_SQUARE");
+		draw->ClearMatrixVec();
 		m_Trans = GetComponent<Transform>();
-		auto player = m_player.lock();
-		if (player != nullptr) {
-			for (int i = 0; i < m_OrbitNum; i++) {
-				auto orbit = GetStage()->AddGameObject<Orbit>();
-				orbit->GetComponent<Transform>()->SetParent(player);
-				m_Orbits.push_back(orbit);
-			}
-			m_Trans->SetParent(player);
-		}
 	}
 
 	void BombThrowOrbit::OnUpdate() {
-		float renderTime = 1.0f / m_Orbits.size();
+		auto draw = GetComponent<PNTStaticInstanceDraw>();
+
+		draw->ClearMatrixVec();
+		float renderTime = 1.0f / m_OrbitNum;
 		Vec3 bombGravity = Vec3(0, - 9.8f,0);
 		auto player = m_player.lock();
 		Vec3 firstVelocity = Vec3(0);
 		bool isHit = false;
 		if (player != nullptr) {
 			firstVelocity = player->GetBombVec();
-
-			for (int i = 0; i < m_Orbits.size(); i++) {
+			if (firstVelocity.length() == 0) return;
+			for (int i = 0; i < m_OrbitNum; i++) {
 				float time = renderTime * i;
-				if (firstVelocity.length() == 0 || isHit) {
-					m_Orbits[i]->SetDrawActive(false);
-					continue;
-				}
-				else {
-					m_Orbits[i]->SetDrawActive(true);
-				}
+				
 				Vec3 pos = firstVelocity * time + bombGravity * (time * time) / 2.0f;
 				pos.z -= 0.5f;
-				m_Orbits[i]->SetPosition(pos);
 				time += renderTime;
 				Vec3 nextPos = firstVelocity * time + bombGravity * (time * time) / 2.0f;
 
@@ -102,10 +73,17 @@ namespace basecross{
 
 				float rad = atan2f(-diff.x, diff.y);
 
-				m_Orbits[i]->GetComponent<Transform>()->SetRotation(0, 0, rad);
+				Vec3 worldPos = pos + player->GetComponent<Transform>()->GetWorldPosition();
+				Mat4x4 matrix;
+				matrix.affineTransformation(
+					Vec3(0.1f),
+					Vec3(0),
+					Vec3(0,0,rad),
+					worldPos
+				);
+				draw->AddMatrix(matrix);
 
-				Vec3 worldPos = m_Orbits[i]->GetComponent<Transform>()->GetWorldPosition();
-				Vec3 center = worldPos;
+				
 				float bombRadius = 0.25f;
 				vector<shared_ptr<GameObject>> findObj;
 				for (int i = -1; i < 2; i++) {
@@ -123,12 +101,13 @@ namespace basecross{
 					Vec3 objPos = objTrans->GetPosition();
 					Vec3 objScale = objTrans->GetScale();
 
-					if (abs(objPos.x - center.x) < bombRadius + objScale.x / 2.0f &&
-						abs(objPos.y - center.y) < bombRadius + objScale.y / 2.0f) {
+					if (abs(objPos.x - worldPos.x) < bombRadius + objScale.x / 2.0f &&
+						abs(objPos.y - worldPos.y) < bombRadius + objScale.y / 2.0f) {
 						isCollision = true;
+						break;
 					}
 				}
-				if (isCollision) isHit = true;
+				if (isCollision) break;
 			}
 		}
 	}

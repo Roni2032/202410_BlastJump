@@ -76,7 +76,7 @@ namespace basecross {
 			m_MainTimer(0),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
-			m_Mode(GameMode::NotBomb),m_BeforeMode(GameMode::NotBomb)
+			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
 		{}
 		virtual ~GameStage() {}
 		//èâä˙âª
@@ -142,6 +142,10 @@ namespace basecross {
 		}
 		GameMode GetBeforeMode() {
 			return m_BeforeMode;
+		}
+		void GameStart() {
+			m_BeforeMode = GameMode::NotBomb;
+			m_Mode = GameMode::NotBomb;
 		}
 		bool IsInGame() {
 			return m_Mode == GameMode::InGame || m_Mode == GameMode::NotBomb;
