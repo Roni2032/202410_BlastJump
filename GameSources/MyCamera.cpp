@@ -40,23 +40,24 @@ namespace basecross{
 					at.y += m_ScrollSpeed * elapsed;
 					eye.y = at.y;
 				}
+				SetEye(eye);
+				SetAt(at);
 			}
-			else if (m_Stage->GetGameMode() == GameStage::GameMode::View) {
 
-			}
-			/*at.x = playerPos.x;
-			eye.x = playerPos.x;
+			else if (m_Stage->IsView()) {
+				at.y += 0.01f;
+				eye.y += 0.01f;
 
-			if (at.x - m_CameraWidth / 2.0f < m_Stage->GetLeftTop().x ){
-				at.x = m_Stage->GetLeftTop().x + m_CameraWidth / 2.0f;
-				eye.x = m_Stage->GetLeftTop().x + m_CameraWidth / 2.0f;
+				if (at.y > 10.0f) {
+					StartCamera();
+				}
+				else {
+					SetEye(eye);
+					SetAt(at);
+				}
 			}
-			if (at.x + m_CameraWidth / 2.0f > m_Stage->GetRightBottom().x) {
-				at.x = m_Stage->GetRightBottom().x - m_CameraWidth / 2.0f;
-				eye.x = m_Stage->GetRightBottom().x - m_CameraWidth / 2.0f;
-			}*/
-			SetEye(eye);
-			SetAt(at);
+			
+			
 		}
 		
 	}
@@ -74,6 +75,11 @@ namespace basecross{
 		eye.y = hight;
 		SetAt(at);
 		SetEye(eye);
+	}
+	void MyCamera::StartCamera() {
+		SetAt(m_StartAt);
+		SetEye(m_StartEye);
+		m_Stage->GameStart();
 	}
 }
 //end basecross

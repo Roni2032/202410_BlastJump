@@ -21,6 +21,8 @@ namespace basecross {
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
+		PtrCamera->SetStartAt(at);
+		PtrCamera->SetStartEye(eye);
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		PtrMultiLight->SetDefaultLighting();
 		
@@ -79,58 +81,59 @@ namespace basecross {
 		m_MainTimer += elapsedTime;
 		int minute = static_cast<int>(m_MainTimer / 60.0f);
 		int second = static_cast<int>(m_MainTimer - 60.0f * minute);
-
-		if (m_Mode != GameMode::View) {
-			LoadMap();
-
-			BlockUpdateActive();
+		LoadMap();
+		BlockUpdateActive();
+		if (!IsView()) {
 
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
+
+			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+			if (pad.bConnected) {
+				if (IsFinishGame()) {
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
+						auto stageNum = make_shared<int>(m_StageNumber);
+						PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum);
+					}
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_Y) {
+						auto stageNum = make_shared<int>(m_StageNumber);
+						PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+					}
+
+				}
+				if (IsOpenMenu()) {
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
+						//メニュー決定
+						Button::Function(m_MenuSelect);
+						SoundManager::Instance().PlaySE(L"BUTTON_SD");
+					}
+					//選択
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
+						m_MenuSelect--;
+					}
+					else if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+						m_MenuSelect++;
+					}
+					Button::CheckOverIndex(m_MenuSelect);
+
+					Button::SelectButton(m_MenuSelect);
+				}
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_START) {
+
+					if (IsOpenMenu()) {
+						CloseMenu();
+					}
+					else {
+						OpenMenu();
+					}
+				}
+
+			}
 		}
 		else {
 			m_PlayerHasBombs->SetDrawActive(false);
 			
 		}
-		auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
-		if (pad.bConnected) {
-			if (IsFinishGame()) {
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-					auto stageNum = make_shared<int>(m_StageNumber);
-					PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum);
-				}
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_Y) {
-					auto stageNum = make_shared<int>(m_StageNumber);
-					PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
-				}
-
-			}
-			if (IsOpenMenu()) {
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-					//メニュー決定
-					Button::Function(m_MenuSelect);
-					SoundManager::Instance().PlaySE(L"BUTTON_SD");
-				}
-				//選択
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
-					m_MenuSelect--;
-				}else if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
-					m_MenuSelect++;
-				}
-				Button::CheckOverIndex(m_MenuSelect);
-
-				Button::SelectButton(m_MenuSelect);
-			}
-			if (pad.wPressedButtons & XINPUT_GAMEPAD_START) {
-
-				if (IsOpenMenu()) {
-					CloseMenu();
-				}
-				else {
-					OpenMenu();
-				}
-			}
-			
-		}
+		
 	}
 	void GameStage::OnDestroy() {
 		SoundManager::Instance().StopAll();
