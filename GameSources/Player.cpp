@@ -22,7 +22,7 @@ namespace basecross {
 
 		SubtractHasBomb(1);
 
-		if (m_IsJumping) { SubtractAirBombLimit(); }
+		if (IsPlayerOnAir() == true) { SubtractAirBombLimit(); }
 
 		m_ThrowCoolTime = 0.07f;
 		m_IsBombCreate = true;
@@ -47,6 +47,12 @@ namespace basecross {
 		return false;
 	}
 
+	bool Player::GetIsInGame()
+	{
+		if (GetTypeStage<GameStage>()->IsInGame()) { return true; }
+		return false;
+	}
+
 	void Player::OnCreate()
 	{
 		PlayerInitDraw();
@@ -59,14 +65,14 @@ namespace basecross {
 
 		AddTag(L"Player");
 
-		//PlayerInitDebugString();
+		PlayerInitDebugString();
 	}
 
 	void Player::OnUpdate()
 	{
 		UpdateInputDevice();
 
-		//PlayerShowDebugLog();
+		PlayerShowDebugLog();
 
 		m_Pos = m_Transform->GetWorldPosition();
 
@@ -77,8 +83,6 @@ namespace basecross {
 		PlayerAnimationUpdateMove();
 		ThrowCoolTimeUpdate();
 		PlayerDeathLogicUpdate();
-
-		//GetTypeStage<GameStage>()->GetGameMode()
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other)
