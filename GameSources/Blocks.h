@@ -5,8 +5,11 @@
 
 #pragma once
 #include "stdafx.h"
-
 namespace basecross{
+	class GameStage;
+	struct Explosion;
+	struct BlockData;
+
 	class InstanceBlock : public GameObject {
 		wstring m_TexKey;
 
@@ -35,6 +38,7 @@ namespace basecross{
 		void AddBlock(int y,int cell);
 		
 		void DrawMap(const Vec2 max = Vec2(0), const Vec2 min = Vec2(0));
+		void DrawMap(vector<vector<BlockData>>& map,Vec2 drawSize,Vec3 leftTop);
 	};
 	class Block : public GameObject {
 		wstring m_TexKey;
@@ -88,7 +92,7 @@ namespace basecross{
 		void CheckDurability();
 	};
 
-	class MoveBlock : public FloorBlock {
+	class MoveBlock : public Block {
 		Vec3 m_MoveStartPos;
 		Vec3 m_MoveEndPos;
 		Vec3 m_TargetPos;
@@ -97,13 +101,14 @@ namespace basecross{
 		shared_ptr<Transform> m_Trans;
 	public:
 		MoveBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, float speed, Vec3 moveRange) :
-			MoveBlock(ptr,texKey,pos,speed, pos + moveRange, pos - moveRange){}
+			MoveBlock(ptr,texKey,pos,speed, moveRange, -moveRange){}
 
 		MoveBlock(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,float speed,Vec3 start,Vec3 end) :
-			FloorBlock(ptr,texKey,pos),
-			m_MoveStartPos(start),m_MoveEndPos(end),
+			Block(ptr,texKey,pos),
+			m_MoveStartPos(pos + start),m_MoveEndPos(pos + end),
 			m_MoveSpeed(speed)
 		{}
+		virtual ~MoveBlock(){}
 
 		virtual void Start()override;
 		virtual void Update()override;
@@ -111,6 +116,36 @@ namespace basecross{
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
 		virtual void OnCollisionExit(shared_ptr<GameObject>& Other)override;
 
+	};
+
+	class ExplodeBlock : public Block {
+		float m_Power;
+		float m_Range;
+	public:
+		ExplodeBlock(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,float power,float range) : Block(ptr,texKey,pos),m_Power(power),m_Range(range){}
+		virtual ~ExplodeBlock(){}
+
+		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
+	};
+
+	class ConditionalMoveBlock : public MoveBlock {
+		function<bool(shared_ptr<GameStage>)> m_Func;
+	public:
+		ConditionalMoveBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, float speed, Vec3 moveRang) : 
+			MoveBlock(ptr,texKey,pos,speed,moveRang)
+		{}
+		ConditionalMoveBlock(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, float speed, Vec3 start,Vec3 end) :
+			MoveBlock(ptr, texKey, pos, speed, start,end)
+		{}
+
+		virtual ~ConditionalMoveBlock(){}
+
+		virtual void Start()override;
+		virtual void Update()override;
+
+		void SetCondition(function<bool(shared_ptr<GameStage>)> func) {
+			m_Func = func;
+		}
 	};
 }
 //end basecross

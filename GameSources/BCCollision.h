@@ -36,6 +36,8 @@ namespace basecross{
 		Vec3 m_Size;
 		Vec3 m_CollisionGap;
 		vector<CollisionData> m_PushBackObject;
+
+		vector<shared_ptr<GameObject>> m_EnterObject;
 		vector<shared_ptr<GameObject>> m_ExcuteObject;
 	public:
 		BCCollisionObb(const shared_ptr<GameObject>& ptr,float distance,const wstring& wallTag = L"") : Component(ptr),

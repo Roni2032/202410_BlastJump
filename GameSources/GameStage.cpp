@@ -5,11 +5,11 @@
 
 #include "stdafx.h"
 #include "Project.h"
-//m_MapDataを使ってデータ保存するように変更する
 
 namespace basecross {
+
 	class Block;
-	//--------------------------------------------------------------------------------------	
+	//--------------------------------------------------------------------------------------
 	//	・ｽQ・ｽ[・ｽ・ｽ・ｽX・ｽe・ｺﾛ・ｽW・ｽN・ｽ・ｽ・ｽX・ｽ・ｽ・ｽ・ｽ
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
@@ -17,12 +17,15 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ビューのカメラの設定
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.0f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.25f);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
+		PtrCamera->SetStartAt(at);
+		PtrCamera->SetStartEye(eye);
 		auto PtrMultiLight = CreateLight<MultiLight>();
 		PtrMultiLight->SetDefaultLighting();
+		
 	}
 
 	void GameStage::OnCreate() {
@@ -32,30 +35,40 @@ namespace basecross {
 			SoundManager::Instance().PlayBGM(L"BGM_SD",0.05f);
 			Block::CollisionObjects.clear();
 			CreateResource();
-			m_Player = AddGameObject<Player>(make_shared<PlayerStateIdle>());
+			m_Player = AddGameObject<Player>();
+			m_Player->PlayerInitHasBomb(m_BombNum);
+
 			SetSharedGameObject(L"Player", m_Player);
 			CreateMap();
 			CreateParticle();
-			LoadMap();		
-			CreateEnemy();
+			LoadMap();
+			AddGameObject<BackGroundManager>(11.0f);
 
-			//AddGameObject<BombThrowArrow>(m_Player);
 			AddGameObject<BombThrowOrbit>(m_Player,30);
 			
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
 			float screenHight = camera->GetHeight();
-			//camera->SetStageAt(m_MapLeftTop.y - screenHight / 2.0f - 1);
 
-			//auto bomb = AddGameObject<Bomb>(Vec3(-5, 4, 0),Vec3(1.0f,8.0f,0.0f), 3.0f );
-
-			//m_TimerSprite[0] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-400.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
-			//m_TimerSprite[1] = AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-650.0f, 550.0f, 0.0f), Vec2(200, 400), 2);
-
-			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -240.0f, 0), Vec2(200, 150));
-			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -220.0f, 0), Vec2(80, 250), 2);
+			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -230.0f, 0), Vec2(200, 150));
+			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -190.0f, 0), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
+			m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 0, 0), Vec2(800, 800), true);
+
+			auto stageNum = make_shared<int>(m_StageNumber);
+			auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
+			button->AddSelectEffect(SelectEffect::Expand);
+			button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
+			button = AddGameObject<Button>(L"MENU_TITLE_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
+			button->AddSelectEffect(SelectEffect::Expand);
+			button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage"); });
+
+			button = AddGameObject<Button>(L"MENU_RESTART_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
+			button->AddSelectEffect(SelectEffect::Expand);
+			button->SetFunction([&stageNum](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum); });
+
+			CloseMenu();
 		}
 		catch (...) {
 			throw;
@@ -63,37 +76,67 @@ namespace basecross {
 	}
 
 	void GameStage::OnUpdate() {
+		SoundManager::Instance().Update();
 		auto elapsedTime = App::GetApp()->GetElapsedTime();
 		m_MainTimer += elapsedTime;
 		int minute = static_cast<int>(m_MainTimer / 60.0f);
 		int second = static_cast<int>(m_MainTimer - 60.0f * minute);
-
-		//m_TimerSprite[1]->UpdateNumber(minute);
-		//m_TimerSprite[0]->UpdateNumber(second);
-		if (m_Mode != GameMode::View) {
-			LoadMap();
-
-			BlockUpdateActive();
+		LoadMap();
+		BlockUpdateActive();
+		if (!IsView()) {
 
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
+
+			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+			if (pad.bConnected) {
+				if (IsFinishGame()) {
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
+						auto stageNum = make_shared<int>(m_StageNumber);
+						PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum);
+					}
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_Y) {
+						auto stageNum = make_shared<int>(m_StageNumber);
+						PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+					}
+
+				}
+				if (IsOpenMenu()) {
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
+						//メニュー決定
+						Button::Function(m_MenuSelect);
+						SoundManager::Instance().PlaySE(L"BUTTON_SD");
+					}
+					//選択
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
+						m_MenuSelect--;
+					}
+					else if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+						m_MenuSelect++;
+					}
+					Button::CheckOverIndex(m_MenuSelect);
+
+					Button::SelectButton(m_MenuSelect);
+				}
+				if (pad.wPressedButtons & XINPUT_GAMEPAD_START) {
+
+					if (IsOpenMenu()) {
+						CloseMenu();
+					}
+					else {
+						OpenMenu();
+					}
+				}
+
+			}
 		}
 		else {
 			m_PlayerHasBombs->SetDrawActive(false);
 			
 		}
-
-		if (m_Mode != GameMode::InGame) {
-
-			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
-			if (pad.bConnected) {
-				if (pad.wPressedButtons == XINPUT_GAMEPAD_Y) {
-					PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
-				}
-			}
-		}
+		
 	}
 	void GameStage::OnDestroy() {
-		SoundManager::Instance().StopBGM();
+		SoundManager::Instance().StopAll();
 	}
 	void GameStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -103,21 +146,31 @@ namespace basecross {
 		wstring texPath = path + L"Texture/";
 		wstring modelPath = path + L"Models/";
 		app->RegisterTexture(L"TEST_TEX", texPath + L"TestTex_wall.jpg");
-		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_wall100.png");
-		app->RegisterTexture(L"TEST66_TEX", texPath + L"TestTex_wall66.png");
-		app->RegisterTexture(L"TEST33_TEX", texPath + L"TestTex_wall33.png");
+		app->RegisterTexture(L"TEST100_TEX", texPath + L"TestTex_Wall.png");
+		app->RegisterTexture(L"TEST75_TEX", texPath + L"TestTex_wall75.png");
+		app->RegisterTexture(L"TEST50_TEX", texPath + L"TestTex_wall50.png");
+		app->RegisterTexture(L"TEST25_TEX", texPath + L"TestTex_wall25.png");
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle_2.png");
 		app->RegisterTexture(L"EXPLODE_SPARK_TEX", texPath + L"explodeSpark.png");
-		//app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
+		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
 		app->RegisterTexture(L"BOMB_ITEM_TEX", texPath + L"BombItem.png");
+		app->RegisterTexture(L"ARROW_ORBIT_TEX", texPath + L"arrow_Orbit.png");
+		app->RegisterTexture(L"EXPLODE_BLOCK_TEX", texPath + L"protoExplodeBlock.png");
+		app->RegisterTexture(L"TEST_MOVE_TEX", texPath + L"TestTex_Wall_Move.png");
 
-		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearTest1.png");
+		app->RegisterTexture(L"GOALCLEAR_TEX", uiPath + L"GameClearText_2.png");
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
-		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText1.png");
+		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText_2.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
-		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PushYText1.png");
-		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BombNumUI.png");
-
+		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PressA_Restart.png");
+		app->RegisterTexture(L"PUSHA_TITLE_TEX", uiPath + L"PressY_Title.png");
+		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BomNum.png");
+		app->RegisterTexture(L"GOAL_SYMBLE_UI", uiPath + L"GoalSymble.png");
+		app->RegisterTexture(L"HEIGHT_BAR_UI", uiPath + L"HeightBar_2.png");
+		app->RegisterTexture(L"MENU_BACKGROUND_UI", uiPath + L"Menu_BackGround.png");
+		app->RegisterTexture(L"MENU_SELECT_UI", uiPath + L"Menu_SelectStage.png");
+		app->RegisterTexture(L"MENU_TITLE_UI", uiPath + L"Menu_TitleStage.png");
+		app->RegisterTexture(L"MENU_RESTART_UI", uiPath + L"Menu_Restart.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -125,7 +178,6 @@ namespace basecross {
 	void GameStage::CreateMap() {
 		
 		auto& mapVec = m_CsvMap.GetCsvVec();
-		GetStageInfo(mapVec[0]);
 		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
 		vector<wstring> cells;
 		Vec2 startPos;
@@ -133,33 +185,55 @@ namespace basecross {
 		for (int y = 0; y < mapVec.size() - 1; y++) {
 			m_MapData.push_back({});
 			cells.clear();
-			//vector<int> cow;
 			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
 			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
 			if (y == 0) {
-				m_MapLeftTop = startPos + Vec3(0.0f,-0.5f,0);
+				m_MapLeftTop = startPos;
+				m_MapRightBottom = Vec3(cells.size() / 2.0f - 1, -0.5f,0.0f);
 			}
 			for (int x = 0; x < cells.size(); x++) {
-				int cell = stoi(cells[x]);
-				
-				if (cell == 2) {
-					m_Walls->AddBlock(y, cell);
+				vector<wstring> numStr;
+				Util::WStrToTokenVector(numStr, cells[x], L'>');
+				if (numStr[0] == L"") {
+					continue;
+				}
+				if (all_of(numStr[0].cbegin(), numStr[0].cend(),isdigit)) {
+					int cell = stoi(numStr[0]);
+
+					if (numStr.size() >= 2) {
+						m_MapData[y].push_back(BlockData(cell, numStr[1]));
+					}
+					else {
+						m_MapData[y].push_back(BlockData(cell));
+					}
+
+					if (cell == 2) {
+						m_Walls->AddBlock(y, cell);
+					}
+					else if (cell == 6) {
+						CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+					}
+					else{
+						m_Walls->AddBlock(y, 0);
+					}
+
 				}
 				else {
-					m_Walls->AddBlock(y, 0);
+					if (numStr[0] == L"s") {
+						m_Player->GetComponent<Transform>()->SetPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+						m_Walls->AddBlock(y, 0);
+						m_MapData[y].push_back(BlockData(0));
+					}
 				}
-				m_MapData[y].push_back(BlockData(cell));
-				//cow.push_back(cell);
 			}
-			//m_Map.push_back(cow);
 		}
 		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
 		auto camera = GetView()->GetTargetCamera();
 		float atY = camera->GetAt().y;
 
 		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
-		//CreateWallCollider(startPos, mapSize);
 		LoadMap();
+		AddGameObject<StageLengthBar>(mapSize.y,m_Player,m_Goal);
 	}
 
 	void GameStage::RegisterBlock(Vec2 mapIndex, const shared_ptr<GameObject>& obj) {
@@ -169,168 +243,161 @@ namespace basecross {
 	}
 	shared_ptr<GameObject> GameStage::CreateBlock(Vec2 mapIndex, Vec3 pos) {
 		shared_ptr<GameObject> obj = nullptr;
-		switch (m_MapData[mapIndex.y][mapIndex.x].GetID()) {
-		case 1:
-			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos,100);
+		BlockData mapData = m_MapData[mapIndex.y][mapIndex.x];
+		switch (mapData.GetID()) {
+		case 1: {
+			auto durabilityStr = mapData.GetData(L"hp");
+			float durability = 100;
+			if (durabilityStr != L"") {
+				durability = BlockData::WstrToFloat(durabilityStr);
+			}
+			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, durability);
 			break;
-		/*case 2:
-			obj = AddGameObject<Block>(L"", pos, Vec3(1.0f));
-			break;*/
-		case 3:
-			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 50);
+		}
+		case 3: {
+			auto rangeStr = mapData.GetData(L"range");
+			auto powerStr = mapData.GetData(L"power");
+			float range = 0;
+			float power = 0;
+
+			if (rangeStr != L"") {
+				range = BlockData::WstrToFloat(rangeStr);
+			}
+			if (powerStr != L"") {
+				power = BlockData::WstrToFloat(powerStr);
+			}
+			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,range);
+		}
+		case 5: {
+			auto addNumStr = mapData.GetData(L"add");
+			int addNum = 2;
+			if (addNumStr != L"") {
+				addNum = BlockData::WstrToInt(addNumStr);
+			}
+			obj = AddGameObject<BombItem>(pos, addNum);
 			break;
-		case 4:
-			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, 10);
-			break;
-		case 5:
-			obj = AddGameObject<BombItem>(pos,4);
-			break;
+		}
 		case 6:
-			obj = AddGameObject<Goal>(pos);
+			m_Goal = AddGameObject<Goal>(pos + Vec3(0,0,1));
+			m_MapData[mapIndex.y][mapIndex.x].m_Id = 0;
 			break;
 		case 7:
 			obj = AddGameObject<CheckPoint>(pos);
 			break;
-		case 8:
-			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(2, 0, 0));
-			break;
-		case 9:
-			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(-2, 0, 0));
-			break;
-		case 10:
-			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(0, 2, 0));
-			break;
-		case 11:
-			obj = AddGameObject<MoveBlock>(L"TEST_TEX", pos, 1.0f, Vec3(0, -2, 0));
-			break;
+		case 8: {
+			auto speedStr = mapData.GetData(L"speed");
+			auto rangeStr = mapData.GetData(L"range");
+			auto startStr = mapData.GetData(L"start");
+			auto endStr = mapData.GetData(L"end");
+			float speed = 0;
+			Vec3 range = Vec3();
+			Vec3 start = Vec3();
+			Vec3 end = Vec3();
+			
+			if (speedStr != L"") {
+				speed = BlockData::WstrToFloat(speedStr);
+			}
+			if (rangeStr != L"") {
+				range = BlockData::WstrToVec3(rangeStr);
+			}
+			if (startStr != L"") {
+				start = BlockData::WstrToVec3(startStr);
+			}
+			if (endStr != L"") {
+				end = BlockData::WstrToVec3(endStr);
+			}
 
+			if (start == Vec3() && end == Vec3()) {
+				obj = AddGameObject<MoveBlock>(L"TEST_MOVE_TEX", pos, speed, range);
+			}
+			else {
+				obj = AddGameObject<MoveBlock>(L"TEST_MOVE_TEX", pos, speed, start,end);
+			}
+			break;
+		}
+		case 9: {
+			auto speedStr = mapData.GetData(L"speed");
+			auto rangeStr = mapData.GetData(L"range");
+			auto startStr = mapData.GetData(L"start");
+			auto endStr = mapData.GetData(L"end");
+			float speed = 0;
+			Vec3 range = Vec3();
+			Vec3 start = Vec3();
+			Vec3 end = Vec3();
+
+			if (speedStr != L"") {
+				speed = BlockData::WstrToFloat(speedStr);
+			}
+			if (rangeStr != L"") {
+				range = BlockData::WstrToVec3(rangeStr);
+			}
+			if (startStr != L"") {
+				start = BlockData::WstrToVec3(startStr);
+			}
+			if (endStr != L"") {
+				end = BlockData::WstrToVec3(endStr);
+			}
+			if (start == Vec3() && end == Vec3()) {
+				obj = AddGameObject<ConditionalMoveBlock>(L"TEST_MOVE_TEX", pos, speed, range);
+			}
+			else {
+				obj = AddGameObject<ConditionalMoveBlock>(L"TEST_MOVE_TEX", pos, speed, start,end);
+			}
+			auto conditionBlock = static_pointer_cast<ConditionalMoveBlock>(obj);
+
+			auto conditionTypeStr = mapData.GetData(L"condition");
+			if (conditionTypeStr == L"block") {
+				auto lookAtPosStr = mapData.GetData(L"lookAt");
+				Vec2 lookAtPos = Vec2();
+				if (lookAtPosStr != L"") {
+					lookAtPos = BlockData::WstrToVec2(lookAtPosStr) + mapIndex;
+				}
+				conditionBlock->SetCondition([lookAtPos](shared_ptr<GameStage> stage) { if (stage->GetBlockId(lookAtPos) == 0) return true; else return false; });
+			}
+			break;
+		}
 		}
 		
 		m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
+		if (obj != nullptr) {
+			m_MapData[mapIndex.y][mapIndex.x].SetIsLoaded(true);
+		}
 		
 		return obj;
 	}
-	void GameStage::CreateEnemy() {
-		Vec3 AppearancePos = Vec3(-0.25f,8.0f,0.0f);
-		Vec3 Size = Vec3(1.0f);
-		auto enemy = AddGameObject<Enemy>(AppearancePos, Size);
-	//SetSharedGameObject(L"Enemy",enemy);
-
-	}
 	void GameStage::LoadMap() {
 		auto camera = GetView()->GetTargetCamera();
-		float atY = camera->GetAt().y;
 
-		
+		Vec3 mapIndex = GetMapIndex(camera->GetAt());
+		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
+		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;
 
-		/*if (m_LoadedMaxHeight == 0) {
-			for (int i = 0; i <= atY + m_LoadStageSize.y; i++) {
-				if (i >= m_Map.size()) {
-					break;
-				}
-				int y;
-				y = m_Map.size() - i - 1;
-				int sizeX = m_Map[y].size();
-				for (int x = 0; x < sizeX; x++) {
-					int size = m_Map[y].size();
-					auto obj = CreateBlock(m_Map[y][x], Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-					if (obj != nullptr) {
-						m_LoadedStageObjects.push_back(obj);
-					}
-				}
-			}
-
-			m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
-			m_Walls->DrawMap(Vec2(m_Map[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
-			return;
-		}*/
-		//・ｽV・ｽ・ｽ・ｽ・ｽ・ｽ}・ｽb・ｽv・ｽ・ｽ・ｽ・ｽ・ｽ[・ｽh
-		//if (m_LoadedMaxHeight < static_cast<int>(atY) + m_LoadStageSize.y) {
-		//	m_LoadedMaxHeight = static_cast<int>(atY + m_LoadStageSize.y);
-		//	if (m_LoadedMaxHeight >= m_Map.size()) {
-		//		return;
-		//	}
-		//	int loadedIndex = m_Map.size() - 1 - m_LoadedMaxHeight;
-		//	for (int x = 0; x < m_Map[loadedIndex].size(); x++) {
-		//		int size = m_Map[loadedIndex].size();
-		//		Vec2 startPos = Vec2(size / -2 , m_Map.size() - 2);
-		//		auto obj = CreateBlock(m_Map[loadedIndex][x], Vec3(startPos.x + x, startPos.y - loadedIndex, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
-		//		if (obj != nullptr) {
-		//			m_LoadedStageObjects.push_back(obj);
-		//		}
-		//	}
-		//}
-		////・ｽ・ｽ・ｽ[・ｽh・ｽ・ｽ・ｽﾈゑｿｽ・ｽ鼾・ｿｽﾍゑｿｽ・ｽ・ｽ・ｽﾅ終・ｽ・ｽ
-		//else if(m_LoadedMaxHeight == static_cast<int>(atY) + m_LoadStageSize.y){
-		//	return;
-		//}
-		if (m_CameraAtY == 0) {
-			m_CameraAtY = atY;
-			for (int i = 0; i <= m_CameraAtY + m_LoadStageSize.y; i++) {
-				if (i >= m_MapData.size()) {
-					break;
-				}
-				int y = static_cast<int>(m_MapData.size()) - i - 1;
-				int sizeX = static_cast<int>(m_MapData[y].size());
-				for (int x = 0; x < sizeX; x++) {
-					int size = static_cast<int>(m_MapData[y].size());
-					auto obj = CreateBlock(Vec2(x,y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-					if (obj != nullptr) {
-						m_LoadedStageObjects.push_back(obj);
-					}
-				}
-			}
-
-			m_Walls->DrawMap(Vec2(m_MapData[0].size(), atY + m_LoadStageSize.y), Vec2(0, atY - m_LoadStageSize.y));
-			return;
+		if (maxLoadIndexY >= m_MapData.size()) {
+			maxLoadIndexY = m_MapData.size() - 1;
 		}
-		for (int i = m_CameraAtY + m_LoadStageSize.y + 1; i <= atY + m_LoadStageSize.y; i++) {
-			if (i >= m_MapData.size()) return;
-
-			for (int j = 0; j < m_MapData[i].size(); j++) {
-
-				int loadIndexY = static_cast<int>(m_MapData.size()) - i - 1;
-				float sizeX = static_cast<float>(m_MapData[i].size());
-				Vec2 startPos = Vec2(sizeX / -2, m_MapData.size() - 2);
-				auto obj = CreateBlock(Vec2(j,loadIndexY), Vec3(startPos.x + j, startPos.y - loadIndexY, 0));
-				if (obj != nullptr) {
-					m_LoadedStageObjects.push_back(obj);
-				}
-			}
+		if (minLoadIndexY < 0) {
+			minLoadIndexY = 0;
 		}
-
-		for (int i = m_CameraAtY - m_LoadStageSize.y - 1; i >= atY - m_LoadStageSize.y; i--) {
-			if (i < 0) return;
-
-			for (int j = 0; j < m_MapData[i].size(); j++) {
-
-				int loadIndexY = static_cast<int>(m_MapData.size()) - i - 1;
-				Vec2 startPos = Vec2(m_MapData[i].size() / -2.0f, m_MapData.size() - 2);
-				auto obj = CreateBlock(Vec2(j, loadIndexY), Vec3(startPos.x + j, startPos.y - loadIndexY, 0));//AddGameObject<FloorBlock>(L"TEST_TEX", );
-				if (obj != nullptr) {
-					m_LoadedStageObjects.push_back(obj);
+		for (int y = minLoadIndexY; y <= maxLoadIndexY; y++) {
+			for (int x = 0; x < m_MapData[y].size(); x++) {
+				if (!m_MapData[y][x].GetIsLoaded()) {
+					auto obj = CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
 				}
-			}
-		}
-		m_CameraAtY = atY;
-		m_Walls->DrawMap(Vec2(m_MapData[0].size(), m_CameraAtY + m_LoadStageSize.y), Vec2(0, m_CameraAtY - m_LoadStageSize.y));
-		//・ｽﾍ囲外・ｽﾉ難ｿｽ・ｽ・ｽ・ｽ・ｽ・ｽu・ｽ・ｽ・ｽb・ｽN・ｽ・ｽ・ｽ尞・
-		for (int i = 0; i < m_LoadedStageObjects.size(); i++) {
-			auto objTrans = m_LoadedStageObjects[i]->GetComponent<Transform>(false);
-			float y = objTrans->GetPosition().y;
-
-			if (y < static_cast<int>(atY) - m_LoadStageSize.y) {
-				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
-				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
+				
 				
 			}
-			if (y > static_cast<int>(atY) + m_LoadStageSize.y) {
-				RemoveGameObject<GameObject>(m_LoadedStageObjects[i]);
-				m_LoadedStageObjects.erase(m_LoadedStageObjects.begin() + i);
+		}
+		for (int y = 0; y < m_MapData.size(); y++) {
+			for (int x = 0; x < m_MapData[y].size(); x++) {
+				if (!m_MapData[y][x].GetIsLoaded()) continue;
+
+				if (y < minLoadIndexY || y > maxLoadIndexY) {
+					RemoveGameObject<GameObject>(m_MapData[y][x].GetBlock());
+					m_MapData[y][x].SetIsLoaded(false);
+				}
 			}
 		}
-
-		
+		m_Walls->DrawMap(m_MapData,Vec2(m_LoadStageSize.x, m_LoadStageSize.y), m_MapLeftTop);
 		
 	}
 	void GameStage::BlockUpdateActive() {
@@ -352,58 +419,11 @@ namespace basecross {
 				}
 				auto col = blockObject->GetComponent<Collision>(false);
 				if (col != nullptr) {
-					//col->SetDrawActive(isCollider);
 					col->SetUpdateActive(isCollider);
 				}
 				else {
 					blockObject->SetUpdateActive(isCollider);
 				}
-			}
-		}
-	}
-	void GameStage::CreateWallCollider(Vec2 startPos, Vec2 mapSize) {
-
-		Vec2 center = Vec2(0.0f, mapSize.y / 2.0f);
-		//・ｽ・ｽ
-		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y, 0), Vec3(mapSize.x, 1, 1));
-		//・ｽ・ｽ
-		AddGameObject<Block>(L"", Vec3(center.x - 0.5f, startPos.y - mapSize.y + 1, 0), Vec3(mapSize.x, 1, 1));
-		//・ｽE
-		AddGameObject<Block>(L"", Vec3(startPos.x + mapSize.x - 1, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
-		//・ｽ・ｽ
-		AddGameObject<Block>(L"", Vec3(startPos.x, center.y - 0.5f, 0), Vec3(1, mapSize.y - 2, 1));
-	}
-	
-	void GameStage::GetStageInfo(const wstring& strVec) {
-		vector<wstring> cells;
-		Util::WStrToTokenVector(cells, strVec, L',');
-
-		int index = 0;
-		while (true) {
-			vector<wstring> strNum;
-			wstring key = cells[index];
-			index++;
-			if (index >= cells.size()) {
-				break;
-			}
-
-			if (key == L"null") {
-				break;
-			}
-			if (!all_of(cells[index].cbegin(), cells[index].cend(), isdigit)) {
-				continue;
-			}
-			if (key == L"scroll") {
-				Util::WStrToTokenVector(strNum, cells[index], L'-');
-				if (strNum.size() == 2) {
-					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), stoi(strNum[1])));
-				}
-				else {
-					m_scrollRange.push_back(BetWeen(stoi(strNum[0]), 1000));
-				}
-			}
-			else if (key == L"bomb") {
-				m_BombNum = stoi(cells[index]);
 			}
 		}
 	}
@@ -414,16 +434,13 @@ namespace basecross {
 		auto blockDestroyParticle = AddGameObject<BlockDestroyParticle>();
 		SetSharedGameObject(L"DESTROY_BLOCK_PCL", blockDestroyParticle);
 	}
-
-	void GameStage::PlayParticle(const wstring& key, Vec3 pos) {
-		auto particle = GetSharedGameObject<ExplodeParticle>(key, false);
-		if (particle != nullptr) {
-			particle->Shot(pos);
-		}
-	}
 	Vec3 GameStage::GetMapIndex(Vec3 pos) {
 		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x + 0.5f, m_MapLeftTop.y - pos.y + 0.5f, 0);
 		return mapPos.floor(0);
+	}
+	Vec3 GameStage::GetWorldPosition(Vec2 pos) {
+		Vec3 worldPos = Vec3(m_MapLeftTop.x + pos.x, m_MapLeftTop.y - pos.y, 0);
+		return worldPos;
 	}
 	shared_ptr<GameObject> GameStage::GetBlock(Vec3 pos) {
 		Vec3 mapPos = GetMapIndex(pos);
@@ -435,8 +452,18 @@ namespace basecross {
 	}
 	int GameStage::GetBlockId(Vec3 pos) {
 		Vec3 mapPos = GetMapIndex(pos);
-		
+		if (mapPos.y < 0 || mapPos.y >= m_MapData.size() ||
+			mapPos.x < 0 || mapPos.x >= m_MapData[mapPos.y].size()) {
+			return 0;
+		}
 		return m_MapData[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)].GetID();
+	}
+	int GameStage::GetBlockId(Vec2 index) {
+		if (index.y < 0 || index.y >= m_MapData.size() ||
+			index.x < 0 || index.x >= m_MapData[index.y].size()) {
+			return 0;
+		}
+		return m_MapData[static_cast<int>(index.y)][static_cast<int>(index.x)].GetID();
 	}
 
 	void GameStage::DestroyBlock(Vec3 pos,shared_ptr<GameObject>& block) {
@@ -444,37 +471,49 @@ namespace basecross {
 			m_Player->GetComponent<Transform>()->SetParent(nullptr);
 		}
 		Vec3 mapPos = GetMapIndex(pos);
-		//m_Map[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)] = 0;
 		m_MapData[static_cast<int>(mapPos.y)][static_cast<int>(mapPos.x)].RemoveBlock();
-		auto it = find(m_LoadedStageObjects.begin(), m_LoadedStageObjects.end(), block);
-		if (it != m_LoadedStageObjects.end()) {
-			m_LoadedStageObjects.erase(it);
-		}
-		PlayParticle(L"DESTROY_BLOCK_PCL", block->GetComponent<Transform>()->GetPosition());
-		
 		RemoveGameObject<GameObject>(block);
 	}
 
 	void GameStage::GameClear() {
-		if (m_Mode != GameMode::InGame) return;
+		if (!IsInGame()) return;
 
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
-		AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
-		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
+		SoundManager::Instance().StopBGM();
+		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
+		//sprite->SetDiffuse(Col4(1,0,0,1));
+		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
+		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
+		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 
-		m_Mode = GameMode::Clear;
+		ChangeMode(GameMode::Clear);
 
 	}
 	void GameStage::GameOver() {
-		if (m_Mode != GameMode::InGame) return;
+		if (!IsInGame()) return;
 		
-		//SoundManager::Instance().PlaySE(L"LOSER_SD");
+		SoundManager::Instance().PlaySE(L"LOSER_SD");
 		SoundManager::Instance().StopBGM();
-		AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
-		AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-150, -200, 0), Vec2(500, 100));
+		auto sprite = AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
+		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
+		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
+		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
+		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 
-		m_Mode = GameMode::Over;
+		ChangeMode(GameMode::Over);
 
+	}
+
+	void GameStage::OpenMenu() {
+		ChangeMode(GameMode::Menu);
+		Button::SetActive(true);
+		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(true);
+	}
+
+	void GameStage::CloseMenu() {
+		ChangeMode(GetBeforeMode());
+		Button::SetActive(false);
+		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(false);
 	}
 }
 //end basecross

@@ -25,11 +25,15 @@ namespace basecross{
 	void BackGroundManager::OnCreate(){
 		m_Camera = OnGetDrawCamera();
 		auto camera = m_Camera.lock();
+
+		float cameraHight = camera->GetHeight();
+		Vec3 at = camera->GetAt() - Vec3(7.0f, 0, 0);
 		if (camera != nullptr) {
-			for (int i = -1; i < 3; i++) {
-				float cameraHight = camera->GetHeight();
-				Vec3 at = camera->GetAt();
-				m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(0, 0, 1) + Vec3(0,m_LoopDistance,0) * static_cast<float>(i), Vec3(cameraHight)));
+			for (int j = 0; j < 2; j++) {
+				for (int i = -1; i < 3; i++) {
+					
+					m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(15.0f * j, 0, 10) + Vec3(0, m_LoopDistance, 0) * static_cast<float>(i), Vec3(m_LoopDistance)));
+				}
 			}
 		}
 	}
@@ -42,7 +46,7 @@ namespace basecross{
 			Vec3 pos = trans->GetPosition();
 			Vec3 at = camera->GetAt();
 
-			if (at.y - m_LoopDistance >= pos.y) {
+			if (at.y - m_LoopDistance >= pos.y + 2.0f) {
 				trans->SetPosition(pos.x, pos.y + m_LoopDistance * 4.0f, pos.z);
 			}
 		}

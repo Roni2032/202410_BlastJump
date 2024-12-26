@@ -21,32 +21,44 @@ namespace basecross{
 		float elapsed = App::GetApp()->GetElapsedTime();
 		Vec3 eye = GetEye();
 		Vec3 at = GetAt();
-		
-		if (m_Stage->GetGameMode() == GameStage::GameMode::InGame) {
-			auto playerTransform = m_player.lock();
-			if (playerTransform != nullptr && m_ScrollSpeed == 0) {
-				Vec3 playerPos = playerTransform->GetPosition();
-				if (playerPos.y > m_HighY && playerPos.y - m_CameraHight / 2.0f > m_Stage->GetBottomY() && playerPos.y + m_CameraHight / 2.0f < m_Stage->GetTopY()) {
-					at.y = playerPos.y;
-					eye.y = playerPos.y;
+		auto playerTransform = m_player.lock();
+		if (playerTransform != nullptr) {
+			Vec3 playerPos = playerTransform->GetWorldPosition();
+			if (m_Stage->GetGameMode() == GameStage::GameMode::InGame) {
+				if (m_ScrollSpeed == 0) {
+					if (playerPos.y > m_HighY && playerPos.y - m_CameraHight / 2.0f > m_Stage->GetRightBottom().y && playerPos.y + m_CameraHight / 2.0f < m_Stage->GetLeftTop().y) {
+						at.y = playerPos.y;
+						eye.y = playerPos.y;
 
-					m_HighY = playerPos.y;
+						m_HighY = playerPos.y;
+
+					}
+					
 				}
 
+				if (m_ScrollSpeed != 0) {
+					at.y += m_ScrollSpeed * elapsed;
+					eye.y = at.y;
+				}
+				SetEye(eye);
+				SetAt(at);
 			}
 
+			else if (m_Stage->IsView()) {
+				at.y += 0.01f;
+				eye.y += 0.01f;
 
-			if (m_ScrollSpeed != 0) {
-				at.y += m_ScrollSpeed * elapsed;
-				eye.y = at.y;
+				if (at.y > 10.0f) {
+					StartCamera();
+				}
+				else {
+					SetEye(eye);
+					SetAt(at);
+				}
 			}
-		}
-		else if(m_Stage->GetGameMode() == GameStage::GameMode::View){
+			
 			
 		}
-		SetEye(eye);
-		SetAt(at);
-
 		
 	}
 
@@ -63,6 +75,11 @@ namespace basecross{
 		eye.y = hight;
 		SetAt(at);
 		SetEye(eye);
+	}
+	void MyCamera::StartCamera() {
+		SetAt(m_StartAt);
+		SetEye(m_StartEye);
+		m_Stage->GameStart();
 	}
 }
 //end basecross

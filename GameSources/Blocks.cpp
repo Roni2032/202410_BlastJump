@@ -16,13 +16,75 @@ namespace basecross{
 		for (int i = 0; i < m_SizeY; i++) {
 			m_Maps.push_back({});
 		}
-
-		m_Camera = OnGetDrawCamera();
-		m_CameraAtY = m_Camera->GetAt().y;
 	}
 	void InstanceBlock::AddBlock(int y, int cell) {
 		if (y >= m_SizeY) return;
 		m_Maps[y].push_back(cell);
+	}
+	void InstanceBlock::DrawMap(vector<vector<BlockData>>& map, Vec2 drawSize, Vec3 leftTop) {
+		auto stage = GetTypeStage<GameStage>();
+		m_Camera = OnGetDrawCamera();
+		Vec3 at = stage->GetMapIndex(m_Camera->GetAt());
+
+		float drawIndexMinY = at.y - drawSize.y;
+		float drawIndexMaxY = at.y + drawSize.y;
+
+		if (drawIndexMinY < 0) {
+			drawIndexMinY = 0;
+		}
+		if (drawIndexMaxY >= map.size()) {
+			drawIndexMaxY = map.size() - 1;
+		}
+		
+		drawSize.x = map[0].size();
+
+		m_Draw->ClearMatrixVec();
+		for (int y = drawIndexMinY; y <= drawIndexMaxY; y++) {
+			for (int x = 0; x < drawSize.x; x++) {
+				if (map[y][x].GetID() != 2) continue;
+
+				Mat4x4 matrix;
+				matrix.translation(stage->GetWorldPosition(Vec2(x, y)));
+
+				m_Draw->AddMatrix(matrix);
+
+				if (map[y][x].GetIsLoaded()) continue;
+				map[y][x].SetIsLoaded(true);
+
+				bool isCollider = false;
+				Vec2 aroundMap[] = {
+					Vec2(x + 1,y),
+					Vec2(x - 1,y),
+					Vec2(x,y + 1),
+					Vec2(x,y - 1)
+				};
+				for (Vec2 around : aroundMap) {
+					if (around.x < 0 || around.x >= map[y].size()) continue;
+					if (around.y < 0 || around.y >= map.size()) continue;
+
+					if (map[static_cast<int>(around.y)][static_cast<int>(around.x)].GetID() != 2) {
+						isCollider = true;
+						break;
+					}
+				}
+
+				if (isCollider) {
+					auto obj = GetStage()->AddGameObject<Block>(L"", stage->GetWorldPosition(Vec2(x,y)), Vec3(1.0f));
+					GetTypeStage<GameStage>()->RegisterBlock(Vec2(x, y), obj);
+				}
+			}
+		}
+
+		for (int y = 0; y < map.size(); y++) {
+			for (int x = 0; x < map[y].size(); x++) {
+				if (!map[y][x].GetIsLoaded()) continue;
+
+				if (y < drawIndexMinY || y > drawIndexMaxY) {
+					stage->RemoveGameObject<GameObject>(map[y][x].GetBlock());
+					map[y][x].SetIsLoaded(false);
+				}
+			}
+		}
 	}
 	void InstanceBlock::DrawMap(const Vec2 max, const Vec2 min) {
 		Vec2 drawSize(0);
@@ -50,7 +112,7 @@ namespace basecross{
 				if (m_Maps[m_Maps.size() - i - 1][j] == 0) continue;
 
 				float x = m_StartPos.x + j;
-				float y = static_cast<float>(i);
+				float y = static_cast<float>(i) ;
 
 				y = floor(y, 0);
 
@@ -157,9 +219,8 @@ namespace basecross{
 		}
 
 		auto col = AddComponent<CollisionObb>();
-		//col->SetAfterCollision(AfterCollision::None);
 		col->SetFixed(true);
-		col->SetDrawActive(true);
+		
 		AddTag(L"Stage");
 
 		auto trans = GetComponent<Transform>();
@@ -172,6 +233,7 @@ namespace basecross{
 
 	void Block::OnUpdate() {
 		Update();
+		GetComponent<Transform>()->SetScale(1, 1, 1);
 	}
 	void Block::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		auto col = Other->GetComponent<Collision>(false);
@@ -201,16 +263,20 @@ namespace basecross{
 		CheckDurability();
 		if (m_Durability <= 0) {
 			GetTypeStage<GameStage>()->DestroyBlock(GetComponent<Transform>()->GetPosition(), GetThis<GameObject>());
+			//GetTypeStage<GameStage>()->PlayParticle<BlockDestroyParticle>(L"DESTROY_BLOCK_PCL", GetComponent<Transform>()->GetPosition());
 		}
 	}
 
 	void FloorBlock::CheckDurability() {
 		auto drawComp = GetComponent<BcPNTStaticDraw>();
-		if (m_Durability < 33) {
-			drawComp->SetTextureResource(L"TEST33_TEX");
+		if (m_Durability <= 25) {
+			drawComp->SetTextureResource(L"TEST25_TEX");
 		}
-		else if (m_Durability < 66) {
-			drawComp->SetTextureResource(L"TEST66_TEX");
+		else if (m_Durability <= 50) {
+			drawComp->SetTextureResource(L"TEST50_TEX");
+		}
+		else if(m_Durability <= 75){
+			drawComp->SetTextureResource(L"TEST75_TEX");
 		}
 		else {
 			drawComp->SetTextureResource(L"TEST100_TEX");
@@ -218,7 +284,7 @@ namespace basecross{
 	}
 
 	void MoveBlock::Start() {
-		FloorBlock::Start();
+		Block::Start();
 
 		m_Trans = GetComponent<Transform>();
 
@@ -226,7 +292,7 @@ namespace basecross{
 	}
 
 	void MoveBlock::Update() {
-		FloorBlock::Update();
+		Block::Update();
 
 		float elapsed = App::GetApp()->GetElapsedTime();
 		Vec3 pos = m_Trans->GetPosition();
@@ -253,6 +319,54 @@ namespace basecross{
 		if (Other->FindTag(L"Player")) {
 			Other->GetComponent<Transform>()->SetParent(nullptr);
 		}
+	}
+
+	void ExplodeBlock::OnCollisionEnter(shared_ptr<GameObject>& Other) {
+		if (Other->FindTag(L"Player")) {
+			auto stage = GetTypeStage<GameStage>();
+			stage->AddGameObject<ExplodeCollider>(GetComponent<Transform>()->GetWorldPosition() - Vec3(0,0.5f,0), Explosion(m_Power, m_Range), Other);
+
+			auto otherCol = Other->GetComponent<BCCollisionObb>();
+			Vec3 diff = Vec3();
+			if (otherCol != nullptr) {
+				auto data = otherCol->GetCollisionData(GetThis<GameObject>());
+				switch (data.hitDir) {
+				case HitDir::Up:
+					diff = Vec3(0, 0.5f, 0);
+					break;
+				case HitDir::Down:
+					diff = Vec3(0, -0.5f, 0);
+					break;
+				case HitDir::Right:
+					diff = Vec3(0.5f, 0, 0);
+					break;
+				case HitDir::Left:
+					diff = Vec3(-0.5f, 0, 0);
+					break;
+
+				}
+			}
+			stage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition() + diff);
+
+			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
+
+			//プレイヤーをスタン状態にする
+
+		}
+	}
+
+	void ConditionalMoveBlock::Start() {
+		MoveBlock::Start();
+	}
+
+	void ConditionalMoveBlock::Update() {
+		bool isFunc = m_Func(GetTypeStage<GameStage>());
+		if (isFunc) {
+			MoveBlock::Update();
+		}
+
+		float elapsed = App::GetApp()->GetElapsedTime();
+		
 	}
 }
 //end basecross

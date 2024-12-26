@@ -24,12 +24,22 @@ namespace basecross{
 		if (m_UseIndex == -1 || m_UseIndex < m_AnimationUV.size()) {
 			m_UseIndex = static_cast<int>(m_AnimationUV.size());
 		}
-		m_Vertices = { 
-			{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
-			{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
-			{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
-			{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
-		};
+		if (m_IsUseCenterSprite) {
+			m_Vertices = {
+				{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+				{Vec3(m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+				{Vec3(-m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+				{Vec3(m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+			};
+		}
+		else {
+			m_Vertices = {
+				{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+				{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+				{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+				{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+			};
+		}
 		vector<uint16_t> indices = { 
 			0, 1, 2,
 			2, 1, 3
@@ -37,14 +47,18 @@ namespace basecross{
 
 
 		m_Draw = AddComponent<PCTSpriteDraw>(m_Vertices, indices);
-		m_Draw->SetTextureResource(m_TexKey);
+		if (m_TexKey != L"") {
+			m_Draw->SetTextureResource(m_TexKey);
+		}
+		SetAlphaActive(true);
 		m_Draw->SetSamplerState(SamplerState::LinearWrap);
 		m_Draw->SetDiffuse(Col4(1, 1, 1, 1));
 
 		m_Transform = GetComponent<Transform>();
 		m_Transform->SetPosition(m_Pos);
 		//GetComponent<Transform>()->SetRotation(m_rot);
-		SetAlphaActive(true);
+
+		m_ScreenSize = Vec2(1280, 800);
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
@@ -84,12 +98,22 @@ namespace basecross{
 		if (m_Draw) {
 			m_Size = size;
 
-			m_Vertices = {
-				{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][0]},
-				{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][1]},
-				{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][2]},
-				{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[m_Index][3]}
-			};
+			if (m_IsUseCenterSprite) {
+				m_Vertices = {
+					{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+					{Vec3(m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+					{Vec3(-m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+					{Vec3(m_Size.x / 2.0f, -m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+				};
+			}
+			else {
+				m_Vertices = {
+					{Vec3(0, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
+					{Vec3(m_Size.x, 0, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
+					{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
+					{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
+				};
+			}
 			m_Draw->UpdateVertices(m_Vertices);
 		}
 	}
@@ -104,8 +128,46 @@ namespace basecross{
 	void BCSprite::SetUseIndex(int useIndex) {
 
 	}
+	void BCSprite::SetDiffuse(Col4 color) {
+		m_Draw->SetDiffuse(color);
+	}
+	Col4 BCSprite::GetDiffuse() {
+		return m_Draw->GetDiffuse();
+	}
+	void BCSprite::ScreenCenter(const Vec2 diff) {
+		Vec3 newPos = Vec3();
+		if (m_IsUseCenterSprite) {
 
+		}
+		else {
 
+		}
+		m_Transform->SetPosition(newPos);
+	}
+	void BCSprite::ScreenTop(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenTopRight(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenTopLeft(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenBottom(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenBottomRight(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenBottomLeft(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenLeft(const Vec2 diff) {
+
+	}
+	void BCSprite::ScreenRight(const Vec2 diff) {
+
+	}
 	void BCNumber::OnCreate() {
 		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
 		float sizeX = m_Size.x / m_DisplayDigit;
@@ -116,8 +178,6 @@ namespace basecross{
 			
 			number->UpdateUV(GetUV(singleDigit));
 			digits /= 10;
-			auto col = number->GetComponent<PCTSpriteDraw>();
-			col->SetDiffuse(Col4(0.0f,0.0f,0.0f,1.0f));
 			m_Numbers.push_back(number);
 		}
 		auto trans = GetComponent<Transform>();
@@ -135,8 +195,7 @@ namespace basecross{
 				{uvX * displayDigit,0.0f},
 				{uvX * (displayDigit + 1),0.0f},
 				{uvX * displayDigit,1.0f},
-				{uvX * (displayDigit + 1
-				),1.0f}
+				{uvX * (displayDigit + 1),1.0f}
 		};
 
 		return uv;
@@ -153,5 +212,58 @@ namespace basecross{
 		}
 	}
 
+
+	void SpriteAction::OnCreate() {
+		m_Draw = GetGameObject()->GetComponent<SpriteBaseDraw>();
+		m_Trans = GetGameObject()->GetComponent<Transform>();
+	}
+
+	void SpriteFlash::OnUpdate() {
+		if (m_Draw != nullptr && GetIsPlay()) {
+			float elapsed = App::GetApp()->GetElapsedTime();
+			Col4 color = m_Draw->GetDiffuse();
+			color.w += m_FlashSpeed * elapsed;
+			if (color.w < 0 || color.w > 1) {
+				m_FlashSpeed *= -1;
+			}
+			m_Draw->SetDiffuse(color);
+		}
+	}
+	void SpriteScaling::OnCreate() {
+		SpriteAction::OnCreate();
+
+		defaultSize = m_Trans->GetScale();
+	}
+	void SpriteScaling::OnUpdate() {
+		if (m_Trans != nullptr && GetIsPlay()) {
+			float elapsed = App::GetApp()->GetElapsedTime();
+			m_Ratio += m_ScalingSpeed * elapsed;
+			if (m_Ratio < m_MinRatio || m_Ratio > m_MaxRatio) {
+				m_ScalingSpeed *= -1;
+			}
+			m_Trans->SetScale(defaultSize * m_Ratio);
+		}
+	}
+
+	void SpriteFade::OnUpdate() {
+		if (m_Draw != nullptr && GetIsPlay()) {
+			float elapsed = App::GetApp()->GetElapsedTime();
+			if (!m_IsFadeOut) {
+				elapsed *= -1;
+			}
+			Col4 color = m_Draw->GetDiffuse();
+			if (!IsFinish()) {
+				color.w += elapsed * m_FadeSpeed;
+			}
+			if (color.w < 0 || color.w > 1)
+			{
+				m_IsFinished = true;
+			}
+			else {
+				m_IsFinished = false;
+			}
+			m_Draw->SetDiffuse(color);
+		}
+	}
 }
 //end basecross

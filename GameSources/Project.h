@@ -4,7 +4,6 @@
 */
 
 #pragma once
-#include <concepts>
 //#include <Effekseer.h>
 //#include <EffekseerRendererDX11.h>
 
@@ -12,8 +11,11 @@
 #include "ProjectBehavior.h"
 #include "Scene.h"
 
+#include "Input.h"
+
 #include "GameStage.h"
 #include "TitleStage.h"
+#include "SelectStage.h"
 #include "GameStageM.h"
 #include "GameStageH.h"
 #include "GameStageK.h"
@@ -38,8 +40,10 @@
 
 #include "SoundManager.h"
 #include "BackGround.h"
+#include "StageLengthBar.h"
 
 #include "TrackingEnemy.h"
 #include "EnemyState.h"
 
-#include "Enemy.h"
+#include "Fadeout.h"
+#include "Button.h"

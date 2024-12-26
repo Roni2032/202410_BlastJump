@@ -23,24 +23,10 @@ namespace basecross{
 		virtual void OnUpdate()override;
 	};
 
-	class Orbit : public GameObject {
-		shared_ptr<PNTStaticDraw> m_Draw;
-		shared_ptr<Transform> m_Trans;
 
-	public:
-		Orbit(const shared_ptr<Stage>& ptr) : GameObject(ptr) {}
-		virtual ~Orbit() {}
-
-		virtual void OnCreate()override;
-		virtual void OnUpdate()override;
-
-		void SetPosition(Vec3 pos);
-	};
 	class BombThrowOrbit : public GameObject {
 		weak_ptr<Player> m_player;
 		shared_ptr<Transform> m_Trans;
-		vector<shared_ptr<Orbit>> m_Orbits;
-
 		int m_OrbitNum;
 	public:
 		BombThrowOrbit(const shared_ptr<Stage>& ptr, shared_ptr<Player> player,const int& num = 10) :

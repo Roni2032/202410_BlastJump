@@ -24,22 +24,31 @@ namespace basecross{
 		try {
 			CreateViewLight();
 			CreateResource();
-
-			AddGameObject<BCSprite>(L"TITLE_UI", Vec3(-200, 275, 0), Vec2(500, 500));
-			AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(-50,-200,0), Vec2(300, 120));
+			AddGameObject<BCSprite>(L"BACKGROUND", Vec3(0, 0, 0), Vec2(1280, 800), true);
+			auto sprite = AddGameObject<BCSprite>(L"TITLE_UI", Vec3(0, 100, 0), Vec2(700, 700),true);
+			sprite->SetDiffuse(Col4(0, 0, 0, 1));
+			AddGameObject<BCSprite>(L"TITLE_BOMB_UI", Vec3(0, 150, 0), Vec2(500, 500), true);
+			sprite = AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(0,-300,0), Vec2(300, 120),true);
+			sprite->AddComponent<SpriteFlash>(1.0f);
+			sprite->SetDiffuse(Col4(0, 0, 0, 1));
+			SoundManager::Instance().PlayBGM(L"TITLE_BGM",0.05f);
 		}
 		catch (...) {
 			throw;
 		}
 	}
-
+	
 	void TitleStage::OnUpdate() {
 		auto ctrl = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 		if (ctrl.bConnected) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage");
+				SoundManager::Instance().PlaySE(L"BUTTON_SD");
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
 			}
 		}
+	}
+	void TitleStage::OnDestroy() {
+		SoundManager::Instance().StopBGM();
 	}
 	void TitleStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -48,8 +57,10 @@ namespace basecross{
 		wstring texPath = path + L"Texture/";
 		wstring modelPath = path + L"Models/";
 		
-		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
-		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
+		app->RegisterTexture(L"TITLE_BOMB_UI", uiPath + L"Title_Bomb.png");
+		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title_Main.png");
+		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PressA.png");
+		app->RegisterTexture(L"BACKGROUND", uiPath + L"Title_BackGound.png");
 	}
 }
 //end basecross

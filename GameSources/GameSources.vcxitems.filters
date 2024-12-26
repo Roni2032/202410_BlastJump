@@ -1,218 +1,70 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <Filter Include="Headers">
-      <UniqueIdentifier>{4b0a624a-610d-4bc6-b311-2b02a781cdf9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Sources">
-      <UniqueIdentifier>{96692d2a-8790-41a9-bfac-6c5662d4ad61}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Components">
-      <UniqueIdentifier>{ee3f8e90-691b-4ae1-a907-e656f3b39049}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="workMunakata">
-      <UniqueIdentifier>{2c6d31ff-9e40-4ea9-b1f8-6f324ff51b11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="workKobayashi">
-      <UniqueIdentifier>{b31cc5b2-199a-42fe-8448-1ea34d6b6942}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="workHashimoto">
-      <UniqueIdentifier>{07c42c35-dd0c-4088-8b34-059d822494f8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Floor">
-      <UniqueIdentifier>{ea270f3f-4822-4be1-ac49-8a3389e29a2e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Bomb">
-      <UniqueIdentifier>{8d47161f-77d3-48b8-86d0-c3a941a322b9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Effect">
-      <UniqueIdentifier>{a77c9166-596d-4b22-a2c1-89a294bbdddd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Player">
-      <UniqueIdentifier>{51c2cff9-5a5c-45e9-8cb4-251227419deb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Camera">
-      <UniqueIdentifier>{ce849db8-5316-4b4d-87f9-c6a0f07cdd6c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Goal/CheckPoint">
-      <UniqueIdentifier>{e33e3eb2-66e9-4f87-a730-40a2f05d3b1b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Manager">
-      <UniqueIdentifier>{7f33c4d2-2684-488e-92fa-8ddd9c50ca55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="TrackingEnemy">
-      <UniqueIdentifier>{c504b0b7-173e-49f5-a7c9-81e64ab23145}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Stage">
-      <UniqueIdentifier>{9e2c1619-6ff8-4a95-879a-f9fabfe9bbc9}</UniqueIdentifier>
-    </Filter>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Character.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Project.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h">
-      <Filter>Headers</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h">
-      <Filter>Bomb</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h">
-      <Filter>Floor</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h">
-      <Filter>workHashimoto</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageK.h">
-      <Filter>workKobayashi</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h">
-      <Filter>workMunakata</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BCGravity.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h">
-      <Filter>Player</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Particles.h">
-      <Filter>Effect</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h">
-      <Filter>Camera</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h">
-      <Filter>Goal/CheckPoint</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)SoundManager.h">
-      <Filter>Manager</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BackGround.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)BombItem.h">
-      <Filter>Bomb</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)EnemyState.h">
-      <Filter>TrackingEnemy</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TrackingEnemy.h">
-      <Filter>TrackingEnemy</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h">
-      <Filter>Bomb</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h">
-      <Filter>Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h">
-      <Filter>Stage</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BCCollision.h">
-      <Filter>Components</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)BlockData.h">
-      <Filter>Floor</Filter>
-    </ClInclude>
-    <ClInclude Include="$(MSBuildThisFileDirectory)Enemy.h">
-      <Filter>workHashimoto</Filter>
-    </ClInclude>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp">
-      <Filter>Sources</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp">
-      <Filter>Bomb</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp">
-      <Filter>Floor</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp">
-      <Filter>workHashimoto</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageK.cpp">
-      <Filter>workKobayashi</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp">
-      <Filter>workMunakata</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BCGravity.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp">
-      <Filter>Player</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Particles.cpp">
-      <Filter>Effect</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp">
-      <Filter>Camera</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)StageObjects.cpp">
-      <Filter>Goal/CheckPoint</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)SoundManager.cpp">
-      <Filter>Manager</Filter>
-    </ClCompile>
     <ClCompile Include="$(MSBuildThisFileDirectory)BackGround.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)BombItem.cpp">
-      <Filter>Bomb</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)EnemyState.cpp">
-      <Filter>TrackingEnemy</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TrackingEnemy.cpp">
-      <Filter>TrackingEnemy</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp">
-      <Filter>Bomb</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp">
-      <Filter>Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp">
-      <Filter>Stage</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BCCollision.cpp">
-      <Filter>Components</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)BlockData.cpp">
-      <Filter>Floor</Filter>
-    </ClCompile>
-    <ClCompile Include="$(MSBuildThisFileDirectory)Enemy.cpp">
-      <Filter>workHashimoto</Filter>
-    </ClCompile>
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCCollision.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCGravity.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCParticle.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BlockData.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombItem.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Button.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)EnemyState.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Fadeout.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageK.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameStageM.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)MyCamera.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Particles.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Player.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectBehavior.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)ProjectShader.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)Scene.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SelectStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)SoundManager.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageLengthBar.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)StageObjects.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TitleStage.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)TrackingEnemy.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)WinMain.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="$(MSBuildThisFileDirectory)BackGround.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCCollision.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCGravity.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCParticle.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BlockData.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombItem.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Button.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)EnemyState.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Fadeout.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageK.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameStageM.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Input.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)MyCamera.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Particles.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Player.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Project.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectBehavior.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)ProjectShader.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)Scene.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SelectStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)SoundManager.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageLengthBar.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)StageObjects.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TitleStage.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)TrackingEnemy.h" />
   </ItemGroup>
 </Project>

@@ -56,7 +56,7 @@ namespace basecross{
 			));
 		}
 
-		particles = AddParticle(32, L"EXPLODE_SPARK_TEX");
+		/*particles = AddParticle(32, L"EXPLODE_SPARK_TEX");
 		for (auto& particle : particles) {
 			particle->SetMaxTime(0.75f);
 			particle->SetBaseColor(Col4(1, 1, 0, 1));
@@ -78,19 +78,24 @@ namespace basecross{
 			float distance = Util::RandZeroToOne() * 0.5f;
 
 			particle->SetStartPos(distance * velocity.normalize());
-		}
+		}*/
 	}
 
 	void BlockDestroyParticle::AddParticleData() {
 		auto particles = AddParticle(16, L"TEST_TEX");
 		for (auto& particle : particles) {
-			particle->SetMaxTime(1.0f);
+			particle->SetMaxTime(0.5f);
+			float uvSize = Util::RandZeroToOne() * 0.5f + 0.5f;
+			float startUv = Util::RandZeroToOne();
+			particle->AddAnimationUV({{ startUv,startUv },{ startUv + uvSize,startUv },{ startUv, startUv + uvSize },{ startUv + uvSize,startUv + uvSize }
+				});
+
 			particle->SetColor(Col4(1, 1.0f, 1.0f, 1));
 			particle->SetSize(Vec3(0.2f,0.1f,0.2f));
 			particle->SetGravity(-4.9f);
 			particle->SetVelocity(Vec3(
 				Util::RandZeroToOne() * 4.0f - 2.0f,
-				Util::RandZeroToOne() * 4.0f - 2.0f,
+				Util::RandZeroToOne() * 4.0f - 1.0f,
 				Util::RandZeroToOne() * 4.0f - 2.0f
 			));
 		}

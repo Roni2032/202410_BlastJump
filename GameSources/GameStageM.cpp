@@ -51,10 +51,9 @@ namespace basecross {
 	void GameStageM::OnCreate() {
 		try {
 			GameStage::OnCreate();
-			//AddGameObject<BackGroundManager>(9.0f);
-
-			AddGameObject<BackGroundManager>(9.0f);
-
+			auto fade = AddGameObject<Fade>(1.0f,false);
+			fade->SetDestroy(true);
+			fade->SetFadeColor(Col4(0, 0, 0, 1));
 		}
 		catch (...) {
 			throw;
@@ -63,14 +62,6 @@ namespace basecross {
 
 	void GameStageM::OnUpdate() {
 		GameStage::OnUpdate();
-
-		/*float e = App::GetApp()->GetElapsedTime();
-		timer += e;
-		if (timer > 10.0f) {
-			timer = 0;
-			static_pointer_cast<MyCamera>(GetView()->GetTargetCamera())->SetStageAt(10.0f);
-			m_Player->GetComponent<Transform>()->SetPosition(0, 10.0f, 0);
-		}*/
 	}
 }
 //end basecross
