@@ -62,7 +62,7 @@ namespace basecross{
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
-			Animation();
+			NewAnimation();
 		}
 	}
 	void BCSprite::Animation() {
@@ -75,6 +75,37 @@ namespace basecross{
 				m_Index = 0;
 			}
 			UpdateUV(m_AnimationUV[m_Index]);
+
+			m_AnimationTimer = 0.0f;
+		}
+	}
+	void BCSprite::NewAnimation() {
+		float elapsedTime = App::GetApp()->GetElapsedTime();
+		m_AnimationTimer += elapsedTime;
+
+		if (m_AnimationTimer > m_CurrentAnimation.m_UpdateInterval) {
+			if (m_CurrentAnimation.m_IsReverse) {
+				m_CurrentAnimation.m_OrderCount--;
+				if (m_CurrentAnimation.m_OrderCount < 0) {
+					m_CurrentAnimation.m_OrderCount = m_CurrentAnimation.m_Order.size() - 1;
+					if (!m_CurrentAnimation.m_IsLoop) {
+						//デフォルトに戻る
+						return;
+					}
+				}
+			}
+			else {
+				m_CurrentAnimation.m_OrderCount++;
+				if (m_CurrentAnimation.m_OrderCount >= m_CurrentAnimation.m_Order.size() || m_CurrentAnimation.m_OrderCount >= m_AnimationUV.size()) {
+					m_CurrentAnimation.m_OrderCount = 0;
+					if (!m_CurrentAnimation.m_IsLoop) {
+						//デフォルトに戻る
+						return;
+					}
+				}
+			}
+			
+			UpdateUV(m_AnimationUV[m_CurrentAnimation.m_OrderCount]);
 
 			m_AnimationTimer = 0.0f;
 		}
@@ -122,12 +153,6 @@ namespace basecross{
 		m_Transform->SetPosition(pos);
 	}
 	
-	void BCSprite::SetInterval(float interval) {
-
-	}
-	void BCSprite::SetUseIndex(int useIndex) {
-
-	}
 	void BCSprite::SetDiffuse(Col4 color) {
 		m_Draw->SetDiffuse(color);
 	}
@@ -219,7 +244,7 @@ namespace basecross{
 	}
 
 	void SpriteFlash::OnUpdate() {
-		if (m_Draw != nullptr && GetIsPlay()) {
+		if (m_Draw != nullptr && IsPlay()) {
 			float elapsed = App::GetApp()->GetElapsedTime();
 			Col4 color = m_Draw->GetDiffuse();
 			color.w += m_FlashSpeed * elapsed;
@@ -235,7 +260,7 @@ namespace basecross{
 		defaultSize = m_Trans->GetScale();
 	}
 	void SpriteScaling::OnUpdate() {
-		if (m_Trans != nullptr && GetIsPlay()) {
+		if (m_Trans != nullptr && IsPlay()) {
 			float elapsed = App::GetApp()->GetElapsedTime();
 			m_Ratio += m_ScalingSpeed * elapsed;
 			if (m_Ratio < m_MinRatio || m_Ratio > m_MaxRatio) {
@@ -246,7 +271,7 @@ namespace basecross{
 	}
 
 	void SpriteFade::OnUpdate() {
-		if (m_Draw != nullptr && GetIsPlay()) {
+		if (m_Draw != nullptr && IsPlay()) {
 			float elapsed = App::GetApp()->GetElapsedTime();
 			if (!m_IsFadeOut) {
 				elapsed *= -1;

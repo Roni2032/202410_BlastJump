@@ -76,7 +76,7 @@ namespace basecross {
 			m_MainTimer(0),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
-			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
+			m_Mode(GameMode::NotBomb),m_BeforeMode(GameMode::NotBomb)
 		{}
 		virtual ~GameStage() {}
 		//‰Šú‰»
