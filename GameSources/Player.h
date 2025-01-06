@@ -165,7 +165,7 @@ namespace basecross {
 				PlayerAnimationChangeThrow(cntlBombVec);
 			}
 
-			m_Transform->SetPosition(m_Pos);
+			//m_Transform->SetPosition(m_Pos);
 		}
 
 		shared_ptr<BCGravity> m_BCGravity;
