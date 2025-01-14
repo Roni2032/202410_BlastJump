@@ -47,7 +47,7 @@ namespace basecross {
 		if (m_IsCanNextSelect < 1.0f) {
 			m_IsCanNextSelect += elapse / 0.5f;
 		}
-		if (ctrl.bConnected) {
+		if (ctrl.bConnected && m_Fade == nullptr) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
 				m_Select--;
 			}

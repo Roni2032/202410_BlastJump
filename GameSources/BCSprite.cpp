@@ -62,7 +62,7 @@ namespace basecross{
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
-			NewAnimation();
+			Animation();
 		}
 	}
 	void BCSprite::Animation() {
