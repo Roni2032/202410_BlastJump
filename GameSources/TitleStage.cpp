@@ -24,10 +24,9 @@ namespace basecross{
 		try {
 			CreateViewLight();
 			CreateResource();
-			auto sprite = AddGameObject<BCSprite>(L"BACKGROUND", Vec3(0, 0, 0), Vec2(1280, 800),Vec2(2,2), true);
+			auto sprite = AddGameObject<BCSprite>(L"BACKGROUND", Vec3(0, 0, 0), Vec2(1280, 800), true);
 			sprite = AddGameObject<BCSprite>(L"TITLE_UI", Vec3(0, 100, 0), Vec2(700, 700),true);
-			sprite->SetDiffuse(Col4(0, 0, 0, 1));
-			AddGameObject<BCSprite>(L"TITLE_BOMB_UI", Vec3(0, 150, 0), Vec2(500, 500), true);
+			//AddGameObject<BCSprite>(L"TITLE_BOMB_UI", Vec3(0, 150, 0), Vec2(500, 500), true);
 			sprite = AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(0,-300,0), Vec2(300, 120),true);
 			sprite->AddComponent<SpriteFlash>(1.0f);
 			sprite->SetDiffuse(Col4(0, 0, 0, 1));
