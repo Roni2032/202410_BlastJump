@@ -9,7 +9,6 @@
 namespace basecross{
 
 	void MyCamera::OnCreate() {
-		//SetPers(false);
 		SetWidth(m_CameraWidth);
 		SetHeight(m_CameraHight);
 
@@ -31,9 +30,7 @@ namespace basecross{
 						eye.y = playerPos.y;
 
 						m_HighY = playerPos.y;
-
 					}
-					
 				}
 
 				if (m_ScrollSpeed != 0) {
@@ -56,10 +53,7 @@ namespace basecross{
 					SetAt(at);
 				}
 			}
-			
-			
 		}
-		
 	}
 
 	void MyCamera::SetPlayer(weak_ptr<Player> player) {

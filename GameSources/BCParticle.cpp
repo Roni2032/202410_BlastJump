@@ -234,7 +234,7 @@ namespace basecross{
 
 				q *= newQ;
 			}
-
+			m_Trans->SetQuaternion(q);
 			//------------------------------------------------------------------
 			//	‰ñ“]
 			//------------------------------------------------------------------
@@ -244,7 +244,7 @@ namespace basecross{
 
 				q *= newQ;
 			}
-			m_Trans->SetQuaternion(q);*/
+			*/
 		}
 	}
 	void BCParticleSprite::UpdateAnimationUV(int index) {
@@ -329,7 +329,12 @@ namespace basecross{
 
 		return particleSprite;
 	}
-	
+	void BCParticle::SetLoop(bool flag) {
+		auto particles = GetAllParticle();
+		for (auto& particle : particles) {
+			particle->SetLoop(flag);
+		}
+	}
 	shared_ptr<BCParticleInstance> BCParticle::AddParticleInstance(int num, const wstring& key) {
 		shared_ptr<BCParticleInstance> particleSprite;
 
