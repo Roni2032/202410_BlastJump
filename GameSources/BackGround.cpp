@@ -32,7 +32,7 @@ namespace basecross{
 			for (int j = 0; j < 2; j++) {
 				for (int i = -1; i < 3; i++) {
 					
-					m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(15.0f * j, 0, 10) + Vec3(0, m_LoopDistance, 0) * static_cast<float>(i), Vec3(m_LoopDistance)));
+					m_BackGrounds.push_back(GetStage()->AddGameObject<BackGround>(at + Vec3(15.0f * j, 0, 10) + Vec3(0, m_DrawScaleY, 0) * static_cast<float>(i), Vec3(m_DrawScaleY)));
 				}
 			}
 		}
@@ -40,14 +40,21 @@ namespace basecross{
 	void BackGroundManager::OnUpdate() {
 		auto camera = m_Camera.lock();
 		if (camera == nullptr) return;
-
+		Vec3 at = camera->GetAt();
+		auto stage = GetTypeStage<GameStage>();
+		int stageSizeY = stage->GetMapSize().y;
+		
+		int cutNum = stageSizeY / m_DrawNum;
 		for (auto& backGround : m_BackGrounds) {
 			auto trans = backGround->GetComponent<Transform>();
 			Vec3 pos = trans->GetPosition();
-			Vec3 at = camera->GetAt();
-
-			if (at.y - m_LoopDistance >= pos.y + 2.0f) {
-				trans->SetPosition(pos.x, pos.y + m_LoopDistance * 4.0f, pos.z);
+			float diff = pos.y - at.y;
+			float updateDistance = m_CameraDrawYBlockNum / 2 + m_DrawScaleY;
+			if (diff < -updateDistance) {
+				trans->SetPosition(pos.x, pos.y + m_DrawScaleY * m_DrawNum, pos.z);
+			}
+			else if (diff > updateDistance) {
+				trans->SetPosition(pos.x, pos.y - m_DrawScaleY * m_DrawNum, pos.z);
 			}
 		}
 	}

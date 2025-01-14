@@ -48,7 +48,6 @@ namespace basecross {
 			
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
-			float screenHight = camera->GetHeight();
 
 			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -230.0f, 0), Vec2(200, 150));
 			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -190.0f, 0), Vec2(80, 250), 2);
@@ -56,7 +55,7 @@ namespace basecross {
 
 			m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 0, 0), Vec2(800, 800), true);
 
-			auto stageNum = make_shared<int>(m_StageNumber);
+			m_SendStageNumber = make_shared<int>(m_StageNumber);
 			auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
 			button->AddSelectEffect(SelectEffect::Expand);
 			button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
@@ -66,7 +65,10 @@ namespace basecross {
 
 			button = AddGameObject<Button>(L"MENU_RESTART_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
 			button->AddSelectEffect(SelectEffect::Expand);
-			button->SetFunction([&stageNum](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum); });
+			button->SetFunction([](shared_ptr<Stage> stage) {
+				auto currentStage = static_pointer_cast<GameStage>(stage);
+				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr()); 
+				});
 
 			CloseMenu();
 		}
@@ -78,7 +80,6 @@ namespace basecross {
 	void GameStage::OnUpdate() {
 		SoundManager::Instance().Update();
 		auto elapsedTime = App::GetApp()->GetElapsedTime();
-		m_MainTimer += elapsedTime;
 		LoadMap();
 		BlockUpdateActive();
 		if (!IsView()) {
@@ -132,6 +133,12 @@ namespace basecross {
 			
 		}
 		
+		if (IsCanMovePlayer()) {
+			m_Player->SetUpdateActive(true);
+		}
+		else {
+			//m_Player->SetUpdateActive(false);
+		}
 	}
 	void GameStage::OnDestroy() {
 		SoundManager::Instance().StopAll();
