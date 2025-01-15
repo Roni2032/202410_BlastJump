@@ -79,8 +79,6 @@ namespace basecross {
 		SoundManager::Instance().Update();
 		auto elapsedTime = App::GetApp()->GetElapsedTime();
 		m_MainTimer += elapsedTime;
-		int minute = static_cast<int>(m_MainTimer / 60.0f);
-		int second = static_cast<int>(m_MainTimer - 60.0f * minute);
 		LoadMap();
 		BlockUpdateActive();
 		if (!IsView()) {

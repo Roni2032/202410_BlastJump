@@ -31,6 +31,7 @@ namespace basecross {
 	void Player::PlayerDeathLogicUpdate()
 	{
 		if (m_IsDead) { return; }
+		if (!GetTypeStage<GameStage>()->IsInGame()) { return; }
 
 		if (m_Pos.y < OnGetDrawCamera()->GetEye().y - m_DeadLine) { m_IsDead = true; }
 
@@ -97,8 +98,6 @@ namespace basecross {
 	{
 		if (Other->FindTag(L"Stage"))
 		{
-			Other->OnCollisionExcute(GetThis<GameObject>());
-
 			auto block = Other->GetComponent<Transform>();
 			auto blockPosition = block->GetPosition();
 			auto blockScale = block->GetScale();
@@ -122,7 +121,6 @@ namespace basecross {
 		if (Other->FindTag(L"Stage"))
 		{
 			m_IsBlownAway = true;
-			Other->OnCollisionExit(GetThis<GameObject>());
 		}
 	}
 

@@ -8,32 +8,96 @@
 
 namespace basecross{
 
+	struct SpriteAnimation {
+		int m_OrderCount;
+		float m_AnimationTime;
+		float m_UpdateInterval;
+		bool m_IsLoop;
+		bool m_IsReverse;
+
+		vector<int> m_Order;
+		void EndAnimation() {
+			if (m_IsReverse) {
+				m_OrderCount = m_Order.size() - 1;
+			}
+			else {
+				m_OrderCount = 0;
+			}
+		}
+		SpriteAnimation() {
+			m_Order = {};
+			m_OrderCount = 0;
+			m_AnimationTime = 0;
+			m_UpdateInterval = 0;
+			m_IsLoop = false;
+			m_IsReverse = false;
+		}
+		SpriteAnimation(vector<int> order, float time, float interval, const bool isLoop = false, const bool isReverse = false){
+			m_Order = order;
+			m_OrderCount = 0;
+			m_AnimationTime = time;
+			m_UpdateInterval = interval;
+			m_IsLoop = isLoop;
+			m_IsReverse = isReverse;
+		}
+
+		SpriteAnimation(int startOrder,int endOrder,float time,float interval,const bool isLoop = false,const bool isReverse = false){
+			vector<int> order;
+			for (int i = startOrder;i <= endOrder;i++) {
+				order.push_back(i);
+			}
+			m_Order = order;
+			m_OrderCount = 0;
+			m_AnimationTime = time;
+			m_UpdateInterval = interval;
+			m_IsLoop = isLoop;
+			m_IsReverse = isReverse;
+		}
+	};
 	//----------------------------------------------------------
 	//
 	//	画像表示クラス						
 	//																																
 	//----------------------------------------------------------
 	class BCSprite : public GameObject {
+		//テクスチャキー
 		wstring m_TexKey;
+		//サイズ
 		Vec2 m_Size;
+		//位置
 		Vec3 m_Pos;
-
+		//表示基を中心にするか
 		bool m_IsUseCenterSprite;
+		//アニメーションがあるか
 		bool m_IsAnimation;
+		//アニメーション切り替え時間
 		float m_AnimationChangeTime;
+		//アニメーション切り替え時間計測
 		float m_AnimationTimer;
-
+		//使用するアニメーションのコマ数
 		int m_UseIndex;
+		//現在のコマ
 		int m_Index;
-
+		//画像の切り取り数
 		Vec2 m_cutUV;
+		//アニメーションのUV
 		vector<vector<Vec2>> m_AnimationUV;
-		
+		//頂点
 		vector<VertexPositionColorTexture> m_Vertices;
+		//描画コンポーネント
 		shared_ptr<PCTSpriteDraw> m_Draw;
+		//位置コンポーネント
 		shared_ptr<Transform> m_Transform;
-
+		//スクリーンサイズ
 		Vec2 m_ScreenSize;
+
+		map<wstring, SpriteAnimation> m_Animations;
+		SpriteAnimation m_CurrentAnimation;
+		SpriteAnimation m_BeforeAnimation;
+
+		//アニメーション処理
+		void Animation();
+		void NewAnimation();
 	public:
 		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,const bool useCenter = false) : BCSprite(ptr,texKey,pos,size,{1,1},useCenter,1,-1,false) {}
 		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size, Vec2 cutUV, const bool useCenter = false, const float changeTime = 0.5f, const int useIndex = -1, const bool isAnimation = true) :
@@ -51,20 +115,53 @@ namespace basecross{
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
-
-		void Animation();
+		//UVの切り替え
 		void UpdateUV(vector<Vec2> uv);
+		//サイズの切り替え
 		void UpdateSize(Vec3 size);
 		void UpdateSize(Vec2 size);
-
+		//位置の切り替え
 		void SetPos(Vec3 pos);
-		void SetInterval(float interval);
-		void SetUseIndex(int useIndex);
 		
 		void SetDiffuse(Col4 color);
 		Col4 GetDiffuse();
-
-
+		//----------------------------------------------------------
+		//
+		//	アニメーション操作		
+		//																																
+		//----------------------------------------------------------
+		SpriteAnimation GetBeforeAnimation() {
+			return m_BeforeAnimation;
+		}
+		SpriteAnimation GetCurrentAnimation() {
+			return m_CurrentAnimation;
+		}
+		SpriteAnimation GetAnimation(const wstring& key) {
+			if (m_Animations.find(key) != m_Animations.end()) {
+				return m_Animations[key];
+			}
+			return SpriteAnimation();
+		}
+		void SetCurrentAnimation(const wstring& key) {
+			if (m_Animations.find(key) != m_Animations.end()) {
+				m_CurrentAnimation.EndAnimation();
+				m_BeforeAnimation = m_CurrentAnimation;
+				m_CurrentAnimation = m_Animations[key];
+			}
+		}
+		void AddAnimation(const wstring& key, int startOrder, int endOrder, float time, float interval, const bool isLoop = false, const bool isReverse = false) {
+			SpriteAnimation animation = SpriteAnimation(startOrder, endOrder, time, interval, isLoop, isReverse);
+			m_Animations.insert(pair<wstring, SpriteAnimation>(key, animation));
+		}
+		void AddAnimation(const wstring& key, vector<int> order, float time, float interval, const bool isLoop = false, const bool isReverse = false) {
+			SpriteAnimation animation = SpriteAnimation(order, time, interval, isLoop, isReverse);
+			m_Animations.insert(pair<wstring, SpriteAnimation>(key, animation));
+		}
+		void UpdateAnimationData(const wstring& key, SpriteAnimation newAnimation) {
+			if (m_Animations.find(key) != m_Animations.end()) {
+				m_Animations[key] = newAnimation;
+			}
+		}
 		//----------------------------------------------------------
 		//
 		//	位置設定テンプレート		
@@ -117,7 +214,12 @@ namespace basecross{
 
 	//----------------------------------------------------------
 	//																																
-	//	Sprite操作コンポーネントクラス																										
+	//	Sprite操作コンポーネントクラス
+	// 
+	//	< 使い方 >
+	//  AddComponentで使いたい派生クラスを設定
+	//  Play() : 更新
+	//  Stop() : 停止																				
 	//																																
 	//----------------------------------------------------------
 	class SpriteAction : public Component {
@@ -139,7 +241,7 @@ namespace basecross{
 			m_IsPlay = false;
 		}
 
-		bool GetIsPlay() {
+		bool IsPlay() {
 			return m_IsPlay;
 		}
 	};
@@ -208,6 +310,9 @@ namespace basecross{
 
 		virtual void OnUpdate()override;
 
+		bool IsFadeOut() {
+			return m_IsFadeOut;
+		}
 		void FadeOut() {
 			m_IsFadeOut = true;
 		}
