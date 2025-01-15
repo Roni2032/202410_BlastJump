@@ -42,6 +42,11 @@ namespace basecross{
 		if (ctrl.bConnected) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
 				SoundManager::Instance().PlaySE(L"BUTTON_SD");
+				m_Fade = AddGameObject<Fade>(1.0f);
+			}
+		}
+		if (m_Fade != nullptr) {
+			if (m_Fade->IsFinished()) {
 				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
 			}
 		}
