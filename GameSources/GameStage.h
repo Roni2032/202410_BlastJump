@@ -36,6 +36,7 @@ namespace basecross {
 		shared_ptr<InstanceBlock> m_Walls;
 		shared_ptr<GameObject> m_Goal;
 		shared_ptr<GameObject> m_MenuBackGround;
+		shared_ptr<GameObject> m_MenuText;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		vector<vector<BlockData>> m_MapData;

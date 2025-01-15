@@ -22,10 +22,14 @@ namespace basecross{
 					break;
 				case SelectEffect::Animation:
 					break;
+				case SelectEffect::ChangeSprite:
+					m_Sprite->GetComponent<PCTSpriteDraw>()->SetTextureResource(m_SelectTexkey);
+					break;
 				}
 			}
 			else {
 				m_Sprite->UpdateSize(m_Size);
+				m_Sprite->GetComponent<PCTSpriteDraw>()->SetTextureResource(m_TexKey);
 			}
 		}
 		

@@ -110,7 +110,6 @@ namespace basecross{
 		vector<uint16_t> indexes;
 		MeshUtill::CreateSquare(1.0f, m_Vertexes, indexes);
 		m_Draw->CreateOriginalMesh(m_Vertexes, indexes);
-		//m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
 		m_Draw->SetTextureResource(m_TexKey);
 		
 		

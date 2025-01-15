@@ -10,6 +10,7 @@ namespace basecross{
 
 	enum SelectEffect {
 		Expand,
+		ChangeSprite,
 		Animation,
 		Flash
 	};
@@ -18,6 +19,7 @@ namespace basecross{
 		function<void(shared_ptr<Stage>& stage)> m_Func;
 		shared_ptr<BCSprite> m_Sprite;
 		wstring m_TexKey;
+		wstring m_SelectTexkey;
 		Vec3 m_Pos;
 		Vec2 m_Size;
 		vector<SelectEffect> m_Effect;
@@ -38,7 +40,9 @@ namespace basecross{
 
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
-
+		void SetSelectTex(const wstring key) {
+			m_SelectTexkey = key;
+		}
 		void Function(){
 			m_Func(GetStage());
 		}

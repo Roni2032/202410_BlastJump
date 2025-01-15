@@ -250,6 +250,12 @@ namespace basecross{
 			color.w += m_FlashSpeed * elapsed;
 			if (color.w < 0 || color.w > 1) {
 				m_FlashSpeed *= -1;
+				if (color.w < 0) {
+					color.w = 0;
+				}
+				if (color.w > 1) {
+					color.w = 1;
+				}
 			}
 			m_Draw->SetDiffuse(color);
 		}
