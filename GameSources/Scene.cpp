@@ -74,7 +74,7 @@ namespace basecross{
 				ResetActiveStage<GameStage>(L"Stage01.csv",*stage,20,0.0f);
 				break;
 			case 1:
-				ResetActiveStage<GameStage>(L"Stage02.csv", *stage,25);
+				ResetActiveStage<GameStage>(L"Stage02.csv", *stage,25,0.25f);
 				break;
 			case 2:
 				ResetActiveStage<GameStage>(L"Stage04.csv", *stage,25);
