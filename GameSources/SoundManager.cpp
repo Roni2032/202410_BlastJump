@@ -16,9 +16,9 @@ namespace basecross{
 	void SoundManager::RegisterSounds() {
 		m_Audio = App::GetApp()->GetXAudio2Manager();
 		RegisterSound(L"BOMB_SD", L"Bomb.wav");
-		RegisterSound(L"BGM_SD", L"kariBGM.wav");
-		RegisterSound(L"WINNER_SD", L"kati.wav");
-		RegisterSound(L"LOSER_SD", L"make.wav");
+		RegisterSound(L"BGM_SD", L"StageBGM.wav");
+		RegisterSound(L"WINNER_SD", L"Win.wav");
+		RegisterSound(L"LOSER_SD", L"Lose.wav");
 		RegisterSound(L"TITLE_BGM", L"TitleBGM.wav");
 		RegisterSound(L"BOMB_GET_SD", L"BombGet.wav");
 		RegisterSound(L"BUTTON_SD", L"Determinant.wav");
