@@ -114,6 +114,7 @@ namespace basecross {
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
 		app->RegisterTexture(L"STAR2_UI", uiPath + L"star_difficulty2.png");
+		app->RegisterTexture(L"STAR3_UI", uiPath + L"star_difficulty3.png");
 	}
 
 
@@ -125,14 +126,15 @@ namespace basecross {
 		Vec3 centerPos = m_BackGroundSprite->GetPos();
 		Vec2 backGroundSize = m_BackGroundSprite->GetSize();
 		Vec3 startPos = Vec3();
-		//Å‘å3‘z’è
-		int xNum = m_Difficulty;
 
 		if (m_Difficulty == 1) {
 			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
 		}
-		else {
+		else if(m_Difficulty == 2){
 			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
+		}
+		else {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR3_UI", centerPos, Vec2(180, 60), true));
 		}
 		
 	}
