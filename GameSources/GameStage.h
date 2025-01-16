@@ -51,6 +51,7 @@ namespace basecross {
 		GameMode m_BeforeMode;
 
 		int m_StageNumber;
+		float m_ScrollSpeed;
 		shared_ptr<int> m_SendStageNumber;
 
 		shared_ptr<BCNumber> m_PlayerHasBombs;
@@ -70,11 +71,12 @@ namespace basecross {
 		void BlockUpdateActive();
 	public:
 		//ç\ízÇ∆îjä¸
-		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10) :Stage(), m_MapName(mapName),
+		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
 			m_LoadStageSize(Vec3(20,48,0)),
 			m_BombNum(bombNum),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
+			m_ScrollSpeed(scrollSpeed),
 			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
 		{}
 		virtual ~GameStage() {}
