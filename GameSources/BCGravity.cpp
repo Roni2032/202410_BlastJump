@@ -14,6 +14,9 @@ namespace basecross{
 	void BCGravity::OnUpdate() {
 		
 		auto objPtr = GetGameObject();
+		bool updateActive = objPtr->GetUpdateActive();
+		if (!updateActive) return;
+
 		auto objTrans = objPtr->GetComponent<Transform>();
 
 		Vec3 objPos = objTrans->GetPosition();

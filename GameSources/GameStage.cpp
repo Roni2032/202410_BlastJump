@@ -17,7 +17,7 @@ namespace basecross {
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
 		//ÉrÉÖÅ[ÇÃÉJÉÅÉâÇÃê›íË
-		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), 0.25f);
+		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), m_ScrollSpeed);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
 		PtrCamera->SetAt(at);
@@ -32,7 +32,7 @@ namespace basecross {
 		try {
 			CreateViewLight();
 
-			SoundManager::Instance().PlayBGM(L"BGM_SD",0.05f);
+			SoundManager::Instance().PlayBGM(L"BGM_SD",2.0f);
 			Block::CollisionObjects.clear();
 			CreateResource();
 			m_Player = AddGameObject<Player>();
@@ -48,15 +48,15 @@ namespace basecross {
 			
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
-			float screenHight = camera->GetHeight();
 
 			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -230.0f, 0), Vec2(200, 150));
 			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -190.0f, 0), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
-			m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 0, 0), Vec2(800, 800), true);
+			m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 50, 0), Vec2(800, 950), true);
+			m_MenuText = AddGameObject<BCSprite>(L"MENU_TEXT_UI", Vec3(0, 250, 0), Vec2(256, 64), true);
 
-			auto stageNum = make_shared<int>(m_StageNumber);
+			m_SendStageNumber = make_shared<int>(m_StageNumber);
 			auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
 			button->AddSelectEffect(SelectEffect::Expand);
 			button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
@@ -66,7 +66,10 @@ namespace basecross {
 
 			button = AddGameObject<Button>(L"MENU_RESTART_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
 			button->AddSelectEffect(SelectEffect::Expand);
-			button->SetFunction([&stageNum](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum); });
+			button->SetFunction([](shared_ptr<Stage> stage) {
+				auto currentStage = static_pointer_cast<GameStage>(stage);
+				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr()); 
+				});
 
 			CloseMenu();
 		}
@@ -78,11 +81,9 @@ namespace basecross {
 	void GameStage::OnUpdate() {
 		SoundManager::Instance().Update();
 		auto elapsedTime = App::GetApp()->GetElapsedTime();
-		m_MainTimer += elapsedTime;
 		LoadMap();
 		BlockUpdateActive();
 		if (!IsView()) {
-
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
@@ -127,10 +128,6 @@ namespace basecross {
 
 			}
 		}
-		else {
-			m_PlayerHasBombs->SetDrawActive(false);
-			
-		}
 		
 	}
 	void GameStage::OnDestroy() {
@@ -169,6 +166,7 @@ namespace basecross {
 		app->RegisterTexture(L"MENU_SELECT_UI", uiPath + L"Menu_SelectStage.png");
 		app->RegisterTexture(L"MENU_TITLE_UI", uiPath + L"Menu_TitleStage.png");
 		app->RegisterTexture(L"MENU_RESTART_UI", uiPath + L"Menu_Restart.png");
+		app->RegisterTexture(L"MENU_TEXT_UI", uiPath + L"MenuText.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -506,12 +504,14 @@ namespace basecross {
 		ChangeMode(GameMode::Menu);
 		Button::SetActive(true);
 		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(true);
+		m_MenuText->GetComponent<SpriteBaseDraw>()->SetDrawActive(true);
 	}
 
 	void GameStage::CloseMenu() {
 		ChangeMode(GetBeforeMode());
 		Button::SetActive(false);
 		m_MenuBackGround->GetComponent<SpriteBaseDraw>()->SetDrawActive(false);
+		m_MenuText->GetComponent<SpriteBaseDraw>()->SetDrawActive(false);
 	}
 }
 //end basecross

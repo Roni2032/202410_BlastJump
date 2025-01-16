@@ -7,8 +7,9 @@
 #include "stdafx.h"
 
 namespace basecross{
-
+	class Fade;
 	class TitleStage : public Stage {
+		shared_ptr<Fade> m_Fade;
 	public:
 		TitleStage(){}
 		virtual ~TitleStage(){}

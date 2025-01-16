@@ -62,8 +62,10 @@ namespace basecross{
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
-			NewAnimation();
+			Animation();
 		}
+		//î•ñXV
+		m_Pos = m_Transform->GetPosition();
 	}
 	void BCSprite::Animation() {
 		float elapsedTime = App::GetApp()->GetElapsedTime();
@@ -250,6 +252,12 @@ namespace basecross{
 			color.w += m_FlashSpeed * elapsed;
 			if (color.w < 0 || color.w > 1) {
 				m_FlashSpeed *= -1;
+				if (color.w < 0) {
+					color.w = 0;
+				}
+				if (color.w > 1) {
+					color.w = 1;
+				}
 			}
 			m_Draw->SetDiffuse(color);
 		}
@@ -273,7 +281,7 @@ namespace basecross{
 	void SpriteFade::OnUpdate() {
 		if (m_Draw != nullptr && IsPlay()) {
 			float elapsed = App::GetApp()->GetElapsedTime();
-			if (!m_IsFadeOut) {
+			if (m_IsFadeOut) {
 				elapsed *= -1;
 			}
 			Col4 color = m_Draw->GetDiffuse();

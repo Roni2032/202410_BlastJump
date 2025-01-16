@@ -37,10 +37,6 @@ namespace basecross{
 		wstring m_TexKey;
 		vector<BCParticleSpriteData> spriteData;
 		int dataNum;
-		/*Vec3 m_StartPos;
-		Vec3 m_BaseVelocity;
-		Vec3 m_Velocity;
-		Vec3 m_Size;*/
 		Col4 m_Color;
 		BetWeen m_Alpha;
 		float m_MaxTime;
@@ -117,6 +113,7 @@ namespace basecross{
 		vector<vector<Vec2>> m_AnimationUV;
 
 		bool m_IsActive;
+		bool m_IsLoop;
 		bool m_IsRotateMovement;
 		void Init();
 	public:
@@ -132,7 +129,8 @@ namespace basecross{
 			m_DecelerationRate(1.0f),
 			m_TargetColor(Col4(1,1,1,1)),m_StartColor(Col4(1,1,1,1)), m_ColorChangeTime(0.0f),
 			m_IsRotateMovement(true),
-			m_DelayTime(0.0f),m_DelayTimer(0.0f)
+			m_DelayTime(0.0f),m_DelayTimer(0.0f),
+			m_IsLoop(false)
 		{}
 		virtual ~BCParticleSprite(){}
 
@@ -233,6 +231,10 @@ namespace basecross{
 		void SetDelay(float time) {
 			m_DelayTime = time;
 		}
+
+		void SetLoop(bool flag) {
+			m_IsLoop = flag;
+		}
 	};
 
 	class BCParticle : public GameObject {
@@ -256,6 +258,7 @@ namespace basecross{
 		vector<shared_ptr<BCParticleInstance>> GetAllParticleInstance() {
 			return m_ParticleInstance;
 		}
+		void SetLoop(bool flag);
 		virtual void AddParticleData(){}
 		void Shot(const Vec3 pos = Vec3(0,0,0));
 

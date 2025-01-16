@@ -12,7 +12,6 @@
 
 namespace basecross {
 	class BlockData;
-
 	struct BetWeen {
 		float m_High;
 		float m_Low;
@@ -37,6 +36,7 @@ namespace basecross {
 		shared_ptr<InstanceBlock> m_Walls;
 		shared_ptr<GameObject> m_Goal;
 		shared_ptr<GameObject> m_MenuBackGround;
+		shared_ptr<GameObject> m_MenuText;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		vector<vector<BlockData>> m_MapData;
@@ -47,11 +47,12 @@ namespace basecross {
 		CsvFile m_CsvMap;
 
 		int m_BombNum;
-		float m_MainTimer;
 		GameMode m_Mode;
 		GameMode m_BeforeMode;
 
 		int m_StageNumber;
+		float m_ScrollSpeed;
+		shared_ptr<int> m_SendStageNumber;
 
 		shared_ptr<BCNumber> m_PlayerHasBombs;
 
@@ -71,13 +72,13 @@ namespace basecross {
 		void BlockUpdateActive();
 	public:
 		//\’z‚Æ”jŠü
-		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10) :Stage(), m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,7,0)),
+		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
+			m_LoadStageSize(Vec3(20,48,0)),
 			m_BombNum(bombNum),
-			m_MainTimer(0),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
-			m_Mode(GameMode::NotBomb),m_BeforeMode(GameMode::NotBomb)
+			m_ScrollSpeed(scrollSpeed),
+			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
 		{}
 		virtual ~GameStage() {}
 		//‰Šú‰»
@@ -96,10 +97,6 @@ namespace basecross {
 				particle->Shot(pos);
 			}
 		}
-
-		/*vector<vector<int>> GetMap() {
-			return m_Map;
-		}*/
 		vector<vector<BlockData>>& GetMap() {
 			return m_MapData;
 		}
@@ -116,6 +113,9 @@ namespace basecross {
 		Vec3 GetRightBottom() {
 			return m_MapRightBottom;
 		}
+		Vec2 GetMapSize() {
+			return Vec2(m_MapData[0].size(), m_MapData.size());
+		}
 		Vec3 GetMapIndex(Vec3 pos);
 		Vec3 GetWorldPosition(Vec2 pos);
 		shared_ptr<GameObject> GetBlock(Vec3 pos);
@@ -130,7 +130,9 @@ namespace basecross {
 		Vec3 GetRespawnPosition() {
 			return m_RespawnPosition;
 		}
-		
+		shared_ptr<int> GetStageNumPtr() {
+			return m_SendStageNumber;
+		}
 		GameMode GetGameMode() {
 			return m_Mode;
 		}
@@ -145,8 +147,7 @@ namespace basecross {
 			return m_BeforeMode;
 		}
 		void GameStart() {
-			m_BeforeMode = GameMode::NotBomb;
-			m_Mode = GameMode::NotBomb;
+			ChangeMode(GameMode::NotBomb);
 		}
 		bool IsInGame() {
 			return m_Mode == GameMode::InGame || m_Mode == GameMode::NotBomb;
@@ -159,6 +160,9 @@ namespace basecross {
 		}
 		bool IsOpenMenu() {
 			return m_Mode == GameMode::Menu;
+		}
+		bool IsCanMovePlayer() {
+			return !IsView() && !IsOpenMenu();
 		}
 		void OpenMenu();
 		void CloseMenu();
