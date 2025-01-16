@@ -22,12 +22,14 @@ namespace basecross{
 	};
 
 	class BackGroundManager : public GameObject {
+		const int m_DrawNum;
+		const int m_CameraDrawYBlockNum;
 		vector<shared_ptr<BackGround>> m_BackGrounds;
 		weak_ptr<Camera> m_Camera;
 
-		float m_LoopDistance;
+		float m_DrawScaleY;
 	public:
-		BackGroundManager(const shared_ptr<Stage>& ptr,float distance) : GameObject(ptr),m_LoopDistance(distance) {}
+		BackGroundManager(const shared_ptr<Stage>& ptr,float drawSize) : GameObject(ptr),m_DrawScaleY(drawSize),m_DrawNum(4), m_CameraDrawYBlockNum(9){}
 		virtual ~BackGroundManager() {}
 
 		virtual void OnCreate()override;

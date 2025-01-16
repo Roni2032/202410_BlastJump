@@ -110,7 +110,6 @@ namespace basecross{
 		vector<uint16_t> indexes;
 		MeshUtill::CreateSquare(1.0f, m_Vertexes, indexes);
 		m_Draw->CreateOriginalMesh(m_Vertexes, indexes);
-		//m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
 		m_Draw->SetTextureResource(m_TexKey);
 		
 		
@@ -234,7 +233,7 @@ namespace basecross{
 
 				q *= newQ;
 			}
-
+			m_Trans->SetQuaternion(q);
 			//------------------------------------------------------------------
 			//	‰ñ“]
 			//------------------------------------------------------------------
@@ -244,7 +243,7 @@ namespace basecross{
 
 				q *= newQ;
 			}
-			m_Trans->SetQuaternion(q);*/
+			*/
 		}
 	}
 	void BCParticleSprite::UpdateAnimationUV(int index) {
@@ -329,7 +328,12 @@ namespace basecross{
 
 		return particleSprite;
 	}
-	
+	void BCParticle::SetLoop(bool flag) {
+		auto particles = GetAllParticle();
+		for (auto& particle : particles) {
+			particle->SetLoop(flag);
+		}
+	}
 	shared_ptr<BCParticleInstance> BCParticle::AddParticleInstance(int num, const wstring& key) {
 		shared_ptr<BCParticleInstance> particleSprite;
 

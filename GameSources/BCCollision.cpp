@@ -16,6 +16,8 @@ namespace basecross{
 
 	void BCCollisionObb::OnUpdate() {
 
+		if (!m_GameObject->GetUpdateActive()) return;
+
 		m_PushBackObject.clear();
 		m_EnterObject.clear();
 		vector<shared_ptr<GameObject>> objs;

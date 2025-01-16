@@ -26,13 +26,17 @@ namespace basecross {
 			CreateResource();
 			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
 			auto sprite = AddGameObject<BCSprite>(L"SELECT_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
-			sprite->SetDiffuse(Col4(1, 0, 0, 1));
-			auto button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(-400, 0, 0), Vec2(240, 240));
-			button->AddSelectEffect(SelectEffect::Expand);
-			button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(0, 0, 0), Vec2(240, 240));
-			button->AddSelectEffect(SelectEffect::Expand);
-			button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(400, 0, 0), Vec2(240, 240));
-			button->AddSelectEffect(SelectEffect::Expand);
+			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(0, 0, 0), Vec2(240, 240),2);
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(400, 0, 0), Vec2(240, 240),3);
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+
+			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(256, 128), true);
 
 			SoundManager::Instance().PlayBGM(L"SELECT_BGM",0.1f);
 		}
@@ -47,7 +51,7 @@ namespace basecross {
 		if (m_IsCanNextSelect < 1.0f) {
 			m_IsCanNextSelect += elapse / 0.5f;
 		}
-		if (ctrl.bConnected) {
+		if (ctrl.bConnected && m_Fade == nullptr) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
 				m_Select--;
 			}
@@ -55,7 +59,8 @@ namespace basecross {
 				m_Select++;
 			}
 			float stickX = ctrl.fThumbLX;
-			if (abs(stickX) >= 0.2f && m_IsCanNextSelect >= 1.0f) {
+			float stickDeadZone = 0.2f;
+			if (abs(stickX) >= stickDeadZone && m_IsCanNextSelect >= 1.0f) {
 				if (stickX < 0) {
 					m_Select--;
 				}
@@ -97,15 +102,42 @@ namespace basecross {
 
 		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
 		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
-		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"SelectStageText.png");
+		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"Diffuculty.png");
 
 		app->RegisterTexture(L"SELECT_1_UI", uiPath + L"Select1.png");
 		app->RegisterTexture(L"SELECT_2_UI", uiPath + L"Select2.png");
 		app->RegisterTexture(L"SELECT_3_UI", uiPath + L"Select3.png");
-		app->RegisterTexture(L"STAGESELECT_UI", uiPath + L"StageSelect.png");
-
+		app->RegisterTexture(L"SELECT_TEST_UI", uiPath + L"selectTest.png");
+		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
+		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
+		app->RegisterTexture(L"DPAD_UI", uiPath + L"DpadSide.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
+		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
+		app->RegisterTexture(L"STAR2_UI", uiPath + L"star_difficulty2.png");
+	}
 
+
+
+
+	void SelectButton::OnCreate() {
+		Button::OnCreate();
+		m_BackGroundSprite = GetSprite();
+		Vec3 centerPos = m_BackGroundSprite->GetPos();
+		Vec2 backGroundSize = m_BackGroundSprite->GetSize();
+		Vec3 startPos = Vec3();
+		//Å‘å3‘z’è
+		int xNum = m_Difficulty;
+
+		if (m_Difficulty == 1) {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
+		}
+		else {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
+		}
+		
+	}
+	void SelectButton::OnUpdate() {
+		Button::OnUpdate();
 	}
 }
 //end basecross
