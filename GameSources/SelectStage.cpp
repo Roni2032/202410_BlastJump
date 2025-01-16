@@ -26,15 +26,15 @@ namespace basecross {
 			CreateResource();
 			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
 			auto sprite = AddGameObject<BCSprite>(L"SELECT_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
-			auto button = AddGameObject<SelectButton>(L"STAGESELECT_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
+			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
-			button->SetSelectTex(L"BACKGROUND_TEX");
-			button = AddGameObject<SelectButton>(L"STAGESELECT_UI", Vec3(0, 0, 0), Vec2(240, 240),2);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(0, 0, 0), Vec2(240, 240),2);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
-			button->SetSelectTex(L"BACKGROUND_TEX");
-			button = AddGameObject<SelectButton>(L"STAGESELECT_UI", Vec3(400, 0, 0), Vec2(240, 240),3);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(400, 0, 0), Vec2(240, 240),3);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
-			button->SetSelectTex(L"BACKGROUND_TEX");
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
 
 			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(256, 128), true);
 
@@ -59,7 +59,8 @@ namespace basecross {
 				m_Select++;
 			}
 			float stickX = ctrl.fThumbLX;
-			if (abs(stickX) >= 0.2f && m_IsCanNextSelect >= 1.0f) {
+			float stickDeadZone = 0.2f;
+			if (abs(stickX) >= stickDeadZone && m_IsCanNextSelect >= 1.0f) {
 				if (stickX < 0) {
 					m_Select--;
 				}
@@ -107,7 +108,8 @@ namespace basecross {
 		app->RegisterTexture(L"SELECT_2_UI", uiPath + L"Select2.png");
 		app->RegisterTexture(L"SELECT_3_UI", uiPath + L"Select3.png");
 		app->RegisterTexture(L"SELECT_TEST_UI", uiPath + L"selectTest.png");
-		app->RegisterTexture(L"STAGESELECT_UI", uiPath + L"StageSelect.png");
+		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
+		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
 		app->RegisterTexture(L"DPAD_UI", uiPath + L"DpadSide.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
