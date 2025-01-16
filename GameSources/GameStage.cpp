@@ -127,13 +127,8 @@ namespace basecross {
 				}
 
 			}
-		}		
-		if (IsCanMovePlayer()) {
-			m_Player->SetUpdateActive(true);
 		}
-		else {
-			//m_Player->SetUpdateActive(false);
-		}
+		
 	}
 	void GameStage::OnDestroy() {
 		SoundManager::Instance().StopAll();

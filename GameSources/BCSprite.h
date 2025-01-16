@@ -120,8 +120,14 @@ namespace basecross{
 		//サイズの切り替え
 		void UpdateSize(Vec3 size);
 		void UpdateSize(Vec2 size);
+		Vec2 GetSize() {
+			return m_Size;
+		}
 		//位置の切り替え
 		void SetPos(Vec3 pos);
+		Vec3 GetPos() {
+			return m_Pos;
+		}
 		
 		void SetDiffuse(Col4 color);
 		Col4 GetDiffuse();

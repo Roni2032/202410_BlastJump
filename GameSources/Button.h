@@ -18,8 +18,10 @@ namespace basecross{
 
 		function<void(shared_ptr<Stage>& stage)> m_Func;
 		shared_ptr<BCSprite> m_Sprite;
+		vector<shared_ptr<BCSprite>> m_InterLockSprite;
+		vector<Vec2> m_InterLockedSpriteSize;
 		wstring m_TexKey;
-		wstring m_SelectTexkey;
+		wstring m_SelectTexKey;
 		Vec3 m_Pos;
 		Vec2 m_Size;
 		vector<SelectEffect> m_Effect;
@@ -41,7 +43,7 @@ namespace basecross{
 		virtual void OnCreate() override;
 		virtual void OnUpdate() override;
 		void SetSelectTex(const wstring key) {
-			m_SelectTexkey = key;
+			m_SelectTexKey = key;
 		}
 		void Function(){
 			m_Func(GetStage());
@@ -49,11 +51,17 @@ namespace basecross{
 		void SetFunction(function<void(shared_ptr<Stage>& stage)> func) {
 			m_Func = func;
 		}
+		shared_ptr<BCSprite> GetSprite() {
+			return m_Sprite;
+		}
 		shared_ptr<PCTSpriteDraw> GetDrawComponent() {
 			return m_Sprite->GetComponent<PCTSpriteDraw>();
 		}
 		void AddSelectEffect(SelectEffect mode) {
 			m_Effect.push_back(mode);
+		}
+		void AddLockSprite(shared_ptr<BCSprite> sprite) {
+			m_InterLockSprite.push_back(sprite);
 		}
 		void NotSelect() {
 			m_IsSelect = false;

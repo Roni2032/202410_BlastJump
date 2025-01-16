@@ -10,7 +10,7 @@ namespace basecross{
 
 	SoundManager& SoundManager::Instance() {
 		static SoundManager instance;
-
+		
 		return instance;
 	}
 	void SoundManager::RegisterSounds() {

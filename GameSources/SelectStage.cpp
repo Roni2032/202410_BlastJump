@@ -26,13 +26,13 @@ namespace basecross {
 			CreateResource();
 			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
 			auto sprite = AddGameObject<BCSprite>(L"SELECT_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
-			auto button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(-400, 0, 0), Vec2(240, 240));
+			auto button = AddGameObject<SelectButton>(L"STAGESELECT_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"BACKGROUND_TEX");
-			button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(0, 0, 0), Vec2(240, 240));
+			button = AddGameObject<SelectButton>(L"STAGESELECT_UI", Vec3(0, 0, 0), Vec2(240, 240),2);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"BACKGROUND_TEX");
-			button = AddGameObject<Button>(L"STAGESELECT_UI", Vec3(400, 0, 0), Vec2(240, 240));
+			button = AddGameObject<SelectButton>(L"STAGESELECT_UI", Vec3(400, 0, 0), Vec2(240, 240),3);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"BACKGROUND_TEX");
 
@@ -110,7 +110,32 @@ namespace basecross {
 		app->RegisterTexture(L"STAGESELECT_UI", uiPath + L"StageSelect.png");
 		app->RegisterTexture(L"DPAD_UI", uiPath + L"DpadSide.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
+		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
+		app->RegisterTexture(L"STAR2_UI", uiPath + L"star_difficulty2.png");
+	}
 
+
+
+
+	void SelectButton::OnCreate() {
+		Button::OnCreate();
+		m_BackGroundSprite = GetSprite();
+		Vec3 centerPos = m_BackGroundSprite->GetPos();
+		Vec2 backGroundSize = m_BackGroundSprite->GetSize();
+		Vec3 startPos = Vec3();
+		//Å‘å3‘z’è
+		int xNum = m_Difficulty;
+
+		if (m_Difficulty == 1) {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
+		}
+		else {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
+		}
+		
+	}
+	void SelectButton::OnUpdate() {
+		Button::OnUpdate();
 	}
 }
 //end basecross
