@@ -20,7 +20,7 @@ namespace basecross{
 			wstring texPath = path + L"Texture/";
 			
 
-			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"DoorOpen.bmf");
+			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"Door.bmf");
 			app->RegisterResource(L"GOAL_MD", boneModel);
 			app->RegisterTexture(L"GOAL_MD_TEX", modelPath + L"door.png");
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
