@@ -31,7 +31,7 @@ namespace basecross{
 		//col->SetDrawActive(true);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
-		GetComponent<Transform>()->SetScale(Vec3(1.0f,2.0f,1.0f));
+		GetComponent<Transform>()->SetScale(Vec3(2.0f,3.0f,2.0f));
 	}
 	void Goal::OnUpdate() {
 		auto draw = GetComponent<PNTBoneModelDraw>();
