@@ -37,6 +37,7 @@ namespace basecross {
 		shared_ptr<GameObject> m_Goal;
 		shared_ptr<GameObject> m_MenuBackGround;
 		shared_ptr<GameObject> m_MenuText;
+		shared_ptr<GameObject> m_SkipText;
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		vector<vector<BlockData>> m_MapData;
@@ -68,6 +69,7 @@ namespace basecross {
 		void CreateMap();
 		void CreateParticle();
 		void LoadMap();
+		void CreateMenu();
 		void CreateEnemy();
 		void BlockUpdateActive();
 	public:

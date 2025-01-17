@@ -36,7 +36,7 @@ namespace basecross {
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
 
-			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(256, 128), true);
+			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(281.6f, 140.8f), true);
 
 			SoundManager::Instance().PlayBGM(L"SELECT_BGM",0.1f);
 		}
@@ -110,7 +110,7 @@ namespace basecross {
 		app->RegisterTexture(L"SELECT_TEST_UI", uiPath + L"selectTest.png");
 		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
 		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
-		app->RegisterTexture(L"DPAD_UI", uiPath + L"DpadSide.png");
+		app->RegisterTexture(L"DPAD_UI", uiPath + L"SelectStage_Operation.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
 		app->RegisterTexture(L"STAR2_UI", uiPath + L"star_difficulty2.png");

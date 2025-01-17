@@ -75,7 +75,7 @@ namespace basecross {
 			const uint8_t useFps = 60;
 
 			m_Draw->AddAnimation(m_PlayerModelAnimIdle, 0, useFps, false, 60);
-			m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 60);
+			m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 90);
 			m_Draw->AddAnimation(m_PlayerModelAnimJump, 0, useFps, false, 60);
 			m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, 0, useFps, false, 150);
 			m_Draw->AddAnimation(m_PlayerModelAnimThrowUp, 0, useFps, false, 150);

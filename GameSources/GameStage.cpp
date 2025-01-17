@@ -49,29 +49,13 @@ namespace basecross {
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
 
-			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -230.0f, 0), Vec2(200, 150));
-			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -190.0f, 0), Vec2(80, 250), 2);
+			AddGameObject<BCSprite>(L"BOMBNUM_UI", Vec3(-630.0f, -230.0f, 0.0f), Vec2(200, 150));
+			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(-520.0f, -190.0f, 0.0f), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
-			m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 50, 0), Vec2(800, 950), true);
-			m_MenuText = AddGameObject<BCSprite>(L"MENU_TEXT_UI", Vec3(0, 250, 0), Vec2(256, 64), true);
-
-			m_SendStageNumber = make_shared<int>(m_StageNumber);
-			auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
-			button->AddSelectEffect(SelectEffect::Expand);
-			button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
-			button = AddGameObject<Button>(L"MENU_TITLE_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
-			button->AddSelectEffect(SelectEffect::Expand);
-			button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage"); });
-
-			button = AddGameObject<Button>(L"MENU_RESTART_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
-			button->AddSelectEffect(SelectEffect::Expand);
-			button->SetFunction([](shared_ptr<Stage> stage) {
-				auto currentStage = static_pointer_cast<GameStage>(stage);
-				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr()); 
-				});
-
-			CloseMenu();
+			m_SkipText = AddGameObject<BCSprite>(L"SKIP_TEXT_UI", Vec3(450, -310,0), Vec2(150, 50));
+			
+			CreateMenu();
 		}
 		catch (...) {
 			throw;
@@ -84,6 +68,7 @@ namespace basecross {
 		LoadMap();
 		BlockUpdateActive();
 		if (!IsView()) {
+			m_SkipText->SetDrawActive(false);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
@@ -147,7 +132,6 @@ namespace basecross {
 		app->RegisterTexture(L"TEST25_TEX", texPath + L"TestTex_wall25.png");
 		app->RegisterTexture(L"EXPLODE1_TEX", texPath + L"explodeParticle_2.png");
 		app->RegisterTexture(L"EXPLODE_SPARK_TEX", texPath + L"explodeSpark.png");
-		app->RegisterTexture(L"BOMB_THROW_TEX", texPath + L"arrow.png");
 		app->RegisterTexture(L"BOMB_ITEM_TEX", texPath + L"BombItem.png");
 		app->RegisterTexture(L"ARROW_ORBIT_TEX", texPath + L"arrow_Orbit.png");
 		app->RegisterTexture(L"EXPLODE_BLOCK_TEX", texPath + L"protoExplodeBlock.png");
@@ -167,9 +151,32 @@ namespace basecross {
 		app->RegisterTexture(L"MENU_TITLE_UI", uiPath + L"Menu_TitleStage.png");
 		app->RegisterTexture(L"MENU_RESTART_UI", uiPath + L"Menu_Restart.png");
 		app->RegisterTexture(L"MENU_TEXT_UI", uiPath + L"MenuText.png");
+		app->RegisterTexture(L"SKIP_TEXT_UI", uiPath + L"SkipText.png");
+		app->RegisterTexture(L"DPAD_UI", uiPath + L"NextGame_Oparation.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
+	}
+	void GameStage::CreateMenu() {
+		m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 50, 0), Vec2(800, 950), true);
+		m_MenuText = AddGameObject<BCSprite>(L"MENU_TEXT_UI", Vec3(0, 250, 0), Vec2(256, 64), true);
+
+		m_SendStageNumber = make_shared<int>(m_StageNumber);
+		auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
+		button->AddSelectEffect(SelectEffect::Expand);
+		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
+		button = AddGameObject<Button>(L"MENU_TITLE_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
+		button->AddSelectEffect(SelectEffect::Expand);
+		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage"); });
+
+		button = AddGameObject<Button>(L"MENU_RESTART_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
+		button->AddSelectEffect(SelectEffect::Expand);
+		button->SetFunction([](shared_ptr<Stage> stage) {
+			auto currentStage = static_pointer_cast<GameStage>(stage);
+			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			});
+
+		CloseMenu();
 	}
 	void GameStage::CreateMap() {
 		
@@ -263,6 +270,7 @@ namespace basecross {
 				power = BlockData::WstrToFloat(powerStr);
 			}
 			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,range);
+			break;
 		}
 		case 5: {
 			auto addNumStr = mapData.GetData(L"add");
@@ -474,13 +482,13 @@ namespace basecross {
 	void GameStage::GameClear() {
 		if (!IsInGame()) return;
 
+		m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
-		//sprite->SetDiffuse(Col4(1,0,0,1));
 		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
 		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
-		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
+		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Clear);
 
@@ -491,10 +499,9 @@ namespace basecross {
 		SoundManager::Instance().PlaySE(L"LOSER_SD");
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
-		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
 		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
 		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
-		//sprite->SetDiffuse(Col4(1, 0, 0, 1));
+		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Over);
 
