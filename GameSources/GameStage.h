@@ -70,7 +70,7 @@ namespace basecross {
 		void CreateParticle();
 		void LoadMap();
 		void CreateMenu();
-		void CreateFinishButton();
+		void CreateFinishButton(bool flag);
 		void CreateEnemy();
 		void BlockUpdateActive();
 	public:
@@ -81,7 +81,7 @@ namespace basecross {
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
 			m_ScrollSpeed(scrollSpeed),
-			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
+			m_Mode(GameMode::NotBomb),m_BeforeMode(GameMode::NotBomb)
 		{}
 		virtual ~GameStage() {}
 		//èâä˙âª

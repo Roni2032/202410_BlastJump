@@ -104,10 +104,6 @@ namespace basecross {
 		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
 		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"Diffuculty.png");
 
-		app->RegisterTexture(L"SELECT_1_UI", uiPath + L"Select1.png");
-		app->RegisterTexture(L"SELECT_2_UI", uiPath + L"Select2.png");
-		app->RegisterTexture(L"SELECT_3_UI", uiPath + L"Select3.png");
-		app->RegisterTexture(L"SELECT_TEST_UI", uiPath + L"selectTest.png");
 		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
 		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
 		app->RegisterTexture(L"DPAD_UI", uiPath + L"SelectStage_Operation.png");

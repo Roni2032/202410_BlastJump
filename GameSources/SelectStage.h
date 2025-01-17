@@ -10,13 +10,15 @@
 namespace basecross {
 	class Fade;
 	class BCSprite;
+
+	const static int MAX_STAGE = 3;
+
 	class SelectStage : public Stage {
-		const int MAX_STAGE;
 		int m_Select;
 		float m_IsCanNextSelect;
 		shared_ptr<Fade> m_Fade;
 	public:
-		SelectStage() : m_Select(0),m_IsCanNextSelect(1.0f),MAX_STAGE(3){}
+		SelectStage() : m_Select(0),m_IsCanNextSelect(1.0f){}
 		virtual ~SelectStage() {}
 		//ÉrÉÖÅ[ÇÃçÏê¨
 		void CreateViewLight();

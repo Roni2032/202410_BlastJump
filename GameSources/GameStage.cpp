@@ -150,8 +150,11 @@ namespace basecross {
 		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText_2.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 
+		app->RegisterTexture(L"RESTART_TEXT_SELECT_UI", uiPath + L"Restart_Selected.png");
 		app->RegisterTexture(L"RESTART_TEXT_UI", uiPath + L"Restart.png");
+		app->RegisterTexture(L"TITLE_TEXT_SELECT_UI", uiPath + L"BackToTitle_Selected.png");
 		app->RegisterTexture(L"TITLE_TEXT_UI", uiPath + L"BackToTitle.png");
+		app->RegisterTexture(L"NEXT_TEXT_SELECT_UI", uiPath + L"NextStage_Selected.png");
 		app->RegisterTexture(L"NEXT_TEXT_UI", uiPath + L"NextStage.png");
 
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BomNum.png");
@@ -174,23 +177,28 @@ namespace basecross {
 
 		m_SendStageNumber = make_shared<int>(m_StageNumber);
 		auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
-		button->AddSelectEffect(SelectEffect::Expand);
+		button->AddSelectEffect(SelectEffect::ChangeSprite);
 		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
-		button = AddGameObject<Button>(L"MENU_TITLE_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
-		button->AddSelectEffect(SelectEffect::Expand);
-		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage"); });
+		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
 
-		button = AddGameObject<Button>(L"MENU_RESTART_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
-		button->AddSelectEffect(SelectEffect::Expand);
+		button = AddGameObject<Button>(L"TITLE_TEXT_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
+		button->AddSelectEffect(SelectEffect::ChangeSprite);
+		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage"); });
+		button->SetSelectTex(L"TITLE_TEXT_SELECT_UI");
+		
+		button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
+		button->AddSelectEffect(SelectEffect::ChangeSprite);
 		button->SetFunction([](shared_ptr<Stage> stage) {
 			auto currentStage = static_pointer_cast<GameStage>(stage);
 			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
 			});
-
+		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
 		CloseMenu();
 	}
-	void GameStage::CreateFinishButton() {
+	void GameStage::CreateFinishButton(bool flag) {
 		Button::Clear();
+		Vec3 drawPos = Vec3();
+		
 		auto button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(-300.0f, -160.0f, 0.0f), Vec2(300, 60));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
 
@@ -198,21 +206,38 @@ namespace basecross {
 			auto currentStage = static_pointer_cast<GameStage>(stage);
 			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
 			});
+		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
 
-		button = AddGameObject<Button>(L"TITLE_TEXT_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(300, 60));
+		if (flag) {
+			drawPos = Vec3(0.0f, -160.0f, 0.0f);
+		}
+		else {
+			drawPos = Vec3(300.0f, -160.0f, 0.0f);
+		}
+		button = AddGameObject<Button>(L"TITLE_TEXT_UI", drawPos, Vec2(300, 60));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
 
 		button->SetFunction([](shared_ptr<Stage> stage) {
 			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 			});
+		button->SetSelectTex(L"TITLE_TEXT_SELECT_UI");
+		
+		if (!flag) return;
 
-		button = AddGameObject<Button>(L"NEXT_TEXT_UI", Vec3(300.0f, -160.0f, 0.0f), Vec2(300, 60));
-		button->AddSelectEffect(SelectEffect::ChangeSprite);
+		if (m_StageNumber >= MAX_STAGE - 1) {
+			AddGameObject<BCSprite>(L"NEXT_TEXT_UI", Vec3(300.0f, -160.0f, 0.0f), Vec2(300, 60), true);
+		}
+		else {
+			auto button = AddGameObject<Button>(L"NEXT_TEXT_UI", Vec3(300.0f, -160.0f, 0.0f), Vec2(300, 60));
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
 
-		button->SetFunction([](shared_ptr<Stage> stage) {
-			auto currentStage = static_pointer_cast<GameStage>(stage);
-			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
-			});
+			button->SetFunction([](shared_ptr<Stage> stage) {
+				auto currentStage = static_pointer_cast<GameStage>(stage);
+				auto nextStageNumber = currentStage->GetStageNumPtr().get();
+				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", make_shared<int>(*nextStageNumber + 1));
+				});
+			button->SetSelectTex(L"NEXT_TEXT_SELECT_UI");
+		}
 	}
 	void GameStage::CreateMap() {
 		
@@ -522,10 +547,8 @@ namespace basecross {
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
-		CreateFinishButton();
-
-		//sprite = AddGameObject<BCSprite>(L"RESTART_TEXT_UI", Vec3(-300.0f, -200, 0), Vec2(800, 100));
-		//sprite = AddGameObject<BCSprite>(L"TITLE_TEXT_UI", Vec3(-300.0f, -300, 0), Vec2(800, 100));
+		CreateFinishButton(true);
+		
 		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Clear);
@@ -537,8 +560,7 @@ namespace basecross {
 		SoundManager::Instance().PlaySE(L"LOSER_SD");
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
-		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
-		sprite = AddGameObject<BCSprite>(L"TITLE_TEXT_UI", Vec3(-300.0f, -300, 0), Vec2(800, 100));
+		CreateFinishButton(false);
 		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Over);
