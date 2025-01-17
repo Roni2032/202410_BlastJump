@@ -14,6 +14,8 @@ namespace basecross{
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
 		trans->SetScale(Vec3(15.0f,m_Scale.y,1));
+
+		SetDrawLayer(0);
 	}
 	void BackGround::OnUpdate() {
 

@@ -59,6 +59,8 @@ namespace basecross{
 		//GetComponent<Transform>()->SetRotation(m_rot);
 
 		m_ScreenSize = Vec2(1280, 800);
+
+		SetDrawLayer(3);
 	}
 	void BCSprite::OnUpdate() {
 		if (m_IsAnimation) {
