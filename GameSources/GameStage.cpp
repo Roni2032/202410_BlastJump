@@ -74,14 +74,22 @@ namespace basecross {
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 			if (pad.bConnected) {
 				if (IsFinishGame()) {
+
 					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-						auto stageNum = make_shared<int>(m_StageNumber);
-						PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage", stageNum);
+						//ÉÅÉjÉÖÅ[åàíË
+						Button::Function(m_MenuSelect);
+						SoundManager::Instance().PlaySE(L"BUTTON_SD");
 					}
-					if (pad.wPressedButtons & XINPUT_GAMEPAD_Y) {
-						auto stageNum = make_shared<int>(m_StageNumber);
-						PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+					//ëIë
+					if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
+						m_MenuSelect--;
 					}
+					else if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
+						m_MenuSelect++;
+					}
+					Button::CheckOverIndex(m_MenuSelect);
+
+					Button::SelectButton(m_MenuSelect);
 
 				}
 				if (IsOpenMenu()) {
@@ -141,8 +149,11 @@ namespace basecross {
 		app->RegisterTexture(L"NUMBER_TEX", uiPath + L"TimerNum.png");
 		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText_2.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
-		app->RegisterTexture(L"PUSHY_TEX", uiPath + L"PressA_Restart.png");
-		app->RegisterTexture(L"PUSHA_TITLE_TEX", uiPath + L"PressY_Title.png");
+
+		app->RegisterTexture(L"RESTART_TEXT_UI", uiPath + L"Restart.png");
+		app->RegisterTexture(L"TITLE_TEXT_UI", uiPath + L"BackToTitle.png");
+		app->RegisterTexture(L"NEXT_TEXT_UI", uiPath + L"NextStage.png");
+
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BomNum.png");
 		app->RegisterTexture(L"GOAL_SYMBLE_UI", uiPath + L"GoalSymble.png");
 		app->RegisterTexture(L"HEIGHT_BAR_UI", uiPath + L"HeightBar_2.png");
@@ -177,6 +188,31 @@ namespace basecross {
 			});
 
 		CloseMenu();
+	}
+	void GameStage::CreateFinishButton() {
+		Button::Clear();
+		auto button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(-300.0f, -160.0f, 0.0f), Vec2(300, 60));
+		button->AddSelectEffect(SelectEffect::ChangeSprite);
+
+		button->SetFunction([](shared_ptr<Stage> stage) {
+			auto currentStage = static_pointer_cast<GameStage>(stage);
+			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			});
+
+		button = AddGameObject<Button>(L"TITLE_TEXT_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(300, 60));
+		button->AddSelectEffect(SelectEffect::ChangeSprite);
+
+		button->SetFunction([](shared_ptr<Stage> stage) {
+			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+			});
+
+		button = AddGameObject<Button>(L"NEXT_TEXT_UI", Vec3(300.0f, -160.0f, 0.0f), Vec2(300, 60));
+		button->AddSelectEffect(SelectEffect::ChangeSprite);
+
+		button->SetFunction([](shared_ptr<Stage> stage) {
+			auto currentStage = static_pointer_cast<GameStage>(stage);
+			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			});
 	}
 	void GameStage::CreateMap() {
 		
@@ -486,8 +522,10 @@ namespace basecross {
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
-		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
-		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
+		CreateFinishButton();
+
+		//sprite = AddGameObject<BCSprite>(L"RESTART_TEXT_UI", Vec3(-300.0f, -200, 0), Vec2(800, 100));
+		//sprite = AddGameObject<BCSprite>(L"TITLE_TEXT_UI", Vec3(-300.0f, -300, 0), Vec2(800, 100));
 		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Clear);
@@ -500,7 +538,7 @@ namespace basecross {
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
 		sprite = AddGameObject<BCSprite>(L"PUSHY_TEX", Vec3(-300.0f, -200, 0), Vec2(800, 100));
-		sprite = AddGameObject<BCSprite>(L"PUSHA_TITLE_TEX", Vec3(-300.0f, -300, 0), Vec2(800, 100));
+		sprite = AddGameObject<BCSprite>(L"TITLE_TEXT_UI", Vec3(-300.0f, -300, 0), Vec2(800, 100));
 		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Over);

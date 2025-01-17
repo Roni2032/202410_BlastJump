@@ -66,7 +66,7 @@ namespace basecross{
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
-		Button::Buttons.clear();
+		Button::Clear();
 		if (event->m_MsgStr == L"ToGameStage") {
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {

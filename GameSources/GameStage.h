@@ -70,6 +70,7 @@ namespace basecross {
 		void CreateParticle();
 		void LoadMap();
 		void CreateMenu();
+		void CreateFinishButton();
 		void CreateEnemy();
 		void BlockUpdateActive();
 	public:
