@@ -42,6 +42,8 @@ namespace basecross{
 			}
 
 			else if (m_Stage->IsView()) {
+				auto device = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+				
 				at.y += 0.01f;
 				eye.y += 0.01f;
 
@@ -51,6 +53,11 @@ namespace basecross{
 				else {
 					SetEye(eye);
 					SetAt(at);
+				}
+				if (device.bConnected) {
+					if (device.wPressedButtons & XINPUT_GAMEPAD_A) {
+						StartCamera();
+					}
 				}
 			}
 		}

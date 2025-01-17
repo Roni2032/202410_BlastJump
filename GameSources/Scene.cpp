@@ -20,7 +20,7 @@ namespace basecross{
 			wstring texPath = path + L"Texture/";
 			
 
-			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"DoorOpen.bmf");
+			auto boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"Door.bmf");
 			app->RegisterResource(L"GOAL_MD", boneModel);
 			app->RegisterTexture(L"GOAL_MD_TEX", modelPath + L"door.png");
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
@@ -66,7 +66,7 @@ namespace basecross{
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
-		Button::Buttons.clear();
+		Button::Clear();
 		if (event->m_MsgStr == L"ToGameStage") {
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
@@ -74,10 +74,10 @@ namespace basecross{
 				ResetActiveStage<GameStage>(L"Stage01.csv",*stage,20,0.0f);
 				break;
 			case 1:
-				ResetActiveStage<GameStage>(L"Stage02.csv", *stage,25);
+				ResetActiveStage<GameStage>(L"Stage02.csv", *stage,25,0.25f);
 				break;
 			case 2:
-				ResetActiveStage<GameStage>(L"Stage04.csv", *stage,25);
+				ResetActiveStage<GameStage>(L"Stage04.csv", *stage,30);
 				break;
 			default:
 				ResetActiveStage<TitleStage>();

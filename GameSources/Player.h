@@ -75,7 +75,7 @@ namespace basecross {
 			const uint8_t useFps = 60;
 
 			m_Draw->AddAnimation(m_PlayerModelAnimIdle, 0, useFps, false, 60);
-			m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 60);
+			m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 90);
 			m_Draw->AddAnimation(m_PlayerModelAnimJump, 0, useFps, false, 60);
 			m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, 0, useFps, false, 150);
 			m_Draw->AddAnimation(m_PlayerModelAnimThrowUp, 0, useFps, false, 150);
@@ -151,12 +151,12 @@ namespace basecross {
 			Vec2 cntlBombVec = InputController::GetInstance().InputStick(0, 2);
 			m_BombVec = cntlBombVec * m_BombShotSpeed;
 
-			bool cntlL = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_LEFT_SHOULDER);
+			/*bool cntlL = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_LEFT_SHOULDER);
 			if (cntlL && (IsPlayerOnAir() == false))
 			{
 				PlayerJump();
 				PlayerAnimationChangeJump();
-			}
+			}*/
 
 			bool cntlR = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_RIGHT_SHOULDER);
 			if (cntlR && (IsCanBombCreate() == true))

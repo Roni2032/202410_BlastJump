@@ -70,7 +70,7 @@ namespace basecross{
 		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 
-		SoundManager::Instance().PlaySE(L"BOMB_SD",0.1f);
+		SoundManager::Instance().PlaySE(L"BOMB_SD",0.2f);
 
 		if (m_GameStage->GetGameMode() == GameStage::GameMode::NotBomb) {
 			m_GameStage->ChangeMode(GameStage::GameMode::InGame);

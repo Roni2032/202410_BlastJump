@@ -25,7 +25,7 @@ namespace basecross {
 			CreateViewLight();
 			CreateResource();
 			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
-			auto sprite = AddGameObject<BCSprite>(L"SELECT_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
+			auto sprite = AddGameObject<BCSprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
 			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
@@ -36,7 +36,7 @@ namespace basecross {
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
 
-			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(256, 128), true);
+			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(281.6f, 140.8f), true);
 
 			SoundManager::Instance().PlayBGM(L"SELECT_BGM",0.1f);
 		}
@@ -102,18 +102,15 @@ namespace basecross {
 
 		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
 		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
-		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"Diffuculty.png");
+		app->RegisterTexture(L"DIFFICULTY_TEXT_UI", uiPath + L"Diffuculty.png");
 
-		app->RegisterTexture(L"SELECT_1_UI", uiPath + L"Select1.png");
-		app->RegisterTexture(L"SELECT_2_UI", uiPath + L"Select2.png");
-		app->RegisterTexture(L"SELECT_3_UI", uiPath + L"Select3.png");
-		app->RegisterTexture(L"SELECT_TEST_UI", uiPath + L"selectTest.png");
 		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
 		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
-		app->RegisterTexture(L"DPAD_UI", uiPath + L"DpadSide.png");
+		app->RegisterTexture(L"DPAD_UI", uiPath + L"SelectStage_Operation.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
 		app->RegisterTexture(L"STAR2_UI", uiPath + L"star_difficulty2.png");
+		app->RegisterTexture(L"STAR3_UI", uiPath + L"star_difficulty3.png");
 	}
 
 
@@ -125,14 +122,15 @@ namespace basecross {
 		Vec3 centerPos = m_BackGroundSprite->GetPos();
 		Vec2 backGroundSize = m_BackGroundSprite->GetSize();
 		Vec3 startPos = Vec3();
-		//Å‘å3‘z’è
-		int xNum = m_Difficulty;
 
 		if (m_Difficulty == 1) {
 			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
 		}
-		else {
+		else if(m_Difficulty == 2){
 			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
+		}
+		else {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR3_UI", centerPos, Vec2(180, 60), true));
 		}
 		
 	}

@@ -72,7 +72,9 @@ namespace basecross{
 			}
 			m_IsSelect = true;
 		}
-
+		static void Clear() {
+			Button::Buttons.clear();
+		}
 		static void Function(int select) {
 			Button::Buttons[select]->Function();
 		}
