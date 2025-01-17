@@ -156,17 +156,16 @@ namespace basecross {
 		app->RegisterTexture(L"TITLE_TEXT_UI", uiPath + L"BackToTitle.png");
 		app->RegisterTexture(L"NEXT_TEXT_SELECT_UI", uiPath + L"NextStage_Selected.png");
 		app->RegisterTexture(L"NEXT_TEXT_UI", uiPath + L"NextStage.png");
+		app->RegisterTexture(L"SELECT_TEXT_SELECT_UI", uiPath + L"Select_Selected.png");
+		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"Select.png");
 
 		app->RegisterTexture(L"BOMBNUM_UI", uiPath + L"BomNum.png");
 		app->RegisterTexture(L"GOAL_SYMBLE_UI", uiPath + L"GoalSymble.png");
 		app->RegisterTexture(L"HEIGHT_BAR_UI", uiPath + L"HeightBar_2.png");
 		app->RegisterTexture(L"MENU_BACKGROUND_UI", uiPath + L"Menu_BackGround.png");
-		app->RegisterTexture(L"MENU_SELECT_UI", uiPath + L"Menu_SelectStage.png");
-		app->RegisterTexture(L"MENU_TITLE_UI", uiPath + L"Menu_TitleStage.png");
-		app->RegisterTexture(L"MENU_RESTART_UI", uiPath + L"Menu_Restart.png");
 		app->RegisterTexture(L"MENU_TEXT_UI", uiPath + L"MenuText.png");
 		app->RegisterTexture(L"SKIP_TEXT_UI", uiPath + L"SkipText.png");
-		app->RegisterTexture(L"DPAD_UI", uiPath + L"NextGame_Oparation.png");
+		app->RegisterTexture(L"DPAD_NEXT_UI", uiPath + L"NextGame_Oparation.png");
 
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
@@ -176,10 +175,10 @@ namespace basecross {
 		m_MenuText = AddGameObject<BCSprite>(L"MENU_TEXT_UI", Vec3(0, 250, 0), Vec2(256, 64), true);
 
 		m_SendStageNumber = make_shared<int>(m_StageNumber);
-		auto button = AddGameObject<Button>(L"MENU_SELECT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
+		auto button = AddGameObject<Button>(L"SELECT_TEXT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
 		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
-		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
+		button->SetSelectTex(L"SELECT_TEXT_SELECT_UI");
 
 		button = AddGameObject<Button>(L"TITLE_TEXT_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
@@ -199,7 +198,7 @@ namespace basecross {
 		Button::Clear();
 		Vec3 drawPos = Vec3();
 		
-		auto button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(-300.0f, -160.0f, 0.0f), Vec2(300, 60));
+		auto button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(-400.0f, -160.0f, 0.0f), Vec2(300, 60));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
 
 		button->SetFunction([](shared_ptr<Stage> stage) {
@@ -212,7 +211,7 @@ namespace basecross {
 			drawPos = Vec3(0.0f, -160.0f, 0.0f);
 		}
 		else {
-			drawPos = Vec3(300.0f, -160.0f, 0.0f);
+			drawPos = Vec3(400.0f, -160.0f, 0.0f);
 		}
 		button = AddGameObject<Button>(L"TITLE_TEXT_UI", drawPos, Vec2(300, 60));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
@@ -225,10 +224,10 @@ namespace basecross {
 		if (!flag) return;
 
 		if (m_StageNumber >= MAX_STAGE - 1) {
-			AddGameObject<BCSprite>(L"NEXT_TEXT_UI", Vec3(300.0f, -160.0f, 0.0f), Vec2(300, 60), true);
+			AddGameObject<BCSprite>(L"NEXT_TEXT_UI", Vec3(400.0f, -160.0f, 0.0f), Vec2(300, 60), true);
 		}
 		else {
-			auto button = AddGameObject<Button>(L"NEXT_TEXT_UI", Vec3(300.0f, -160.0f, 0.0f), Vec2(300, 60));
+			auto button = AddGameObject<Button>(L"NEXT_TEXT_UI", Vec3(400.0f, -160.0f, 0.0f), Vec2(300, 60));
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 
 			button->SetFunction([](shared_ptr<Stage> stage) {
@@ -549,7 +548,7 @@ namespace basecross {
 		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
 		CreateFinishButton(true);
 		
-		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
+		AddGameObject<BCSprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Clear);
 
@@ -561,7 +560,7 @@ namespace basecross {
 		SoundManager::Instance().StopBGM();
 		auto sprite = AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
 		CreateFinishButton(false);
-		AddGameObject<BCSprite>(L"DPAD_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
+		AddGameObject<BCSprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
 
 		ChangeMode(GameMode::Over);
 

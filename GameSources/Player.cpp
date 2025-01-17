@@ -66,14 +66,14 @@ namespace basecross {
 
 		AddTag(L"Player");
 
-		PlayerInitDebugString();
+		//PlayerInitDebugString();
 	}
 
 	void Player::OnUpdate()
 	{
 		UpdateInputDevice();
 
-		PlayerShowDebugLog();
+		//PlayerShowDebugLog();
 
 		m_Pos = m_Transform->GetWorldPosition();
 

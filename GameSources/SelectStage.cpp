@@ -25,7 +25,7 @@ namespace basecross {
 			CreateViewLight();
 			CreateResource();
 			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
-			auto sprite = AddGameObject<BCSprite>(L"SELECT_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
+			auto sprite = AddGameObject<BCSprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
 			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
@@ -102,7 +102,7 @@ namespace basecross {
 
 		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
 		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
-		app->RegisterTexture(L"SELECT_TEXT_UI", uiPath + L"Diffuculty.png");
+		app->RegisterTexture(L"DIFFICULTY_TEXT_UI", uiPath + L"Diffuculty.png");
 
 		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
 		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
