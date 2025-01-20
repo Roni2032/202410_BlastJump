@@ -108,7 +108,7 @@ HWND InitInstance(HINSTANCE hInstance, int nCmdShow, bool isFullScreen, int iCli
 			return 0;   //�G���[�I��
 		}
 	}
-	ShowCursor(TRUE);
+	ShowCursor(FALSE);
 	//�E�C���h�E�̕\��
 	ShowWindow(
 		hWnd,       //�擾�����E�C���h�E�̃n���h��
