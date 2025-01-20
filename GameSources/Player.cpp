@@ -27,14 +27,14 @@ namespace basecross {
 		m_GameStage = GetTypeStage<GameStage>();
 		m_EffectGoalCount = 0;
 
-		//PlayerInitDebugString();
+		PlayerInitDebugString();
 	}
 
 	void Player::OnUpdate()
 	{
 		UpdateInputDevice();
 
-		//PlayerShowDebugLog();
+		PlayerShowDebugLog();
 
 		m_Pos = m_Transform->GetWorldPosition();
 
@@ -117,7 +117,7 @@ namespace basecross {
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimIdle);
 		m_Draw->SetMeshResource(m_PlayerModelIdle);
 	}
-
+	
 	void Player::PlayerInitBCCollObb()
 	{
 		m_BCCollObb = AddComponent<BCCollisionObb>(3.0f, L"Stage");
