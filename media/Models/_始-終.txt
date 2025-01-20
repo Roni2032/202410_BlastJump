@@ -1,0 +1,10 @@
+  　始-終      
+ フレーム　　　　　アニメーション名
+・  0 -  60    		idole
+・ 61 - 121    		Move
+・122 - 182    		Jump
+・183 - 243    		DefaultThrow
+・244 - 304    		ThrowUp
+・305 - 365  		ThrowDown
+・366 - 426 		Win
+・427 - 487  		Lose

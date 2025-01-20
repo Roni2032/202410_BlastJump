@@ -34,5 +34,26 @@ namespace basecross{
 		virtual void AddParticleData()override;
 
 	};
+
+	class ParticleRunDust : public BCParticle
+	{
+	public:
+		ParticleRunDust(const shared_ptr<Stage>& ptr) : BCParticle(ptr) {}
+		virtual ~ParticleRunDust() {}
+
+		virtual void AddParticleData() override;
+
+	};
+
+	class ParticleGoal : public BCParticle
+	{
+	public:
+		ParticleGoal(const shared_ptr<Stage>& ptr) : BCParticle(ptr) {}
+		virtual ~ParticleGoal() {}
+
+		virtual void AddParticleData() override;
+
+
+	};
 }
 //end basecross

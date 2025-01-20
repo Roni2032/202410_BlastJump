@@ -26,6 +26,8 @@ namespace basecross{
 		m_Trans = GetComponent<Transform>();
 		Init();
 		SetActive(false);
+
+		SetDrawLayer(1);
 	}
 	void BCParticleInstance::OnUpdate() {
 		float elapsed = App::GetApp()->GetElapsedTime();

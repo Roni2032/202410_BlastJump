@@ -22,8 +22,6 @@ namespace basecross{
 		float m_ExplodeTimer;
 
 		Explosion m_ExplodeStatus;
-		//float m_ExplodeRange;
-		//float m_ExplodePower;
 
 		Vec3 m_ThrowVelocity;
 		Vec3 m_Pos;
