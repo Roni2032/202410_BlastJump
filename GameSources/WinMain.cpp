@@ -105,7 +105,7 @@ HWND InitInstance(HINSTANCE hInstance, int nCmdShow, bool isFullScreen, int iCli
 		if (!hWnd) {
 			//���s����
 			MessageBox(nullptr, L"�E�C���h�E�쐬�Ɏ��s���܂���", L"�G���[", MB_OK);
-			return 0;   //�G���[�I��
+			return 0;  //�G���[�I��
 		}
 	}
 	ShowCursor(FALSE);

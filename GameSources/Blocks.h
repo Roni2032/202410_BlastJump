@@ -10,6 +10,18 @@ namespace basecross{
 	struct Explosion;
 	struct BlockData;
 
+	enum BlockTypes {
+		AIR,
+		NORMAL,
+		UNBREAK,
+		EXPLODE,
+		NONE,
+		ADDBOMB,
+		GOAL,
+		CHECKPOINT,
+		MOVE,
+	};
+
 	class InstanceBlock : public GameObject {
 		wstring m_TexKey;
 
@@ -24,6 +36,7 @@ namespace basecross{
 		int m_SizeY;
 		Vec2 m_StartPos;
 
+		bool CheckExposedBlock(vector<vector<BlockData>>& map,Vec2 center);
 	public:
 		InstanceBlock(const shared_ptr<Stage>& stage,const wstring& texKey,int sizeY) :
 			GameObject(stage),m_TexKey(texKey),m_SizeY(sizeY),m_DrawMaxHeight(-1),m_CameraAtY(0)

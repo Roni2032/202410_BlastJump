@@ -14,6 +14,8 @@ namespace basecross{
 		int m_CameraHight;
 		float m_ScrollSpeed;
 
+		float m_DefaultFovY;
+
 		Vec3 m_StartAt;
 		Vec3 m_StartEye;
 		weak_ptr<Transform> m_player;
@@ -26,7 +28,8 @@ namespace basecross{
 			m_Stage(ptr),
 			m_ScrollSpeed(scrollSpeed),
 			m_StartAt(0.0f),
-			m_StartEye(0.0f)
+			m_StartEye(0.0f),
+			m_DefaultFovY(15.0f)
 		{}
 		virtual ~MyCamera(){}
 
