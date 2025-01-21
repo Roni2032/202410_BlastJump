@@ -92,30 +92,31 @@ namespace basecross {
 	void Player::PlayerInitDraw()
 	{
 		m_Draw = AddComponent<PNTBoneModelDraw>();
-		m_Draw->SetMeshResource(m_PlayerModelIdle);
+		m_Draw->SetMeshResource(m_PlayerModelFull);
 		m_Draw->SetTextureResource(m_PlayerModelTex);
 		m_ModelSpanMat.affineTransformation
 		(
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransIdle
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
-		const uint8_t useFps = 60;
+		const uint8_t animationFrameLength = 60;
+		const float useFps = 60.0f;
 
-		m_Draw->AddAnimation(m_PlayerModelAnimIdle, 0, useFps, false, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimJump, 0, useFps, false, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, 0, useFps, false, 150);
-		m_Draw->AddAnimation(m_PlayerModelAnimThrowUp, 0, useFps, false, 150);
-		m_Draw->AddAnimation(m_PlayerModelAnimThrowDown, 0, useFps, false, 120);
-		m_Draw->AddAnimation(m_PlayerModelAnimWin, 0, useFps, true, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimLose, 0, useFps, false, 60);
+		m_Draw->AddAnimation(m_PlayerModelAnimIdle,         m_StartAnimationFrame[ModelAnimation::Idle], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimMove,         m_StartAnimationFrame[ModelAnimation::Move], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimJump,         m_StartAnimationFrame[ModelAnimation::Jump], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, m_StartAnimationFrame[ModelAnimation::ThrowDefault], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimThrowUp,      m_StartAnimationFrame[ModelAnimation::ThrowUp], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimThrowDown,    m_StartAnimationFrame[ModelAnimation::ThrowDown], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimWin,          m_StartAnimationFrame[ModelAnimation::Win], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimLose,         m_StartAnimationFrame[ModelAnimation::Lose], animationFrameLength, true, useFps);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimIdle);
-		m_Draw->SetMeshResource(m_PlayerModelIdle);
+		m_Draw->SetMeshResource(m_PlayerModelFull);
 	}
 	
 	void Player::PlayerInitBCCollObb()
@@ -263,7 +264,7 @@ namespace basecross {
 
 		if (m_IsDead) 
 		{ 
-			GetTypeStage<GameStage>()->GameOver(); 
+			GetTypeStage<GameStage>()->GameOver();
 			PlayerAnimationChangeDeath();
 		}
 	}
@@ -285,15 +286,18 @@ namespace basecross {
 		float deltaTime = App::GetApp()->GetElapsedTime();
 		m_Draw->UpdateAnimation(deltaTime);
 
+		//通常時でなければ終了
 		if (GetIsClear() == true) { return; }
 		if (GetIsInGame() == false) { return; }
 
 		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
+		//モデルの向きを決める
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		if (cntlMoveVec.x > 0.0f) { m_ModelRotVec.y = -XM_PIDIV2; }
 		if (cntlMoveVec.x < 0.0f) { m_ModelRotVec.y = XM_PIDIV2; }
 
+		//動いていて、爆弾を投げておらず、地上にいる時
 		if (m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
@@ -301,24 +305,24 @@ namespace basecross {
 				m_ModelScale,
 				m_ModelRotOrigin,
 				m_ModelRotVec,
-				m_ModelTransMove
+				m_ModelTrans
 			);
 			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 			if (getCurrentAnim == m_PlayerModelAnimMove) { return; }
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimMove);
-			m_Draw->SetMeshResource(m_PlayerModelMove);
 
 		}
 
-		if (!m_IsMoving && !m_IsBombCreate && !m_IsJumping)
+		//止まっていて、爆弾を投げておらず、地上にいる時
+		if (!m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
 			(
 				m_ModelScale,
 				m_ModelRotOrigin,
 				m_ModelRotVec,
-				m_ModelTransIdle
+				m_ModelTrans
 			);
 			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
@@ -327,7 +331,6 @@ namespace basecross {
 
 			if (getCurrentAnim == m_PlayerModelAnimIdle) { return; }
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimIdle);
-			m_Draw->SetMeshResource(m_PlayerModelIdle);
 		}
 
 	}
@@ -342,12 +345,11 @@ namespace basecross {
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransJump
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimJump);
-		m_Draw->SetMeshResource(m_PlayerModelJump);
 	}
 
 	void Player::PlayerAnimationChangeThrow(const Vec2 cntlBombVec)
@@ -365,36 +367,31 @@ namespace basecross {
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransThrow
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 		if (cntlBombVec.y == 0.0f)
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDown);
-			m_Draw->SetMeshResource(m_PlayerModelThrowDown);
 		}
 		else if (cntlBombVec.y <= neutralZoneLine && cntlBombVec.y >= -neutralZoneLine)
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDefault);
-			m_Draw->SetMeshResource(m_PlayerModelThrowDefault);
 		}
 		else if (cntlBombVec.y > neutralZoneLine)
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowUp);
-			m_Draw->SetMeshResource(m_PlayerModelThrowUp);
 		}
 		else if ((cntlBombVec.y < -neutralZoneLine))
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDown);
-			m_Draw->SetMeshResource(m_PlayerModelThrowDown);
 		}
 	}
 
 	void Player::PlayerAnimationChangeDeath()
 	{
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimLose);
-		m_Draw->SetMeshResource(m_PlayerModelLose);
 	}
 
 	void Player::PlayerAnimationChangeClear()
@@ -409,26 +406,23 @@ namespace basecross {
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransWin
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimWin);
-		m_Draw->SetMeshResource(m_PlayerModelWin);
 	}
 
 	void Player::PlayEffectGoal()
 	{
-		// 上限に達したら処理終了
+		//上限に達したら処理終了
 		if (m_EffectGoalCount >= 8) { return; }
 
-		// 経過時間を取得
 		float deltaTime = App::GetApp()->GetElapsedTime();
 
-		// 現在のワールド座標を取得
 		Vec3 getWorldPosition = GetComponent<Transform>()->GetWorldPosition();
 
-		// クールタイムがゼロ以下の場合、パーティクルを再生
+		//クールタイムがゼロ以下の場合、パーティクルを再生
 		if (m_EffectCoolTime <= 0.0f)
 		{
 			const int8_t xRndMin = -4;
@@ -442,14 +436,13 @@ namespace basecross {
 			m_GameStage->PlayParticle<ParticleGoal>(L"PCL_GOAL",
 				Vec3(getWorldPosition.x + static_cast<float>(xRnd), getWorldPosition.y + static_cast<float>(yRnd), getWorldPosition.z));
 
-			// カウントをインクリメント
 			m_EffectGoalCount++;
 
-			// クールタイムをリセット
+			//クールタイムをリセット
 			m_EffectCoolTime = 0.25f;
 		}
 
-		// クールタイムを減少させる
+		//クールタイムを減少させる
 		if (m_EffectCoolTime > 0.0f)
 		{
 			m_EffectCoolTime -= m_EffectCoolTimeSpeed * deltaTime;
