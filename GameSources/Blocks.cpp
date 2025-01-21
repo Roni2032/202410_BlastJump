@@ -7,6 +7,7 @@
 #include "Project.h"
 
 namespace basecross{
+
 	void InstanceBlock::OnCreate() {
 		m_Draw = AddComponent<PNTStaticInstanceDraw>();
 		m_Draw->SetMeshResource(L"DEFAULT_CUBE");
@@ -29,19 +30,21 @@ namespace basecross{
 		float drawIndexMinY = at.y - drawSize.y;
 		float drawIndexMaxY = at.y + drawSize.y;
 
-		if (drawIndexMinY < 0) {
+		drawIndexMinY = max(0, drawIndexMinY);
+		drawIndexMaxY = min(map.size() - 1, drawIndexMaxY);
+		/*if (drawIndexMinY < 0) {
 			drawIndexMinY = 0;
 		}
 		if (drawIndexMaxY >= map.size()) {
 			drawIndexMaxY = map.size() - 1;
-		}
+		}*/
 		
 		drawSize.x = map[0].size();
 
 		m_Draw->ClearMatrixVec();
 		for (int y = drawIndexMinY; y <= drawIndexMaxY; y++) {
 			for (int x = 0; x < drawSize.x; x++) {
-				if (map[y][x].GetID() != 2) continue;
+				if (map[y][x].GetID() != BlockTypes::UNBREAK) continue;
 
 				Mat4x4 matrix;
 				matrix.translation(stage->GetWorldPosition(Vec2(x, y)));
@@ -51,7 +54,8 @@ namespace basecross{
 				if (map[y][x].GetIsLoaded()) continue;
 				map[y][x].SetIsLoaded(true);
 
-				bool isCollider = false;
+
+				/*bool isCollider = false;
 				Vec2 aroundMap[] = {
 					Vec2(x + 1,y),
 					Vec2(x - 1,y),
@@ -66,9 +70,9 @@ namespace basecross{
 						isCollider = true;
 						break;
 					}
-				}
+				}*/
 
-				if (isCollider) {
+				if (CheckExposedBlock(map, Vec2(x, y))) {
 					auto obj = GetStage()->AddGameObject<Block>(L"", stage->GetWorldPosition(Vec2(x,y)), Vec3(1.0f));
 					GetTypeStage<GameStage>()->RegisterBlock(Vec2(x, y), obj);
 				}
@@ -85,6 +89,23 @@ namespace basecross{
 				}
 			}
 		}
+	}
+	bool InstanceBlock::CheckExposedBlock(vector<vector<BlockData>>& map,Vec2 center) {
+		Vec2 aroundMap[] = {
+					Vec2(center.x + 1,center.y),
+					Vec2(center.x - 1,center.y),
+					Vec2(center.x,center.y + 1),
+					Vec2(center.x,center.y - 1)
+		};
+		for (Vec2 around : aroundMap) {
+			if (around.x < 0 || around.x >= map[center.y].size()) continue;
+			if (around.y < 0 || around.y >= map.size()) continue;
+
+			if (map[static_cast<int>(around.y)][static_cast<int>(around.x)].GetID() != BlockTypes::UNBREAK) {
+				return true;
+			}
+		}
+		return false;
 	}
 	void InstanceBlock::DrawMap(const Vec2 max, const Vec2 min) {
 		Vec2 drawSize(0);
@@ -351,7 +372,8 @@ namespace basecross{
 			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
 
 			//プレイヤーをスタン状態にする
-
+			auto player = static_pointer_cast<Player>(Other);
+			player->Stun(1.0f);
 		}
 	}
 
