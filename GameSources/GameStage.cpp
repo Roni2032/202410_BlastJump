@@ -458,6 +458,12 @@ namespace basecross {
 
 		auto blockDestroyParticle = AddGameObject<BlockDestroyParticle>();
 		SetSharedGameObject(L"DESTROY_BLOCK_PCL", blockDestroyParticle);
+
+		auto particleRunDust = AddGameObject<ParticleRunDust>();
+		SetSharedGameObject(L"PCL_RUNDUST", particleRunDust);
+
+		auto particleGoal = AddGameObject<ParticleGoal>();
+		SetSharedGameObject(L"PCL_GOAL", particleGoal);
 	}
 	Vec3 GameStage::GetMapIndex(Vec3 pos) {
 		Vec3 mapPos = Vec3(pos.x - m_MapLeftTop.x + 0.5f, m_MapLeftTop.y - pos.y + 0.5f, 0);
