@@ -146,7 +146,6 @@ namespace basecross {
 	void Player::PlayerMove()
 	{
 		float deltaTime = App::GetApp()->GetElapsedTime();
-
 		if (GetIsClear() == true)
 		{
 			PlayerAnimationChangeClear();
@@ -156,7 +155,17 @@ namespace basecross {
 		}
 
 		if (GetIsInGame() == false) { return; }
-
+		
+		if (m_IsStun) {
+			if (m_StunTime > 0) {
+				m_StunTime -= deltaTime;
+			}
+			else {
+				m_StunTime = 0.0f;
+				m_IsStun = false;
+			}
+			return;
+		}
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		float smoothWalkSpeed = cntlMoveVec.x * m_WalkSpeed;
 		float smoothWalkSpeedAir = m_AirLateralMovementSave * m_WalkSpeed;
@@ -455,7 +464,10 @@ namespace basecross {
 			m_EffectCoolTime -= m_EffectCoolTimeSpeed * deltaTime;
 		}
 	}
-
+	void Player::Stun(float time) {
+		m_IsStun = true;
+		m_StunTime = time;
+	}
 	void Player::PlayerInitDebugString()
 	{
 		m_String = AddComponent<StringSprite>();
