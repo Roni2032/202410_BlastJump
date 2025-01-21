@@ -88,5 +88,10 @@ namespace basecross{
 		SetFovY(XMConvertToRadians(m_DefaultFovY));
 		m_Stage->GameStart();
 	}
+	void MyCamera::RespawnCamera() {
+		auto player = m_player.lock();
+		if (player == nullptr) return;
+		SetStageAt(player->GetPosition().y);
+	}
 }
 //end basecross

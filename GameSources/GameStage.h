@@ -38,9 +38,11 @@ namespace basecross {
 		shared_ptr<GameObject> m_MenuBackGround;
 		shared_ptr<GameObject> m_MenuText;
 		shared_ptr<GameObject> m_SkipText;
+
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		vector<vector<BlockData>> m_MapData;
+		vector<vector<BlockData>> m_InitMapData;
 		Vec3 m_MapLeftTop;
 		Vec3 m_MapRightBottom;
 
@@ -57,16 +59,16 @@ namespace basecross {
 
 		shared_ptr<BCNumber> m_PlayerHasBombs;
 
-
 		int m_MenuSelect;
 		
-
 		Vec3 m_RespawnPosition;
 		Vec3 m_LoadStageSize;
+
 		//ÉrÉÖÅ[ÇÃçÏê¨
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
+		void NewCreateMap();
 		void CreateParticle();
 		void LoadMap();
 		void InitializeStage();
@@ -77,7 +79,7 @@ namespace basecross {
 	public:
 		//ç\ízÇ∆îjä¸
 		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,48,0)),
+			m_LoadStageSize(Vec3(20,7,0)),
 			m_BombNum(bombNum),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),

@@ -45,6 +45,7 @@ namespace basecross{
 			m_StartEye = eye;
 		}
 		void StartCamera();
+		void RespawnCamera();
 	};
 }
 //end basecross

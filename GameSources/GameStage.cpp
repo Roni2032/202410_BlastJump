@@ -300,7 +300,128 @@ namespace basecross {
 		LoadMap();
 		AddGameObject<StageLengthBar>(mapSize.y,m_Player,m_Goal);
 	}
+	void GameStage::NewCreateMap() {
+		auto& mapVec = m_CsvMap.GetCsvVec();
+		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
 
+		vector<wstring> cellStr;
+
+		m_MapData.clear();
+		m_InitMapData.clear();
+
+		for (int y = 0; y < mapVec.size(); y++) {
+			m_MapData.push_back({});
+			m_InitMapData.push_back({});
+
+			cellStr.clear();
+			Util::WStrToTokenVector(cellStr, mapVec[y], L',');
+			if (y == 0) {
+				m_MapLeftTop = Vec3(static_cast<float>(cellStr.size()) / -2.0f, mapVec.size() - 2, 0);
+				m_MapRightBottom = Vec3(cellStr.size() / 2.0f - 1, -0.5f, 0.0f);
+			}
+
+			for (int x = 0; x < cellStr.size(); x++) {
+				vector<wstring> numStr;
+				Util::WStrToTokenVector(numStr, cellStr[x], L'>');
+				wstring blockTypeStr = numStr[0];
+				wstring blockArgumentStr = L"";
+				if (numStr.size() > 1) {
+					blockArgumentStr = numStr[1];
+				}
+
+				if (blockTypeStr == L"") continue;
+
+				if (all_of(blockTypeStr.cbegin(), blockTypeStr.cend(), isdigit)) {
+					int blockType = stoi(blockTypeStr);
+					m_MapData[y].push_back(BlockData(blockType, blockArgumentStr));
+					m_InitMapData[y].push_back(BlockData(blockType, blockArgumentStr));
+
+					switch (blockType) {
+					case BlockTypes::UNBREAK:
+						m_Walls->AddBlock(y, blockType);
+						break;
+					case BlockTypes::GOAL:
+						CreateBlock(Vec2(x, y), GetWorldPosition(Vec2(x,y)));
+						break;
+					}
+				}
+				else {
+					if (blockTypeStr == L"s") {
+						m_Player->GetComponent<Transform>()->SetPosition(GetWorldPosition(Vec2(x, y)));
+						m_Walls->AddBlock(y, BlockTypes::AIR);
+						NewRespawnPosition(GetWorldPosition(Vec2(x, y)));
+						m_MapData[y].push_back(BlockData(BlockTypes::AIR));
+					}
+				}
+			}
+		}
+
+		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
+		auto camera = GetView()->GetTargetCamera();
+		float atY = camera->GetAt().y;
+
+		float mapHeight = mapVec.size() - 1;
+		LoadMap();
+		AddGameObject<StageLengthBar>(mapHeight, m_Player, m_Goal);
+		/*auto& mapVec = m_CsvMap.GetCsvVec();
+		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
+		vector<wstring> cells;
+		Vec2 startPos;
+
+		for (int y = 0; y < mapVec.size() - 1; y++) {
+			m_MapData.push_back({});
+			cells.clear();
+			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
+			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
+			if (y == 0) {
+				m_MapLeftTop = startPos;
+				m_MapRightBottom = Vec3(cells.size() / 2.0f - 1, -0.5f, 0.0f);
+			}
+			for (int x = 0; x < cells.size(); x++) {
+				vector<wstring> numStr;
+				Util::WStrToTokenVector(numStr, cells[x], L'>');
+				if (numStr[0] == L"") {
+					continue;
+				}
+				if (all_of(numStr[0].cbegin(), numStr[0].cend(), isdigit)) {
+					int cell = stoi(numStr[0]);
+
+					if (numStr.size() >= 2) {
+						m_MapData[y].push_back(BlockData(cell, numStr[1]));
+					}
+					else {
+						m_MapData[y].push_back(BlockData(cell));
+					}
+
+					if (cell == BlockTypes::UNBREAK) {
+						m_Walls->AddBlock(y, cell);
+					}
+					else if (cell == BlockTypes::GOAL) {
+						CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+					}
+					else {
+						m_Walls->AddBlock(y, 0);
+					}
+
+				}
+				else {
+					if (numStr[0] == L"s") {
+						m_Player->GetComponent<Transform>()->SetPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+						m_Walls->AddBlock(y, 0);
+						NewRespawnPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
+						m_MapData[y].push_back(BlockData(0));
+					}
+				}
+			}
+		}
+		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
+		auto camera = GetView()->GetTargetCamera();
+		float atY = camera->GetAt().y;
+
+		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
+		LoadMap();
+		AddGameObject<StageLengthBar>(mapSize.y, m_Player, m_Goal);*/
+	}
 	void GameStage::RegisterBlock(Vec2 mapIndex, const shared_ptr<GameObject>& obj) {
 		if (m_MapData[mapIndex.y][mapIndex.x].GetBlock() == nullptr) {
 			m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
@@ -392,11 +513,16 @@ namespace basecross {
 	}
 	void GameStage::LoadMap() {
 		auto camera = GetView()->GetTargetCamera();
+		auto playerTrans = m_Player->GetComponent<Transform>();
+		Vec3 playerPos = playerTrans->GetPosition();
 
 		Vec3 mapIndex = GetMapIndex(camera->GetAt());
 		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
 		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;
-
+		//プレイヤーの周辺までは最低でも処理する
+		maxLoadIndexY = max(playerPos.y + 2, maxLoadIndexY);
+		minLoadIndexY = min(playerPos.y - 2, minLoadIndexY);
+		//マップの最大最小を越さないようにする
 		maxLoadIndexY = min(m_MapData.size() - 1, maxLoadIndexY);
 		minLoadIndexY = max(0, minLoadIndexY);
 
@@ -405,8 +531,6 @@ namespace basecross {
 				if (!m_MapData[y][x].GetIsLoaded()) {
 					auto obj = CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
 				}
-				
-				
 			}
 		}
 		for (int y = 0; y < m_MapData.size(); y++) {
@@ -423,7 +547,10 @@ namespace basecross {
 		
 	}
 	void GameStage::InitializeStage() {
-
+		m_Player->GetComponent<Transform>()->SetPosition(GetRespawnPosition());
+		auto camera = GetView()->GetTargetCamera();
+		auto myCamera = static_pointer_cast<MyCamera>(camera);
+		myCamera->RespawnCamera();
 	}
 	void GameStage::BlockUpdateActive() {
 		for (auto& blockObject : GetGameObjectVec()) {
