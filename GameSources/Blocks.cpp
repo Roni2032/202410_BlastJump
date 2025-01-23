@@ -373,7 +373,7 @@ namespace basecross{
 
 			//プレイヤーをスタン状態にする
 			auto player = static_pointer_cast<Player>(Other);
-			player->Stun(1.0f);
+			player->PlayerStun(1.0f);
 		}
 	}
 

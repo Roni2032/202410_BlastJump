@@ -114,6 +114,7 @@ namespace basecross {
 		m_Draw->AddAnimation(m_PlayerModelAnimThrowDown,    m_StartAnimationFrame[ModelAnimation::ThrowDown], animationFrameLength, false, useFps);
 		m_Draw->AddAnimation(m_PlayerModelAnimWin,          m_StartAnimationFrame[ModelAnimation::Win], animationFrameLength, true, useFps);
 		m_Draw->AddAnimation(m_PlayerModelAnimLose,         m_StartAnimationFrame[ModelAnimation::Lose], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimStun,         m_StartAnimationFrame[ModelAnimation::Stun], animationFrameLength, false, useFps);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimIdle);
 		m_Draw->SetMeshResource(m_PlayerModelFull);
@@ -157,16 +158,21 @@ namespace basecross {
 
 		if (GetIsInGame() == false) { return; }
 		
-		if (m_IsStun) {
-			if (m_StunTime > 0) {
+		if (m_IsStun) 
+		{
+			if (m_StunTime > 0) 
+			{
 				m_StunTime -= deltaTime;
+				PlayerAnimationChangeStun();
 			}
-			else {
+			else 
+			{
 				m_StunTime = 0.0f;
 				m_IsStun = false;
 			}
 			return;
 		}
+
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		float smoothWalkSpeed = cntlMoveVec.x * m_WalkSpeed;
 		float smoothWalkSpeedAir = m_AirLateralMovementSave * m_WalkSpeed;
@@ -299,6 +305,9 @@ namespace basecross {
 		if (GetIsClear() == true) { return; }
 		if (GetIsInGame() == false) { return; }
 
+		//スタンしてたら終了
+		if (m_IsStun) { return; }
+
 		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
 		//モデルの向きを決める
@@ -422,6 +431,14 @@ namespace basecross {
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimWin);
 	}
 
+	void Player::PlayerAnimationChangeStun()
+	{
+		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
+
+		if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
+		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimStun);
+	}
+
 	void Player::PlayEffectGoal()
 	{
 		//上限に達したら処理終了
@@ -457,10 +474,12 @@ namespace basecross {
 			m_EffectCoolTime -= m_EffectCoolTimeSpeed * deltaTime;
 		}
 	}
-	void Player::Stun(float time) {
+
+	void Player::PlayerStun(float time) {
 		m_IsStun = true;
 		m_StunTime = time;
 	}
+
 	void Player::PlayerInitDebugString()
 	{
 		m_String = AddComponent<StringSprite>();

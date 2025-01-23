@@ -42,8 +42,9 @@ namespace basecross {
 		const wstring m_PlayerModelAnimThrowDown = L"PLAYER_ANIM_THROW_DOWN";
 		const wstring m_PlayerModelAnimWin = L"PLAYER_ANIM_WIN";
 		const wstring m_PlayerModelAnimLose = L"PLAYER_ANIM_LOSE";
+		const wstring m_PlayerModelAnimStun = L"PLAYER_ANIM_STUN";
 
-		vector<unsigned int> m_StartAnimationFrame = { 0,61,122,183,244,305,366,427 };
+		vector<unsigned int> m_StartAnimationFrame = { 0,61,122,183,244,305,366,427,488 };
 		enum ModelAnimation
 		{
 			Idle = 0,
@@ -54,6 +55,7 @@ namespace basecross {
 			ThrowDown,
 			Win,
 			Lose,
+			Stun,
 		};
 
 		Mat4x4 m_ModelSpanMat;
@@ -87,11 +89,11 @@ namespace basecross {
 
 		bool m_IsBlownAway = false;
 
+		bool m_IsStun = false;
+		float m_StunTime = 0.0f;
+
 		bool m_IsBombCreate = false;
 
-		bool m_IsStun = false;
-
-		float m_StunTime = 0.0f;
 		float m_ThrowCoolTime = 0.0f;
 		const float m_ThrowCoolTimeSpeed = 0.1f;
 
@@ -130,6 +132,8 @@ namespace basecross {
 
 		void PlayerAnimationChangeClear();
 
+		void PlayerAnimationChangeStun();
+
 		uint8_t m_EffectGoalCount = 0;
 		float m_EffectCoolTime = 0.0f;
 		const float m_EffectCoolTimeSpeed = 1.0f;
@@ -146,7 +150,7 @@ namespace basecross {
 		Vec3 GetBombVec() { return m_BombVec; }
 		void AddHasBomb(const uint8_t n) { m_HasBomb += n; }
 		void SubtractHasBomb(const uint8_t n) { m_HasBomb -= n; }
-		void Stun(float time);
+		void PlayerStun(float time);
 	};
 
 
