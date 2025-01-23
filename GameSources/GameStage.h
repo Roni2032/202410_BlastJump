@@ -71,6 +71,7 @@ namespace basecross {
 		void NewCreateMap();
 		void CreateParticle();
 		void LoadMap();
+		void InitializeStage();
 		void CreateMenu();
 		void CreateFinishButton(bool flag);
 		void CreateEnemy();

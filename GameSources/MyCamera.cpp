@@ -1,6 +1,6 @@
 /*!
 @file Character.cpp
-@brief ƒLƒƒƒ‰ƒNƒ^[‚È‚ÇÀ‘Ì
+@brief ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Nï¿½^ï¿½[ï¿½È‚Çï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -101,7 +101,10 @@ namespace basecross{
 		SetAt(m_StartAt);
 		SetEye(m_StartEye);
 		SetFovY(XMConvertToRadians(m_DefaultFovY));
+<<<<<<< HEAD
 		m_HighY = m_StartAt.y;
+=======
+>>>>>>> Yuya_task
 		m_Stage->GameStart();
 	}
 	void MyCamera::RespawnCamera() {

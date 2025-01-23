@@ -1,6 +1,6 @@
 /*!
 @file GameStage.cpp
-@brief E½QE½[E½E½E½XE½eE½[E½WE½E½E½E½
+@brief ï¿½Eï¿½Qï¿½Eï¿½[ï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½Xï¿½Eï¿½eï¿½Eï¿½[ï¿½Eï¿½Wï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½
 */
 
 #include "stdafx.h"
@@ -10,13 +10,13 @@ namespace basecross {
 
 	class Block;
 	//--------------------------------------------------------------------------------------
-	//	E½QE½[E½E½E½XE½eEºÛE½WE½NE½E½E½XE½E½E½E½
+	//	ï¿½Eï¿½Qï¿½Eï¿½[ï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½Xï¿½Eï¿½eï¿½Eï¿½ÛEï¿½Wï¿½Eï¿½Nï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½Xï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½
 	//--------------------------------------------------------------------------------------
 	void GameStage::CreateViewLight() {
 		const Vec3 eye(-0.5f, 4.0f, -34.0f);
 		const Vec3 at(-0.5f,4.0f,0.0f);
 		auto PtrView = CreateView<SingleView>();
-		//ƒrƒ…[‚ÌƒJƒƒ‰‚Ìİ’è
+		//ï¿½rï¿½ï¿½ï¿½[ï¿½ÌƒJï¿½ï¿½ï¿½ï¿½ï¿½Ìİ’ï¿½
 		auto PtrCamera = ObjectFactory::Create<MyCamera>(GetThis<GameStage>(), m_ScrollSpeed);
 		PtrView->SetCamera(PtrCamera);
 		PtrCamera->SetEye(eye);
@@ -76,11 +76,11 @@ namespace basecross {
 				if (IsFinishGame()) {
 
 					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-						//ƒƒjƒ…[Œˆ’è
+						//ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½
 						Button::Function(m_MenuSelect);
 						SoundManager::Instance().PlaySE(L"BUTTON_SD");
 					}
-					//‘I‘ğ
+					//ï¿½Iï¿½ï¿½
 					if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
 						m_MenuSelect--;
 					}
@@ -94,11 +94,11 @@ namespace basecross {
 				}
 				else if (IsOpenMenu()) {
 					if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-						//ƒƒjƒ…[Œˆ’è
+						//ï¿½ï¿½ï¿½jï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½
 						Button::Function(m_MenuSelect);
 						SoundManager::Instance().PlaySE(L"BUTTON_SD");
 					}
-					//‘I‘ğ
+					//ï¿½Iï¿½ï¿½
 					if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
 						m_MenuSelect--;
 					}
@@ -521,11 +521,14 @@ namespace basecross {
 		Vec3 mapIndex = GetMapIndex(camera->GetAt());
 		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
 		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;
-		//ƒvƒŒƒCƒ„[‚Ìü•Ó‚Ü‚Å‚ÍÅ’á‚Å‚àˆ—‚·‚é
+		//ï¿½vï¿½ï¿½ï¿½Cï¿½ï¿½ï¿½[ï¿½Ìï¿½ï¿½Ó‚Ü‚Å‚ÍÅ’ï¿½Å‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		Vec3 playerIndex = GetMapIndex(playerPos);
 		maxLoadIndexY = max(playerIndex.y, maxLoadIndexY);
 		minLoadIndexY = min(playerIndex.y - 2, minLoadIndexY);
-		//ƒ}ƒbƒv‚ÌÅ‘åÅ¬‚ğ‰z‚³‚È‚¢‚æ‚¤‚É‚·‚é
+		//ï¿½}ï¿½bï¿½vï¿½ÌÅ‘ï¿½Åï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½È‚ï¿½ï¿½æ‚¤ï¿½É‚ï¿½ï¿½ï¿½
+		maxLoadIndexY = min(m_MapData.size() - 1, maxLoadIndexY);
+		minLoadIndexY = max(0, minLoadIndexY);
+
 		maxLoadIndexY = min(m_MapData.size() - 1, maxLoadIndexY);
 		minLoadIndexY = max(0, minLoadIndexY);
 
@@ -567,6 +570,9 @@ namespace basecross {
 		myCamera->RespawnCamera();
 
 		
+	}
+	void GameStage::InitializeStage() {
+
 	}
 	void GameStage::BlockUpdateActive() {
 		for (auto& blockObject : GetGameObjectVec()) {
