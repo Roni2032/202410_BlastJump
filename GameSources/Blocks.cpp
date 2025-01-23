@@ -372,7 +372,7 @@ namespace basecross{
 			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
 			//プレイヤーをスタン状態にする
 			auto player = static_pointer_cast<Player>(Other);
-			player->Stun(1.0f);
+			player->PlayerStun(1.0f);
 		}
 	}
 

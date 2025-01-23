@@ -1,7 +1,7 @@
 
 /*!
 @file Scene.cpp
-@brief ƒV[ƒ“À‘Ì
+@brief ï¿½Vï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 namespace basecross{
 
 	//--------------------------------------------------------------------------------------
-	///	ƒQ[ƒ€ƒV[ƒ“
+	///	ï¿½Qï¿½[ï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½
 	//--------------------------------------------------------------------------------------
 	void Scene::OnCreate(){
 		try {
@@ -35,7 +35,9 @@ namespace basecross{
 			const auto boneModelThrowDown = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowDown.bmf");
 			const auto boneModelWin = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerWin.bmf");
 			const auto boneModelLose = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerLose.bmf");
-			const auto boneModelStun = MeshResource::CreateBoneModelMesh(modelPath, L"damage.bmf");
+
+			const auto boneModelFull = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
+
 			app->RegisterResource(L"PLAYER_MD_IDLE", boneModelIdle);
 			app->RegisterResource(L"PLAYER_MD_MOVE", boneModelMove);
 			app->RegisterResource(L"PLAYER_MD_JUMP", boneModelJump);
@@ -44,22 +46,22 @@ namespace basecross{
 			app->RegisterResource(L"PLAYER_MD_THROW_DOWN", boneModelThrowDown);
 			app->RegisterResource(L"PLAYER_MD_WIN", boneModelWin);
 			app->RegisterResource(L"PLAYER_MD_LOSE", boneModelLose);
-			app->RegisterResource(L"PLAYER_MD_STUN", boneModelStun);
-			app->RegisterResource(L"PLAYER_MD", boneModel);
+
 
 			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"CheckPoint.bmf");
 			app->RegisterResource(L"CHECKPOINT_MD", boneModel);
+			app->RegisterResource(L"PLAYER_MD_FULL", boneModelFull);
 
 			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 
 			app->RegisterTexture(L"FADE_TEX", texPath + L"fade.png");
 
-			//ƒNƒŠƒA‚·‚éF‚ğİ’è
+			//ï¿½Nï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½ï¿½Fï¿½ï¿½İ’ï¿½
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
 			SetClearColor(Col);
-			//©•ª©g‚ÉƒCƒxƒ“ƒg‚ğ‘—‚é
-			//‚±‚ê‚É‚æ‚èŠeƒXƒe[ƒW‚âƒIƒuƒWƒFƒNƒg‚ªCreate‚ÉƒV[ƒ“‚ÉƒAƒNƒZƒX‚Å‚«‚é
+			//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½gï¿½ÉƒCï¿½xï¿½ï¿½ï¿½gï¿½ğ‘—‚ï¿½
+			//ï¿½ï¿½ï¿½ï¿½É‚ï¿½ï¿½eï¿½Xï¿½eï¿½[ï¿½Wï¿½ï¿½Iï¿½uï¿½Wï¿½Fï¿½Nï¿½gï¿½ï¿½Createï¿½ï¿½ï¿½ÉƒVï¿½[ï¿½ï¿½ï¿½ÉƒAï¿½Nï¿½Zï¿½Xï¿½Å‚ï¿½ï¿½ï¿½
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
 			SoundManager::Instance().RegisterSounds();
