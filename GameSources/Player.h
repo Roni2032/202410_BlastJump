@@ -89,6 +89,9 @@ namespace basecross {
 
 		bool m_IsBombCreate = false;
 
+		bool m_IsStun = false;
+
+		float m_StunTime = 0.0f;
 		float m_ThrowCoolTime = 0.0f;
 		const float m_ThrowCoolTimeSpeed = 0.1f;
 
@@ -143,6 +146,7 @@ namespace basecross {
 		Vec3 GetBombVec() { return m_BombVec; }
 		void AddHasBomb(const uint8_t n) { m_HasBomb += n; }
 		void SubtractHasBomb(const uint8_t n) { m_HasBomb -= n; }
+		void Stun(float time);
 	};
 
 

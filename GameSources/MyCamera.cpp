@@ -12,7 +12,7 @@ namespace basecross{
 		SetWidth(m_CameraWidth);
 		SetHeight(m_CameraHight);
 
-		SetFovY(XMConvertToRadians(15.0f));
+		SetFovY(XMConvertToRadians(m_DefaultFovY));
 	}
 	void MyCamera::OnUpdate() {
 		if (m_Stage == nullptr) return;
@@ -42,11 +42,13 @@ namespace basecross{
 			}
 
 			else if (m_Stage->IsView()) {
-				auto device = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 				
+				float fovY = GetFovY();
+				fovY -= XMConvertToRadians(10.0f) * elapsed;
+				SetFovY(fovY);
+
 				at.y += 0.01f;
 				eye.y += 0.01f;
-
 				if (at.y > 10.0f) {
 					StartCamera();
 				}
@@ -54,6 +56,9 @@ namespace basecross{
 					SetEye(eye);
 					SetAt(at);
 				}
+
+				auto device = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+
 				if (device.bConnected) {
 					if (device.wPressedButtons & XINPUT_GAMEPAD_A) {
 						StartCamera();
@@ -80,6 +85,7 @@ namespace basecross{
 	void MyCamera::StartCamera() {
 		SetAt(m_StartAt);
 		SetEye(m_StartEye);
+		SetFovY(XMConvertToRadians(m_DefaultFovY));
 		m_Stage->GameStart();
 	}
 }

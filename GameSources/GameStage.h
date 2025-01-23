@@ -69,6 +69,7 @@ namespace basecross {
 		void CreateMap();
 		void CreateParticle();
 		void LoadMap();
+		void InitializeStage();
 		void CreateMenu();
 		void CreateFinishButton(bool flag);
 		void CreateEnemy();
@@ -81,7 +82,7 @@ namespace basecross {
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
 			m_ScrollSpeed(scrollSpeed),
-			m_Mode(GameMode::NotBomb),m_BeforeMode(GameMode::NotBomb)
+			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
 		{}
 		virtual ~GameStage() {}
 		//‰Šú‰»
@@ -132,6 +133,10 @@ namespace basecross {
 		}
 		Vec3 GetRespawnPosition() {
 			return m_RespawnPosition;
+		}
+		void PlayerRespawn() {
+			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition);
+			ChangeMode(GameMode::InGame);
 		}
 		shared_ptr<int> GetStageNumPtr() {
 			return m_SendStageNumber;
