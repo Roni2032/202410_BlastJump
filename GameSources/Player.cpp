@@ -105,7 +105,7 @@ namespace basecross {
 
 		const uint8_t useFps = 60;
 
-		m_Draw->AddAnimation(m_PlayerModelAnimIdle, 0, useFps, false, 60);
+		m_Draw->AddAnimation(m_PlayerModelAnimIdle, 0, 549, false, 60);
 		m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 60);
 		m_Draw->AddAnimation(m_PlayerModelAnimJump, 0, useFps, false, 60);
 		m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, 0, useFps, false, 150);
@@ -285,7 +285,7 @@ namespace basecross {
 
 	bool Player::GetIsInGame()
 	{
-		if (GetTypeStage<GameStage>()->IsInGame()) { return true; }
+		if (GetTypeStage<GameStage>()->IsPlaying()) { return true; }
 		return false;
 	}
 

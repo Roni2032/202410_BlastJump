@@ -26,6 +26,7 @@ namespace basecross{
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
+			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
 			const auto boneModelIdle = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerIdole.bmf");
 			const auto boneModelMove = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerMove.bmf");
 			const auto boneModelJump = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerJump.bmf");
@@ -44,6 +45,7 @@ namespace basecross{
 			app->RegisterResource(L"PLAYER_MD_WIN", boneModelWin);
 			app->RegisterResource(L"PLAYER_MD_LOSE", boneModelLose);
 			app->RegisterResource(L"PLAYER_MD_STUN", boneModelStun);
+			app->RegisterResource(L"PLAYER_MD", boneModel);
 
 			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 

@@ -29,7 +29,7 @@ namespace basecross {
 	private:
 
 		shared_ptr<PNTBoneModelDraw> m_Draw;
-		const wstring m_PlayerModelIdle = L"PLAYER_MD_IDLE";
+		const wstring m_PlayerModelIdle = L"PLAYER_MD";
 		const wstring m_PlayerModelMove = L"PLAYER_MD_MOVE";
 		const wstring m_PlayerModelJump = L"PLAYER_MD_JUMP";
 		const wstring m_PlayerModelThrowDefault = L"PLAYER_MD_THROW_DEFAULT";

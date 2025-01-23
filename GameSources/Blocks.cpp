@@ -370,7 +370,6 @@ namespace basecross{
 			stage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition() + diff);
 
 			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
-
 			//プレイヤーをスタン状態にする
 			auto player = static_pointer_cast<Player>(Other);
 			player->Stun(1.0f);

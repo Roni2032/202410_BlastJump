@@ -18,20 +18,20 @@ namespace basecross {
 		BetWeen(float high,float low):m_High(high),m_Low(low){}
 	};
 
-	
+	enum GameMode {
+		View,
+		NotBomb,
+		InGame,
+		Menu,
+		Clear,
+		Over
+	};
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage{
 	public:
-		enum GameMode {
-			View,
-			NotBomb,
-			InGame,
-			Menu,
-			Clear,
-			Over
-		};
+		
 	private:
 		shared_ptr<InstanceBlock> m_Walls;
 		shared_ptr<GameObject> m_Goal;
@@ -71,7 +71,6 @@ namespace basecross {
 		void NewCreateMap();
 		void CreateParticle();
 		void LoadMap();
-		void InitializeStage();
 		void CreateMenu();
 		void CreateFinishButton(bool flag);
 		void CreateEnemy();
@@ -95,6 +94,8 @@ namespace basecross {
 		shared_ptr<GameObject> CreateBlock(Vec2 mapIndex, Vec3 pos);
 
 		shared_ptr<Player> m_Player;
+
+		void InitializeStage();
 
 		template<typename particleType>
 		void PlayParticle(const wstring& key, Vec3 pos) const{
@@ -137,8 +138,9 @@ namespace basecross {
 			return m_RespawnPosition;
 		}
 		void PlayerRespawn() {
-			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition);
-			ChangeMode(GameMode::InGame);
+			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition + Vec3(0,0.2f,0));
+			m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
+			ChangeMode(GameMode::NotBomb);
 		}
 		shared_ptr<int> GetStageNumPtr() {
 			return m_SendStageNumber;
@@ -159,7 +161,7 @@ namespace basecross {
 		void GameStart() {
 			ChangeMode(GameMode::NotBomb);
 		}
-		bool IsInGame() {
+		bool IsPlaying() {
 			return m_Mode == GameMode::InGame || m_Mode == GameMode::NotBomb;
 		}
 		bool IsFinishGame() {
@@ -173,6 +175,9 @@ namespace basecross {
 		}
 		bool IsCanMovePlayer() {
 			return !IsView() && !IsOpenMenu();
+		}
+		bool IsCanActionMenu() {
+			return IsPlaying() || IsOpenMenu();
 		}
 		void OpenMenu();
 		void CloseMenu();

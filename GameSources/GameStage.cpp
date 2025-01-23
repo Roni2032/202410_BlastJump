@@ -39,7 +39,7 @@ namespace basecross {
 			m_Player->PlayerInitHasBomb(m_BombNum);
 
 			SetSharedGameObject(L"Player", m_Player);
-			CreateMap();
+			NewCreateMap();
 			CreateParticle();
 			LoadMap();
 			AddGameObject<BackGroundManager>(11.0f);
@@ -109,7 +109,7 @@ namespace basecross {
 
 					Button::SelectButton(m_MenuSelect);
 				}
-				if (pad.wPressedButtons & XINPUT_GAMEPAD_START) {
+				if (IsCanActionMenu() && pad.wPressedButtons & XINPUT_GAMEPAD_START) {
 
 					if (IsOpenMenu()) {
 						CloseMenu();
@@ -189,7 +189,8 @@ namespace basecross {
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
 		button->SetFunction([](shared_ptr<Stage> stage) {
 			auto currentStage = static_pointer_cast<GameStage>(stage);
-			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			//stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			currentStage->InitializeStage();
 			});
 		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
 		CloseMenu();
@@ -316,7 +317,7 @@ namespace basecross {
 			cellStr.clear();
 			Util::WStrToTokenVector(cellStr, mapVec[y], L',');
 			if (y == 0) {
-				m_MapLeftTop = Vec3(static_cast<float>(cellStr.size()) / -2.0f, mapVec.size() - 2, 0);
+				m_MapLeftTop = Vec3(static_cast<float>(cellStr.size()) / -2.0f, mapVec.size() - 1, 0);
 				m_MapRightBottom = Vec3(cellStr.size() / 2.0f - 1, -0.5f, 0.0f);
 			}
 
@@ -351,6 +352,7 @@ namespace basecross {
 						m_Walls->AddBlock(y, BlockTypes::AIR);
 						NewRespawnPosition(GetWorldPosition(Vec2(x, y)));
 						m_MapData[y].push_back(BlockData(BlockTypes::AIR));
+						m_InitMapData[y].push_back(BlockData(BlockTypes::AIR));
 					}
 				}
 			}
@@ -520,13 +522,14 @@ namespace basecross {
 		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
 		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;
 		//プレイヤーの周辺までは最低でも処理する
-		maxLoadIndexY = max(playerPos.y + 2, maxLoadIndexY);
-		minLoadIndexY = min(playerPos.y - 2, minLoadIndexY);
+		Vec3 playerIndex = GetMapIndex(playerPos);
+		maxLoadIndexY = max(playerIndex.y, maxLoadIndexY);
+		minLoadIndexY = min(playerIndex.y - 2, minLoadIndexY);
 		//マップの最大最小を越さないようにする
 		maxLoadIndexY = min(m_MapData.size() - 1, maxLoadIndexY);
 		minLoadIndexY = max(0, minLoadIndexY);
 
-		for (int y = minLoadIndexY; y <= maxLoadIndexY; y++) {
+		for (int y = minLoadIndexY; y < maxLoadIndexY; y++) {
 			for (int x = 0; x < m_MapData[y].size(); x++) {
 				if (!m_MapData[y][x].GetIsLoaded()) {
 					auto obj = CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
@@ -544,13 +547,26 @@ namespace basecross {
 			}
 		}
 		m_Walls->DrawMap(m_MapData,Vec2(m_LoadStageSize.x, m_LoadStageSize.y), m_MapLeftTop);
-		
 	}
 	void GameStage::InitializeStage() {
-		m_Player->GetComponent<Transform>()->SetPosition(GetRespawnPosition());
+		for (int i = 0; i < m_MapData.size(); i++) {
+			for (int j = 0; j < m_MapData[i].size(); j++) {
+				RemoveGameObject<GameObject>(m_MapData[i][j].m_Obj);
+				m_MapData[i][j] = m_InitMapData[i][j];
+			}
+		}
+		LoadMap();
+		PlayerRespawn();
+		CloseMenu();
+		Button::Clear();
+		CreateMenu();
+		m_MenuSelect = 0;
+		NewRespawnPosition(GetRespawnPosition() + Vec3(1, 0, 0));
 		auto camera = GetView()->GetTargetCamera();
 		auto myCamera = static_pointer_cast<MyCamera>(camera);
 		myCamera->RespawnCamera();
+
+		
 	}
 	void GameStage::BlockUpdateActive() {
 		for (auto& blockObject : GetGameObjectVec()) {
@@ -634,7 +650,7 @@ namespace basecross {
 	}
 
 	void GameStage::GameClear() {
-		if (!IsInGame()) return;
+		if (!IsPlaying()) return;
 
 		m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
@@ -648,7 +664,7 @@ namespace basecross {
 
 	}
 	void GameStage::GameOver() {
-		if (!IsInGame()) return;
+		if (!IsPlaying()) return;
 		
 		SoundManager::Instance().PlaySE(L"LOSER_SD");
 		SoundManager::Instance().StopBGM();

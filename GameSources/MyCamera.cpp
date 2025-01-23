@@ -23,9 +23,9 @@ namespace basecross{
 		auto playerTransform = m_player.lock();
 		if (playerTransform != nullptr) {
 			Vec3 playerPos = playerTransform->GetWorldPosition();
-			if (m_Stage->GetGameMode() == GameStage::GameMode::InGame) {
+			if (m_Stage->GetGameMode() == GameMode::InGame) {
 				if (m_ScrollSpeed == 0) {
-					if (playerPos.y > m_HighY && playerPos.y - m_CameraHight / 2.0f > m_Stage->GetRightBottom().y && playerPos.y + m_CameraHight / 2.0f < m_Stage->GetLeftTop().y) {
+					if (playerPos.y > m_HighY) {
 						at.y = playerPos.y;
 						eye.y = playerPos.y;
 
@@ -37,8 +37,7 @@ namespace basecross{
 					at.y += m_ScrollSpeed * elapsed;
 					eye.y = at.y;
 				}
-				SetEye(eye);
-				SetAt(at);
+				
 			}
 
 			else if (m_Stage->IsView()) {
@@ -52,11 +51,27 @@ namespace basecross{
 				if (at.y > 10.0f) {
 					StartCamera();
 				}
-				else {
-					SetEye(eye);
-					SetAt(at);
-				}
+			}
+			float stageBottom = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
+			float stageTop = m_Stage->GetLeftTop().y - m_CameraHight / 2.0f;
+			at.y = min(stageTop, at.y);
+			at.y = max(stageBottom, at.y);
 
+			eye.y = at.y;
+
+			/*if (at.y - m_CameraHight / 2.0f < m_Stage->GetRightBottom().y) {
+				at.y = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
+				eye.y = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
+			}
+			if (at.y + m_CameraHight / 2.0f < m_Stage->GetRightBottom().y) {
+				at.y = m_Stage->GetRightBottom().y - m_CameraHight / 2.0f - 0.5f;
+				eye.y = m_Stage->GetRightBottom().y - m_CameraHight / 2.0f - 0.5f;
+			}*/
+			SetEye(eye);
+			SetAt(at);
+
+
+			if (m_Stage->IsView()) {
 				auto device = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 
 				if (device.bConnected) {
@@ -86,6 +101,7 @@ namespace basecross{
 		SetAt(m_StartAt);
 		SetEye(m_StartEye);
 		SetFovY(XMConvertToRadians(m_DefaultFovY));
+		m_HighY = m_StartAt.y;
 		m_Stage->GameStart();
 	}
 	void MyCamera::RespawnCamera() {
