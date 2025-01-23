@@ -46,14 +46,38 @@ namespace basecross{
 	}
 
 	void CheckPoint::OnCreate() {
+		m_Draw = AddComponent<PNTBoneModelDraw>();
+
+		m_Draw->SetMeshResource(L"CHECKPOINT_MD");
+		//draw->SetTextureResource(L"GOAL_MD_TEX");
+
+		m_Draw->SetSamplerState(SamplerState::LinearWrap);
+		Mat4x4 matrix;
+		matrix.affineTransformation(
+			Vec3(0.3f, 0.3f, 0.3f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, 0.0f, 0.0f), Vec3(0.0f, -0.6f, 0.5f)
+		);
+		m_Draw->SetMeshToTransformMatrix(matrix);
+		m_Draw->AddAnimation(L"DEFAULT_ANIM", 0, 60, true, 60.0f);
+		m_Draw->ChangeCurrentAnimation(L"DEFAULT_ANIM");
+
+		AddTag(L"Item");
+
 		auto col = AddComponent<CollisionObb>();
 		col->SetAfterCollision(AfterCollision::None);
 
 		col->SetDrawActive(true);
+
+		GetComponent<Transform>()->SetPosition(m_Pos);
+	}
+	void CheckPoint::OnUpdate() {
+		auto elapsed = App::GetApp()->GetElapsedTime();
+		m_Draw->UpdateAnimation(elapsed / 2.0f);
 	}
 	void CheckPoint::OnCollisionEnter(shared_ptr<GameObject>& Other) {
 		if (Other->FindTag(L"Player") && !m_IsActuated) {
 			GetTypeStage<GameStage>()->NewRespawnPosition(GetComponent<Transform>()->GetPosition());
+			auto player = static_pointer_cast<Player>(Other);
+			GetTypeStage<GameStage>()->SetRespawnBomb(player->GetHasBomb());
 			m_IsActuated = true;
 		}
 	}
