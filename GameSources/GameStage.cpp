@@ -37,6 +37,7 @@ namespace basecross {
 			CreateResource();
 			m_Player = AddGameObject<Player>();
 			m_Player->PlayerInitHasBomb(m_BombNum);
+			m_RespawnBomb = m_BombNum;
 
 			SetSharedGameObject(L"Player", m_Player);
 			NewCreateMap();
@@ -564,15 +565,11 @@ namespace basecross {
 		Button::Clear();
 		CreateMenu();
 		m_MenuSelect = 0;
-		NewRespawnPosition(GetRespawnPosition() + Vec3(1, 0, 0));
 		auto camera = GetView()->GetTargetCamera();
 		auto myCamera = static_pointer_cast<MyCamera>(camera);
 		myCamera->RespawnCamera();
 
 		
-	}
-	void GameStage::InitializeStage() {
-
 	}
 	void GameStage::BlockUpdateActive() {
 		for (auto& blockObject : GetGameObjectVec()) {

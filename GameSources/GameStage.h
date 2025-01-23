@@ -62,6 +62,7 @@ namespace basecross {
 		int m_MenuSelect;
 		
 		Vec3 m_RespawnPosition;
+		float m_RespawnBomb;
 		Vec3 m_LoadStageSize;
 
 		//ƒrƒ…[‚Ìì¬
@@ -71,11 +72,11 @@ namespace basecross {
 		void NewCreateMap();
 		void CreateParticle();
 		void LoadMap();
-		void InitializeStage();
 		void CreateMenu();
 		void CreateFinishButton(bool flag);
 		void CreateEnemy();
 		void BlockUpdateActive();
+		
 	public:
 		//\’z‚Æ”jŠü
 		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
@@ -84,7 +85,8 @@ namespace basecross {
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
 			m_ScrollSpeed(scrollSpeed),
-			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
+			m_Mode(GameMode::View),m_BeforeMode(GameMode::View),
+			m_RespawnBomb(0)
 		{}
 		virtual ~GameStage() {}
 		//‰Šú‰»
@@ -97,6 +99,9 @@ namespace basecross {
 		shared_ptr<Player> m_Player;
 
 		void InitializeStage();
+		void SetRespawnBomb(float num) {
+			m_RespawnBomb = num;
+		}
 
 		template<typename particleType>
 		void PlayParticle(const wstring& key, Vec3 pos) const{
@@ -141,6 +146,7 @@ namespace basecross {
 		void PlayerRespawn() {
 			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition + Vec3(0,0.2f,0));
 			m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
+			m_Player->PlayerInitHasBomb(m_RespawnBomb);
 			ChangeMode(GameMode::NotBomb);
 		}
 		shared_ptr<int> GetStageNumPtr() {

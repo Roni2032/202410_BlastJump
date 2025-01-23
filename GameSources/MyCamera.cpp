@@ -101,10 +101,7 @@ namespace basecross{
 		SetAt(m_StartAt);
 		SetEye(m_StartEye);
 		SetFovY(XMConvertToRadians(m_DefaultFovY));
-<<<<<<< HEAD
 		m_HighY = m_StartAt.y;
-=======
->>>>>>> Yuya_task
 		m_Stage->GameStart();
 	}
 	void MyCamera::RespawnCamera() {
