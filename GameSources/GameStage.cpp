@@ -171,10 +171,12 @@ namespace basecross {
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
 	}
+	void GameStage::Test(shared_ptr<Stage>& stage) {
+
+	}
 	void GameStage::CreateMenu() {
 		m_MenuBackGround = AddGameObject<BCSprite>(L"MENU_BACKGROUND_UI", Vec3(0, 50, 0), Vec2(800, 950), true);
 		m_MenuText = AddGameObject<BCSprite>(L"MENU_TEXT_UI", Vec3(0, 250, 0), Vec2(256, 64), true);
-
 		m_SendStageNumber = make_shared<int>(m_StageNumber);
 		auto button = AddGameObject<Button>(L"SELECT_TEXT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
@@ -190,8 +192,8 @@ namespace basecross {
 		button->AddSelectEffect(SelectEffect::ChangeSprite);
 		button->SetFunction([](shared_ptr<Stage> stage) {
 			auto currentStage = static_pointer_cast<GameStage>(stage);
-			//stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
-			currentStage->InitializeStage();
+			currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			
 			});
 		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
 		CloseMenu();
@@ -205,8 +207,12 @@ namespace basecross {
 
 		button->SetFunction([](shared_ptr<Stage> stage) {
 			auto currentStage = static_pointer_cast<GameStage>(stage);
-			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
-			//currentStage->PlayerRespawn();
+			if (currentStage->GetGameMode() == GameMode::Clear) {
+				currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
+			}
+			else {
+				currentStage->InitializeStage();
+			}
 			});
 		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
 
@@ -236,7 +242,7 @@ namespace basecross {
 			button->SetFunction([](shared_ptr<Stage> stage) {
 				auto currentStage = static_pointer_cast<GameStage>(stage);
 				auto nextStageNumber = currentStage->GetStageNumPtr().get();
-				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", make_shared<int>(*nextStageNumber + 1));
+				currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", make_shared<int>(*nextStageNumber + 1));
 				});
 			button->SetSelectTex(L"NEXT_TEXT_SELECT_UI");
 		}
@@ -459,12 +465,8 @@ namespace basecross {
 			break;
 		}
 		case BlockTypes::ADDBOMB: {
-			auto addNumStr = mapData.GetData(L"add");
-			int addNum = 2;
-			if (addNumStr != L"") {
-				addNum = BlockData::WstrToInt(addNumStr);
-			}
-			obj = AddGameObject<BombItem>(pos, addNum);
+			
+			obj = AddGameObject<BombItem>(pos, 3);
 			break;
 		}
 		case BlockTypes::GOAL:
@@ -517,19 +519,16 @@ namespace basecross {
 	void GameStage::LoadMap() {
 		auto camera = GetView()->GetTargetCamera();
 		auto playerTrans = m_Player->GetComponent<Transform>();
-		Vec3 playerPos = playerTrans->GetPosition();
+		Vec3 playerPos = playerTrans->GetWorldPosition();
 
 		Vec3 mapIndex = GetMapIndex(camera->GetAt());
 		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
 		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;
 		//�v���C���[�̎��ӂ܂ł͍Œ�ł���������
 		Vec3 playerIndex = GetMapIndex(playerPos);
-		maxLoadIndexY = max(playerIndex.y, maxLoadIndexY);
-		minLoadIndexY = min(playerIndex.y - 2, minLoadIndexY);
+		maxLoadIndexY = max(playerIndex.y + 2, maxLoadIndexY);
+		minLoadIndexY = min(playerIndex.y, minLoadIndexY);
 		//�}�b�v�̍ő�ŏ����z���Ȃ��悤�ɂ���
-		maxLoadIndexY = min(m_MapData.size() - 1, maxLoadIndexY);
-		minLoadIndexY = max(0, minLoadIndexY);
-
 		maxLoadIndexY = min(m_MapData.size() - 1, maxLoadIndexY);
 		minLoadIndexY = max(0, minLoadIndexY);
 
@@ -565,6 +564,11 @@ namespace basecross {
 		Button::Clear();
 		CreateMenu();
 		m_MenuSelect = 0;
+
+		for (auto& object : m_DeleteToRestartObjects) {
+			RemoveGameObject<GameObject>(object);
+		}
+		m_DeleteToRestartObjects.clear();
 		auto camera = GetView()->GetTargetCamera();
 		auto myCamera = static_pointer_cast<MyCamera>(camera);
 		myCamera->RespawnCamera();
@@ -658,10 +662,10 @@ namespace basecross {
 		m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
 		SoundManager::Instance().PlaySE(L"WINNER_SD",0.1f);
 		SoundManager::Instance().StopBGM();
-		auto sprite = AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100));
+		m_DeleteToRestartObjects.push_back(AddGameObject<BCSprite>(L"GOALCLEAR_TEX", Vec3(-250,50,0), Vec2(500,100)));
 		CreateFinishButton(true);
 		
-		AddGameObject<BCSprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
+		m_DeleteToRestartObjects.push_back(AddGameObject<BCSprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f)));
 
 		ChangeMode(GameMode::Clear);
 
@@ -671,9 +675,9 @@ namespace basecross {
 		
 		SoundManager::Instance().PlaySE(L"LOSER_SD");
 		SoundManager::Instance().StopBGM();
-		auto sprite = AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100));
+		m_DeleteToRestartObjects.push_back(AddGameObject<BCSprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100)));
 		CreateFinishButton(false);
-		AddGameObject<BCSprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f));
+		m_DeleteToRestartObjects.push_back(AddGameObject<BCSprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f)));
 
 		ChangeMode(GameMode::Over);
 

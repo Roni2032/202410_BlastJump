@@ -73,7 +73,7 @@ namespace basecross{
 
 				float rad = atan2f(-diff.x, diff.y);
 
-				Vec3 worldPos = pos + player->GetComponent<Transform>()->GetWorldPosition();
+				Vec3 worldPos = pos + player->GetComponent<Transform>()->GetWorldPosition() + Vec3(0.0f,0.7f,0.0f);
 				Mat4x4 matrix;
 				matrix.affineTransformation(
 					Vec3(0.1f),

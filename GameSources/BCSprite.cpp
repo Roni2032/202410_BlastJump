@@ -9,7 +9,7 @@
 namespace basecross{
 
 	void BCSprite::OnCreate() {
-
+		//CutAnimationUv(m_cutUV);
 		for (int y = 0; y < m_cutUV.y; y++) {
 			for (int x = 0; x < m_cutUV.x; x++) {
 				m_AnimationUV.push_back({
@@ -21,9 +21,10 @@ namespace basecross{
 				);
 			}
 		}
-		if (m_UseIndex == -1 || m_UseIndex < m_AnimationUV.size()) {
-			m_UseIndex = static_cast<int>(m_AnimationUV.size());
+		if (m_UseIndex == -1 || m_UseIndex >= m_AnimationUV.size()) {
+			m_UseIndex = static_cast<int>(m_AnimationUV.size()) - 1;
 		}
+		//CreateVertex(m_Size, m_AnimationUV[0], m_IsUseCenterSprite);
 		if (m_IsUseCenterSprite) {
 			m_Vertices = {
 				{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
@@ -114,17 +115,49 @@ namespace basecross{
 			m_AnimationTimer = 0.0f;
 		}
 	}
+	void BCSprite::CreateVertex(Vec2 size, vector<Vec2> uv, const bool isCenter) {
+		if (isCenter) {
+			m_Vertices = {
+				{Vec3(-size.x / 2.0f, size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
+				{Vec3(size.x / 2.0f, size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
+				{Vec3(-size.x / 2.0f, -size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
+				{Vec3(size.x / 2.0f, -size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]}
+			};
+		}
+		else {
+			m_Vertices = {
+				{Vec3(0, 0, 0),Col4(1,1,1,1), uv[0]},
+				{Vec3(size.x, 0, 0),Col4(1,1,1,1), uv[0]},
+				{Vec3(0, -size.y, 0),Col4(1,1,1,1), uv[0]},
+				{Vec3(size.x, -size.y, 0),Col4(1,1,1,1), uv[0]}
+			};
+		}
+	}
 	void BCSprite::UpdateUV(vector<Vec2> uv) {
 		if (uv.empty()) return;
 		if (m_Draw) {
 			for (int i = 0; i < m_Vertices.size(); i++)
 			{
-
 				m_Vertices[i].textureCoordinate = uv[i];
 			}
 
 			m_Draw->UpdateVertices(m_Vertices);
 		}
+	}
+	void BCSprite::CutAnimationUv(Vec2 cut) {
+		for (int i = 0; i < cut.y; i++) {
+			for (int j = 0; j < cut.x; j++) {
+				vector<Vec2> uv = {
+					{(1.0f / cut.x) * j,(1.0f / cut.y) * i},
+					{(1.0f / cut.x) * (j + 1),(1.0f / cut.y) * i},
+					{(1.0f / cut.x) * j,(1.0f / cut.y) * (i + 1)},
+					{(1.0f / cut.x) * (j + 1),(1.0f / cut.y) * (i + 1)}
+				};
+
+				m_AnimationUV.push_back(uv);
+			}
+		}
+		m_IsAnimation = true;
 	}
 	void BCSprite::UpdateSize(Vec3 size) {
 		m_Transform->SetScale(size);
@@ -132,7 +165,7 @@ namespace basecross{
 	void BCSprite::UpdateSize(Vec2 size) {
 		if (m_Draw) {
 			m_Size = size;
-
+			//CreateVertex(m_Size, m_AnimationUV[m_UseIndex], m_IsUseCenterSprite);
 			if (m_IsUseCenterSprite) {
 				m_Vertices = {
 					{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
@@ -156,7 +189,6 @@ namespace basecross{
 	void BCSprite::SetPos(Vec3 pos) {
 		m_Transform->SetPosition(pos);
 	}
-	
 	void BCSprite::SetDiffuse(Col4 color) {
 		m_Draw->SetDiffuse(color);
 	}
@@ -197,6 +229,7 @@ namespace basecross{
 	void BCSprite::ScreenRight(const Vec2 diff) {
 
 	}
+
 	void BCNumber::OnCreate() {
 		int digits = static_cast<int>(pow(10, m_DisplayDigit - 1));
 		float sizeX = m_Size.x / m_DisplayDigit;

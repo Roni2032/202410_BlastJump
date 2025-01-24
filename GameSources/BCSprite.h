@@ -90,9 +90,11 @@ namespace basecross{
 		shared_ptr<Transform> m_Transform;
 		//スクリーンサイズ
 		Vec2 m_ScreenSize;
-
+		//アニメーションマップ
 		map<wstring, SpriteAnimation> m_Animations;
+		//現在のアニメーション
 		SpriteAnimation m_CurrentAnimation;
+		//前のアニメーション
 		SpriteAnimation m_BeforeAnimation;
 
 		//アニメーション処理
@@ -115,8 +117,6 @@ namespace basecross{
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
-		//UVの切り替え
-		void UpdateUV(vector<Vec2> uv);
 		//サイズの切り替え
 		void UpdateSize(Vec3 size);
 		void UpdateSize(Vec2 size);
@@ -131,23 +131,50 @@ namespace basecross{
 		
 		void SetDiffuse(Col4 color);
 		Col4 GetDiffuse();
+
+		void CreateVertex(Vec2 size, vector<Vec2> uv,const bool isCenter = false);
+		//----------------------------------------------------------
+		//
+		//	UV操作		
+		//																																
+		//----------------------------------------------------------
+		
+		//UVの切り替え
+		void UpdateUV(vector<Vec2> uv);
+
+		void CutAnimationUv(Vec2 cut);
+		vector<vector<Vec2>> GetUvVec() {
+			return m_AnimationUV;
+		}
+		vector<Vec2> GetUv(int index) {
+			if (m_AnimationUV.size() <= index) {
+				return {};
+			}
+			return m_AnimationUV[index];
+		}
+
 		//----------------------------------------------------------
 		//
 		//	アニメーション操作		
 		//																																
 		//----------------------------------------------------------
+		
+		//前のアニメーションを取得
 		SpriteAnimation GetBeforeAnimation() {
 			return m_BeforeAnimation;
 		}
+		//現在のアニメーションを取得
 		SpriteAnimation GetCurrentAnimation() {
 			return m_CurrentAnimation;
 		}
+		//アニメーションを取得
 		SpriteAnimation GetAnimation(const wstring& key) {
 			if (m_Animations.find(key) != m_Animations.end()) {
 				return m_Animations[key];
 			}
 			return SpriteAnimation();
 		}
+		//再生するアニメーションを設定
 		void SetCurrentAnimation(const wstring& key) {
 			if (m_Animations.find(key) != m_Animations.end()) {
 				m_CurrentAnimation.EndAnimation();
@@ -155,6 +182,7 @@ namespace basecross{
 				m_CurrentAnimation = m_Animations[key];
 			}
 		}
+		//アニメーションを追加
 		void AddAnimation(const wstring& key, int startOrder, int endOrder, float time, float interval, const bool isLoop = false, const bool isReverse = false) {
 			SpriteAnimation animation = SpriteAnimation(startOrder, endOrder, time, interval, isLoop, isReverse);
 			m_Animations.insert(pair<wstring, SpriteAnimation>(key, animation));
@@ -163,6 +191,7 @@ namespace basecross{
 			SpriteAnimation animation = SpriteAnimation(order, time, interval, isLoop, isReverse);
 			m_Animations.insert(pair<wstring, SpriteAnimation>(key, animation));
 		}
+		//アニメーション情報を更新
 		void UpdateAnimationData(const wstring& key, SpriteAnimation newAnimation) {
 			if (m_Animations.find(key) != m_Animations.end()) {
 				m_Animations[key] = newAnimation;
@@ -329,15 +358,28 @@ namespace basecross{
 			return m_IsFinished;
 		}
 	};
+	//----------------------------------------------------------
+	//																																
+	//	ボタン																		
+	//																																
+	//----------------------------------------------------------
+	class SpriteButton : SpriteAction {
 
+	};
 	//----------------------------------------------------------
 	//																																
 	//	ボタン用マネージャー																							
 	//																																
 	//----------------------------------------------------------
 
-	class ButtonManager {
+	class ButtonManager : GameObject{
+		map<wstring, vector<SpriteButton>> m_ButtonMap;
+	public:
+		ButtonManager(const shared_ptr<Stage>& ptr) : GameObject(ptr){}
+		virtual ~ButtonManager(){}
 
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
 	};
 }
 //end basecross

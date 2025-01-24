@@ -47,9 +47,10 @@ namespace basecross{
 			app->RegisterResource(L"PLAYER_MD_WIN", boneModelWin);
 			app->RegisterResource(L"PLAYER_MD_LOSE", boneModelLose);
 
-
 			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"CheckPoint.bmf");
 			app->RegisterResource(L"CHECKPOINT_MD", boneModel);
+			app->RegisterTexture(L"CHECKPOINT_TEX", modelPath + L"save.png");
+
 			app->RegisterResource(L"PLAYER_MD_FULL", boneModelFull);
 
 			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");

@@ -65,6 +65,7 @@ namespace basecross {
 		float m_RespawnBomb;
 		Vec3 m_LoadStageSize;
 
+		vector<shared_ptr<GameObject>> m_DeleteToRestartObjects;
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
 		void CreateResource();
@@ -76,7 +77,6 @@ namespace basecross {
 		void CreateFinishButton(bool flag);
 		void CreateEnemy();
 		void BlockUpdateActive();
-		
 	public:
 		//\’z‚Æ”jŠü
 		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
@@ -97,6 +97,7 @@ namespace basecross {
 		shared_ptr<GameObject> CreateBlock(Vec2 mapIndex, Vec3 pos);
 
 		shared_ptr<Player> m_Player;
+		void Test(shared_ptr<Stage>& stage);
 
 		void InitializeStage();
 		void SetRespawnBomb(float num) {

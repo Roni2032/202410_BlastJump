@@ -49,8 +49,7 @@ namespace basecross{
 		m_Draw = AddComponent<PNTBoneModelDraw>();
 
 		m_Draw->SetMeshResource(L"CHECKPOINT_MD");
-		//draw->SetTextureResource(L"GOAL_MD_TEX");
-
+		
 		m_Draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
 		matrix.affineTransformation(
@@ -58,15 +57,11 @@ namespace basecross{
 		);
 		m_Draw->SetMeshToTransformMatrix(matrix);
 		m_Draw->AddAnimation(L"DEFAULT_ANIM", 0, 60, true, 60.0f);
+		m_Draw->AddAnimation(L"USED_ANIM", 0, 60, false, 60.0f);
+
 		m_Draw->ChangeCurrentAnimation(L"DEFAULT_ANIM");
 
 		AddTag(L"Item");
-
-		auto col = AddComponent<CollisionObb>();
-		col->SetAfterCollision(AfterCollision::None);
-
-		col->SetDrawActive(true);
-
 		GetComponent<Transform>()->SetPosition(m_Pos);
 	}
 	void CheckPoint::OnUpdate() {
@@ -79,6 +74,11 @@ namespace basecross{
 			auto player = static_pointer_cast<Player>(Other);
 			GetTypeStage<GameStage>()->SetRespawnBomb(player->GetHasBomb());
 			m_IsActuated = true;
+			float time = m_Draw->GetCurrentAnimationTime();
+			m_Draw->ChangeCurrentAnimation(L"USED_ANIM");
+			m_Draw->UpdateAnimation(time);
+
+			SoundManager::Instance().PlaySE(L"CHECKPOINT_SD",1.0f);
 		}
 	}
 }

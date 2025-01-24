@@ -38,7 +38,7 @@ namespace basecross{
 	void TitleStage::OnUpdate() {
 		auto ctrl = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 		if (ctrl.bConnected) {
-			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
+			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A && !m_Fade) {
 				SoundManager::Instance().PlaySE(L"BUTTON_SD");
 				m_Fade = AddGameObject<Fade>(1.0f);
 			}

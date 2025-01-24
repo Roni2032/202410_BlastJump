@@ -284,7 +284,6 @@ namespace basecross{
 		CheckDurability();
 		if (m_Durability <= 0) {
 			GetTypeStage<GameStage>()->DestroyBlock(GetComponent<Transform>()->GetPosition(), GetThis<GameObject>());
-			//GetTypeStage<GameStage>()->PlayParticle<BlockDestroyParticle>(L"DESTROY_BLOCK_PCL", GetComponent<Transform>()->GetPosition());
 		}
 	}
 
