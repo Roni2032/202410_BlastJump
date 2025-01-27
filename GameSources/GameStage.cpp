@@ -520,7 +520,6 @@ namespace basecross {
 		auto camera = GetView()->GetTargetCamera();
 		auto playerTrans = m_Player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetWorldPosition();
-
 		Vec3 mapIndex = GetMapIndex(camera->GetAt());
 		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
 		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;

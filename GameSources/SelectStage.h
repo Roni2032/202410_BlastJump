@@ -11,7 +11,7 @@ namespace basecross {
 	class Fade;
 	class BCSprite;
 
-	const static int MAX_STAGE = 3;
+	const static int MAX_STAGE = 6;
 
 	class SelectStage : public Stage {
 		int m_Select;

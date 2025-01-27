@@ -93,6 +93,7 @@ namespace basecross{
 				ResetActiveStage<TitleStage>();
 				break;
 			}
+			
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {
 			ResetActiveStage<TitleStage>();

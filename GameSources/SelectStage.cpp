@@ -25,14 +25,23 @@ namespace basecross {
 			CreateViewLight();
 			CreateResource();
 			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
-			auto sprite = AddGameObject<BCSprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 200, 0), Vec2(400, 100),true);
-			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 0, 0), Vec2(240, 240),1);
+			auto sprite = AddGameObject<BCSprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 300, 0), Vec2(400, 100),true);
+			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 120, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
-			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(0, 0, 0), Vec2(240, 240),2);
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(0, 120, 0), Vec2(240, 240),2);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
-			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(400, 0, 0), Vec2(240, 240),3);
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(400, 120, 0), Vec2(240, 240),3);
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, -120, 0), Vec2(240, 240), 4);
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(0, -120, 0), Vec2(240, 240), 5);
+			button->AddSelectEffect(SelectEffect::ChangeSprite);
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(400, -120, 0), Vec2(240, 240), 6);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
 
@@ -111,6 +120,9 @@ namespace basecross {
 		app->RegisterTexture(L"STAR_UI", uiPath + L"star.png");
 		app->RegisterTexture(L"STAR2_UI", uiPath + L"star_difficulty2.png");
 		app->RegisterTexture(L"STAR3_UI", uiPath + L"star_difficulty3.png");
+		app->RegisterTexture(L"STAR4_UI", uiPath + L"star_difficulty4.png");
+		app->RegisterTexture(L"STAR5_UI", uiPath + L"star_difficulty5.png");
+		app->RegisterTexture(L"STAR6_UI", uiPath + L"star_difficulty6.png");
 	}
 
 
@@ -129,8 +141,17 @@ namespace basecross {
 		else if(m_Difficulty == 2){
 			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
 		}
-		else {
+		else if(m_Difficulty == 3){
 			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR3_UI", centerPos, Vec2(180, 60), true));
+		}
+		else if (m_Difficulty == 4) {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR4_UI", centerPos, Vec2(120, 120), true));
+		}
+		else if (m_Difficulty == 5) {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR5_UI", centerPos, Vec2(180, 120), true));
+		}
+		else {
+			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR6_UI", centerPos, Vec2(180, 120), true));
 		}
 		
 	}
