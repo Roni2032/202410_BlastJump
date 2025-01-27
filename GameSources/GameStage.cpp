@@ -151,6 +151,8 @@ namespace basecross {
 		app->RegisterTexture(L"GAMEOVER_TEX", uiPath + L"GameOverText_2.png");
 		app->RegisterTexture(L"BACKGROUND_TEX", texPath + L"BackGround.png");
 
+		app->RegisterTexture(L"BOMB_PLUS", uiPath + L"Bumb+3.png");
+
 		app->RegisterTexture(L"RESTART_TEXT_SELECT_UI", uiPath + L"Restart_Selected.png");
 		app->RegisterTexture(L"RESTART_TEXT_UI", uiPath + L"Restart.png");
 		app->RegisterTexture(L"TITLE_TEXT_SELECT_UI", uiPath + L"BackToTitle_Selected.png");

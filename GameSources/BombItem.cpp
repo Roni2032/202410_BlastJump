@@ -38,12 +38,12 @@ namespace basecross{
 	void AddBombBoard::OnCreate() {
 		auto draw = AddComponent<PNTStaticDraw>();
 		draw->SetMeshResource(L"DEFAULT_SQUARE");
-		draw->SetTextureResource(L"BOMB_ITEM_TEX");
+		draw->SetTextureResource(L"BOMB_PLUS");
 		SetAlphaActive(true);
 
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_StartPos);
-		trans->SetScale(Vec3(1));
+		trans->SetScale(Vec3(1.0f,0.5f,1.0f));
 	}
 	void AddBombBoard::OnUpdate() {
 		auto trans = GetComponent<Transform>();
