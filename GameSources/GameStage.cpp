@@ -30,11 +30,12 @@ namespace basecross {
 
 	void GameStage::OnCreate() {
 		try {
-			CreateViewLight();
+			
 
 			SoundManager::Instance().PlayBGM(L"BGM_SD",0.2f);
 			Block::CollisionObjects.clear();
 			CreateResource();
+			CreateViewLight();
 			m_Player = AddGameObject<Player>();
 			m_Player->PlayerInitHasBomb(m_BombNum);
 			m_RespawnBomb = m_BombNum;

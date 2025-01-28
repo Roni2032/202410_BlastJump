@@ -316,7 +316,7 @@ namespace basecross{
 	void SpriteFade::OnUpdate() {
 		if (m_Draw != nullptr && IsPlay()) {
 			float elapsed = App::GetApp()->GetElapsedTime();
-			if (m_IsFadeOut) {
+			if (!m_IsFadeOut) {
 				elapsed *= -1;
 			}
 			Col4 color = m_Draw->GetDiffuse();
