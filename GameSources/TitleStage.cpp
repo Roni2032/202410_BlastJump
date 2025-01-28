@@ -28,7 +28,7 @@ namespace basecross{
 			sprite = AddGameObject<BCSprite>(L"TITLE_UI", Vec3(0, 100, 0), Vec2(700, 700),true);
 			sprite = AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(0,-300,0), Vec2(300, 120),true);
 			sprite->AddComponent<SpriteFlash>(1.0f);
-			SoundManager::Instance().PlayBGM(L"TITLE_BGM",0.05f);
+			SoundManager::Instance().PlayBGM(L"TITLE_BGM",0.5f);
 		}
 		catch (...) {
 			throw;

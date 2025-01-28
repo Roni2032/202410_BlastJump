@@ -64,6 +64,7 @@ namespace basecross {
 		Vec3 m_RespawnPosition;
 		float m_RespawnBomb;
 		Vec3 m_LoadStageSize;
+		Vec3 m_DefaultStartPos;
 
 		vector<shared_ptr<GameObject>> m_DeleteToRestartObjects;
 		//ƒrƒ…[‚Ìì¬
@@ -80,7 +81,7 @@ namespace basecross {
 	public:
 		//\’z‚Æ”jŠü
 		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,7,0)),
+			m_LoadStageSize(Vec3(20,7,0)),m_DefaultStartPos(Vec3(0)),
 			m_BombNum(bombNum),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),

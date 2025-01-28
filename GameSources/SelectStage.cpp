@@ -47,7 +47,7 @@ namespace basecross {
 
 			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(281.6f, 140.8f), true);
 
-			SoundManager::Instance().PlayBGM(L"SELECT_BGM",0.1f);
+			SoundManager::Instance().PlayBGM(L"SELECT_BGM",1.0f);
 		}
 		catch (...) {
 			throw;
@@ -67,23 +67,36 @@ namespace basecross {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
 				m_Select++;
 			}
+			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
+				if (m_Select + 3 <= MAX_STAGE - 1) {
+					m_Select += 3;
+				}
+			}
+			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
+				if (m_Select - 3 >= 0) {
+					m_Select -= 3;
+				}
+			}
+
 			float stickX = ctrl.fThumbLX;
 			float stickDeadZone = 0.2f;
-			if (abs(stickX) >= stickDeadZone && m_IsCanNextSelect >= 1.0f) {
-				if (stickX < 0) {
-					m_Select--;
+			if (abs(stickX) >= stickDeadZone) {
+
+				if (m_IsCanNextSelect >= 1.0f) {
+					if (stickX < 0) {
+						m_Select--;
+					}
+					else {
+						m_Select++;
+					}
+					m_IsCanNextSelect = 0.0f;
 				}
-				else {
-					m_Select++;
-				}
-				m_IsCanNextSelect = 0.0f;
 			}
-			if (m_Select < 0) {
-				m_Select = 0;
+			else{
+				m_IsCanNextSelect = 1.0f;
 			}
-			if (m_Select >= MAX_STAGE) {
-				m_Select = MAX_STAGE - 1;
-			}
+			m_Select = max(0, m_Select);
+			m_Select = min(MAX_STAGE - 1, m_Select);
 
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
 				SoundManager::Instance().PlaySE(L"BUTTON_SD");

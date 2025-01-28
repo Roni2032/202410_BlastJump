@@ -360,6 +360,7 @@ namespace basecross {
 						m_Player->GetComponent<Transform>()->SetPosition(GetWorldPosition(Vec2(x, y)));
 						m_Walls->AddBlock(y, BlockTypes::AIR);
 						NewRespawnPosition(GetWorldPosition(Vec2(x, y)));
+						m_DefaultStartPos = GetWorldPosition(Vec2(x, y));
 						m_MapData[y].push_back(BlockData(BlockTypes::AIR));
 						m_InitMapData[y].push_back(BlockData(BlockTypes::AIR));
 					}
@@ -512,7 +513,9 @@ namespace basecross {
 		}
 		
 		m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
-		m_MapData[mapIndex.y][mapIndex.x].SetIsLoaded(true);
+		if (obj != nullptr) {
+			m_MapData[mapIndex.y][mapIndex.x].SetIsLoaded(true);
+		}
 		
 		return obj;
 	}
@@ -551,6 +554,9 @@ namespace basecross {
 		m_Walls->DrawMap(m_MapData,Vec2(m_LoadStageSize.x, m_LoadStageSize.y), m_MapLeftTop);
 	}
 	void GameStage::InitializeStage() {
+		if (m_DefaultStartPos == m_RespawnPosition) {
+			PostEvent(0.0f, GetThis<Stage>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage", GetStageNumPtr());
+		}
 		for (int i = 0; i < m_MapData.size(); i++) {
 			for (int j = 0; j < m_MapData[i].size(); j++) {
 				RemoveGameObject<GameObject>(m_MapData[i][j].m_Obj);

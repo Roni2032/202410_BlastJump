@@ -164,7 +164,6 @@ namespace basecross {
 			if (m_StunTime > 0) 
 			{
 				m_StunTime -= deltaTime;
-				PlayerAnimationChangeStun();
 			}
 			else 
 			{
@@ -436,7 +435,7 @@ namespace basecross {
 	{
 		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
-		if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
+		//if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimStun);
 	}
 
@@ -479,6 +478,7 @@ namespace basecross {
 	void Player::PlayerStun(float time) {
 		m_IsStun = true;
 		m_StunTime = time;
+		PlayerAnimationChangeStun();
 	}
 
 	void Player::PlayerInitDebugString()
