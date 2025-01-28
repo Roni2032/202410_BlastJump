@@ -512,9 +512,7 @@ namespace basecross {
 		}
 		
 		m_MapData[mapIndex.y][mapIndex.x].SetGameObject(obj);
-		if (obj != nullptr) {
-			m_MapData[mapIndex.y][mapIndex.x].SetIsLoaded(true);
-		}
+		m_MapData[mapIndex.y][mapIndex.x].SetIsLoaded(true);
 		
 		return obj;
 	}

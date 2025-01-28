@@ -46,7 +46,7 @@ namespace basecross{
 
 		virtual void OnCreate();
 		virtual void OnUpdate();
-		virtual void OnDraw(){}
+		virtual void OnDraw();
 
 		Vec3 PushBackPosition(Vec3 pos, shared_ptr<GameObject>& wall);
 		bool IsHit(Vec3 center, Vec3 wallCenter, Vec3 wallSize);

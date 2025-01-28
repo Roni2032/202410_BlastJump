@@ -12,7 +12,6 @@ namespace basecross{
 		auto draw = AddComponent<PNTBoneModelDraw>();
 
 		draw->SetMeshResource(L"GOAL_MD");
-		//draw->SetTextureResource(L"GOAL_MD_TEX");
 
 		draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
@@ -25,10 +24,6 @@ namespace basecross{
 		draw->ChangeCurrentAnimation(L"DEFAULT_ANIM");
 
 		AddTag(L"Item");
-		//auto col = AddComponent<CollisionObb>();
-		//col->SetAfterCollision(AfterCollision::None);
-
-		//col->SetDrawActive(true);
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
 		GetComponent<Transform>()->SetScale(Vec3(2.0f,1.0f,2.0f));
@@ -82,4 +77,3 @@ namespace basecross{
 		}
 	}
 }
-//end basecross

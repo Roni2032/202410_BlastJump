@@ -58,13 +58,18 @@ namespace basecross{
 	};
 
 	class ExplodeCollider : public GameObject {
-		//shared_ptr<Bomb> m_Bomb;
+		const float m_MaxRate = 1.0f;
+		const float m_MinRate = 0.5f;
+
 		Explosion m_Explosion;
 		Vec3 m_Pos;
 		int m_Tick;
 
 		float m_MinReboundRate;
 		weak_ptr<GameObject> m_Player;
+
+		float GetDistance(shared_ptr<GameObject>& other);
+		Vec3 GetDirection(shared_ptr<GameObject>& other);
 	public:
 		ExplodeCollider(const shared_ptr<Stage>& ptr,Vec3 pos,Explosion explosion,const shared_ptr<GameObject>& player = nullptr):
 			GameObject(ptr),

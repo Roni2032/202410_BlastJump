@@ -16,7 +16,7 @@ namespace basecross{
 		
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
-		trans->SetScale(Vec3(0.5f) + Vec3(0.2f) * (m_AddBombNum - DEFAULT_BOMB_NUM));
+		trans->SetScale(Vec3(1.0f));
 
 		AddTag(L"Item");
 	}
@@ -28,9 +28,10 @@ namespace basecross{
 			SoundManager::Instance().PlaySE(L"BOMB_GET_SD",0.5f);
 			//Š”‚ğ‘‚â‚·
 			static_pointer_cast<Player>(Other)->AddHasBomb(m_AddBombNum);
-			GetStage()->AddGameObject<AddBombBoard>(Other->GetComponent<Transform>()->GetPosition() + Vec3(0, 1, 0));
-			GetTypeStage<GameStage>()->DestroyBlock(m_Pos,GetThis<GameObject>());
-			GetStage()->RemoveGameObject<BombItem>(GetThis<BombItem>());
+			auto stage = GetTypeStage<GameStage>();
+			stage->AddGameObject<AddBombBoard>(Other->GetComponent<Transform>()->GetPosition() + Vec3(0, 1, -1));
+			stage->DestroyBlock(m_Pos,GetThis<GameObject>());
+			stage->RemoveGameObject<BombItem>(GetThis<BombItem>());
 			
 		}
 	}
