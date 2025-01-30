@@ -41,7 +41,7 @@ namespace basecross {
 			m_RespawnBomb = m_BombNum;
 
 			SetSharedGameObject(L"Player", m_Player);
-			NewCreateMap();
+			CreateMap();
 			CreateParticle();
 			LoadMap();
 			AddGameObject<BackGroundManager>(11.0f);
@@ -193,25 +193,6 @@ namespace basecross {
 			[](shared_ptr<Stage> stage) {
 				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 			});
-		/*auto sprite = AddGameObject<Sprite>(L"RESTART_TEXT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80), true);
-		auto button = sprite->AddComponent<SpriteButton>(L"RESTART_TEXT_UI", L"Menu", L"RESTART_TEXT_SELECT_UI");
-		button->SetFunction([](shared_ptr<Stage> stage) {
-			auto currentStage = static_pointer_cast<GameStage>(stage);
-			currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
-
-			});*/
-			/*sprite = AddGameObject<Sprite>(L"SELECT_TEXT_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80), true);
-			button = sprite->AddComponent<SpriteButton>(L"SELECT_TEXT_UI", L"Menu", L"SELECT_TEXT_SELECT_UI");
-			button->SetFunction([](shared_ptr<Stage> stage) {
-				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
-
-				});*/
-				/*sprite = AddGameObject<Sprite>(L"TITLE_TEXT_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80), true);
-				button = sprite->AddComponent<SpriteButton>(L"TITLE_TEXT_UI", L"Menu", L"TITLE_TEXT_SELECT_UI");
-				button->SetFunction([](shared_ptr<Stage> stage) {
-					stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
-
-					});*/
 		ButtonManager::instance->SetInput(L"Menu", InputData(XINPUT_GAMEPAD_DPAD_DOWN, 1));
 		ButtonManager::instance->SetInput(L"Menu", InputData(XINPUT_GAMEPAD_DPAD_UP, -1));
 
@@ -256,91 +237,11 @@ namespace basecross {
 		ButtonManager::instance->SetInput(L"failed", InputData(XINPUT_GAMEPAD_DPAD_LEFT, -1));
 
 		ButtonManager::instance->CloseAll();
-		/*auto button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(0.0f, 160.0f, 0.0f), Vec2(400, 80));
-		button->AddSelectEffect(SelectEffect::ChangeSprite);
-		button->SetFunction([](shared_ptr<Stage> stage) {
-			auto currentStage = static_pointer_cast<GameStage>(stage);
-			currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
-
-			});
-		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
-
-
-		button = AddGameObject<Button>(L"SELECT_TEXT_UI", Vec3(0.0f, 0.0f, 0.0f), Vec2(400, 80));
-		button->AddSelectEffect(SelectEffect::ChangeSprite);
-		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToSelectStage"); });
-		button->SetSelectTex(L"SELECT_TEXT_SELECT_UI");
-
-		button = AddGameObject<Button>(L"TITLE_TEXT_UI", Vec3(0.0f, -160.0f, 0.0f), Vec2(400, 80));
-		button->AddSelectEffect(SelectEffect::ChangeSprite);
-		button->SetFunction([](shared_ptr<Stage> stage) {stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage"); });
-		button->SetSelectTex(L"TITLE_TEXT_SELECT_UI");*/
 
 
 		CloseMenu();
 	}
 	void GameStage::CreateMap() {
-		
-		auto& mapVec = m_CsvMap.GetCsvVec();
-		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
-		vector<wstring> cells;
-		Vec2 startPos;
-		
-		for (int y = 0; y < mapVec.size() - 1; y++) {
-			m_MapData.push_back({});
-			cells.clear();
-			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
-			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
-			if (y == 0) {
-				m_MapLeftTop = startPos;
-				m_MapRightBottom = Vec3(cells.size() / 2.0f - 1, -0.5f,0.0f);
-			}
-			for (int x = 0; x < cells.size(); x++) {
-				vector<wstring> numStr;
-				Util::WStrToTokenVector(numStr, cells[x], L'>');
-				if (numStr[0] == L"") {
-					continue;
-				}
-				if (all_of(numStr[0].cbegin(), numStr[0].cend(),isdigit)) {
-					int cell = stoi(numStr[0]);
-
-					if (numStr.size() >= 2) {
-						m_MapData[y].push_back(BlockData(cell, numStr[1]));
-					}
-					else {
-						m_MapData[y].push_back(BlockData(cell));
-					}
-
-					if (cell == BlockTypes::UNBREAK) {
-						m_Walls->AddBlock(y, cell);
-					}
-					else if (cell == BlockTypes::GOAL) {
-						CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-					}
-					else{
-						m_Walls->AddBlock(y, 0);
-					}
-
-				}
-				else {
-					if (numStr[0] == L"s") {
-						m_Player->GetComponent<Transform>()->SetPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-						m_Walls->AddBlock(y, 0);
-						NewRespawnPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-						m_MapData[y].push_back(BlockData(0));
-					}
-				}
-			}
-		}
-		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
-		auto camera = GetView()->GetTargetCamera();
-		float atY = camera->GetAt().y;
-
-		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
-		LoadMap();
-		AddGameObject<StageLengthBar>(mapSize.y,m_Player,m_Goal);
-	}
-	void GameStage::NewCreateMap() {
 		auto& mapVec = m_CsvMap.GetCsvVec();
 		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
 

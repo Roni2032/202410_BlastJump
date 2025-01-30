@@ -71,7 +71,6 @@ namespace basecross {
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
-		void NewCreateMap();
 		void CreateParticle();
 		void LoadMap();
 		void CreateMenu();
