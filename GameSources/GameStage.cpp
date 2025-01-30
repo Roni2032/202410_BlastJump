@@ -231,6 +231,10 @@ namespace basecross {
 				currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
 			});
 
+		ButtonManager::instance->AddFunction(L"clear", 0, [](shared_ptr<SpriteButton>& button) {
+			auto stage = static_pointer_cast<GameStage>(button->GetStage());
+			button->SetActive(App::GetApp()->GetScene<GameScene>()->IsNextStage(*stage->GetStageNumPtr().get()));
+			});
 		ButtonManager::instance->SetInput(L"clear", InputData(XINPUT_GAMEPAD_DPAD_RIGHT, 1));
 		ButtonManager::instance->SetInput(L"clear", InputData(XINPUT_GAMEPAD_DPAD_LEFT, -1));
 
@@ -700,6 +704,7 @@ namespace basecross {
 
 		ChangeMode(GameMode::Clear);
 
+		App::GetApp()->GetScene<GameScene>()->Clear(m_StageNumber);
 	}
 	void GameStage::GameOver() {
 		if (!IsPlaying()) return;

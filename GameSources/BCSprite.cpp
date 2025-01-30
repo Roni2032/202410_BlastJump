@@ -340,6 +340,9 @@ namespace basecross{
 	}
 	void SpriteButton::OnUpdate() {
 		
+		if (m_AddFunction != nullptr) {
+			m_AddFunction(GetThis<SpriteButton>());
+		}
 		if (m_IsSelect) {
 			if (m_SelectedTexture != L"") {
 				m_SpriteDraw->SetTextureResource(m_SelectedTexture);
@@ -382,7 +385,14 @@ namespace basecross{
 	void ButtonManager::OnUpdate() {
 		if (!m_IsActive) return;
 		if (m_SelectIndexes.size() == 0 && m_ButtonGroup.size() == 0) return;
-
+		if (!m_ButtonGroup[m_UsingGroup][m_SelectIndexes[m_UsingGroup]]->GetActive()) {
+			if (m_SelectIndexes[m_UsingGroup] > 0) {
+				m_SelectIndexes[m_UsingGroup]--;
+			}
+			else {
+				m_SelectIndexes[m_UsingGroup]++;
+			}
+		}
 		auto& inputState = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 
 		for (auto& inputData : m_InputDates[m_UsingGroup]) {

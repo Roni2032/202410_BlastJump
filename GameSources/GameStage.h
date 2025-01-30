@@ -189,13 +189,6 @@ namespace basecross {
 		void OpenMenu();
 		void CloseMenu();
 	};
-
-
-	class StageData {
-	public:
-		const static wstring stageFileNames[];
-		static bool isStageClear[];
-	};
 }
 //end basecross
 

@@ -370,6 +370,7 @@ namespace basecross{
 	class SpriteButton : public SpriteAction {
 		shared_ptr<SpriteBaseDraw> m_SpriteDraw;
 		function<void(shared_ptr<Stage>&)> m_Function;
+		function<void(shared_ptr<SpriteButton>&)> m_AddFunction;
 		bool m_IsSelect;
 		bool m_IsActive;
 		wstring m_BelongGroup;
@@ -381,12 +382,14 @@ namespace basecross{
 		Col4 m_UnSelectColor;
 		Col4 m_SelectedColor;
 
+		int m_GroupOrder;
 		SpriteButton(shared_ptr<GameObject>& ptr, const wstring& defaultTexture, const wstring& group, const wstring& selectedTexture,Col4 selectedColor) :
 			SpriteAction(ptr),
 			m_BelongGroup(group),
 			m_UnSelectTexture(defaultTexture),m_UnSelectColor(Col4()),
 			m_SelectedTexture(selectedTexture), m_SelectedColor(selectedColor),
-			m_IsSelect(false),m_IsActive(true)
+			m_IsSelect(false),m_IsActive(true),
+			m_GroupOrder(0)
 		{}
 	public:
 
@@ -401,6 +404,9 @@ namespace basecross{
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
 
+		void AddFunction(function<void(shared_ptr<SpriteButton>&)> func) {
+			m_AddFunction = func;
+		}
 		void SetFrontSprite(shared_ptr<Sprite>& sprite) {
 			m_FrontSprite = sprite;
 			m_FrontSprite->GetComponent<Transform>()->SetParent(GetGameObject());
@@ -426,7 +432,12 @@ namespace basecross{
 			m_SpriteDraw->SetDrawActive(false);
 			UnSelect();
 		}
-
+		void SetOrder(int order) {
+			m_GroupOrder = order;
+		}
+		int GetOrder() {
+			return m_GroupOrder;
+		}
 		void SetActive(bool flag) {
 			m_IsActive = flag;
 		}
@@ -480,6 +491,14 @@ namespace basecross{
 		virtual void OnUpdate()override;
 		virtual void OnDestroy()override;
 
+		int GetSize(const wstring& group) {
+			if (m_InputDates.find(group) != end(m_InputDates)) {
+				return m_ButtonGroup[group].size();
+			}
+			else {
+				return 0;
+			}
+		}
 		void SetSound(const wstring& sound);
 
 		void SetInput(const wstring& group,int input,int amount) {
@@ -565,6 +584,7 @@ namespace basecross{
 				m_ButtonGroup.emplace(group, buttons);
 				m_SelectIndexes.emplace(group, 0);
 			}
+			button->SetOrder(m_ButtonGroup[group].size() - 1);
 		}
 		void DeleteGroup(const wstring& group) {
 			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
@@ -580,6 +600,20 @@ namespace basecross{
 				}
 			}
 		}
+		void AddFunction(const wstring& group,function<void(shared_ptr<SpriteButton>&)> func) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				for (auto& buttons : m_ButtonGroup[group]) {
+					buttons->AddFunction(func);
+				}
+			}
+		}
+		void AddFunction(const wstring& group,int index, function<void(shared_ptr<SpriteButton>&)> func) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				if (index < 0 || index >= m_ButtonGroup[group].size()) return;
+				m_ButtonGroup[group][index]->AddFunction(func);
+			}
+		}
+		
 	};
 
 	

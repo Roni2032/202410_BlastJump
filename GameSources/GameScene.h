@@ -8,12 +8,19 @@
 
 namespace basecross{
 
+	struct StageData {
+		wstring m_FileName;
+		bool m_IsClear;
+		int m_BombNum;
+		float m_ScrollSpeed;
+
+		StageData(const wstring& name,int bomb,float speed) : m_FileName(name),m_IsClear(false),m_BombNum(bomb),m_ScrollSpeed(speed){}
+	};
 	//--------------------------------------------------------------------------------------
 	///	ÉQÅ[ÉÄÉVÅ[Éì
 	//--------------------------------------------------------------------------------------
 	class GameScene : public Scene{
-		vector<wstring> m_StageFileNames;
-		vector<bool> m_IsStageClear;
+		vector<StageData> m_StageData;
 	public:
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -21,18 +28,14 @@ namespace basecross{
 		*/
 		//--------------------------------------------------------------------------------------
 		GameScene() :Scene(){
-			m_StageFileNames = {
-				L"Tutorial01.csv",
-				L"Tutorial02.csv",
-				L"Tutorial03.csv",
-				L"Tutorial04.csv",
-				L"Tutorial05.csv",
-				L"Tutorial06.csv",
-				L"Tutorial07.csv"
+			m_StageData = {
+				StageData(L"Tutorial01.csv",20,0.0f),
+				StageData(L"Tutorial02.csv",25,0.25f),
+				StageData(L"Tutorial03.csv",20,0.25f),
+				StageData(L"Tutorial04.csv",20,0.25f),
+				StageData(L"Tutorial05.csv",99,0.25f),
+				StageData(L"Tutorial06.csv",99,0.25f),
 			};
-			for (int i = 0; i < m_StageFileNames.size(); i++) {
-				m_IsStageClear.push_back(false);
-			}
 		}
 		//--------------------------------------------------------------------------------------
 		/*!
@@ -40,12 +43,17 @@ namespace basecross{
 		*/
 		//--------------------------------------------------------------------------------------
 		virtual ~GameScene();
-
+		bool IsNextStage(int currentIndex) {
+			if (currentIndex + 1 >= m_StageData.size()) {
+				return false;
+			}
+			return true;
+		}
 		bool IsClear(int index) {
-			return m_IsStageClear[index];
+			return m_StageData[index].m_IsClear;
 		}
 		void Clear(int index) {
-			m_IsStageClear[index] = true;
+			m_StageData[index].m_IsClear = true;
 		}
 		//--------------------------------------------------------------------------------------
 		/*!

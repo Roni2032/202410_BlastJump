@@ -77,7 +77,17 @@ namespace basecross {
 			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_RIGHT, 1));
 			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_DOWN, 3));
 			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_UP, -3));
-
+			for (int i = 1; i < ButtonManager::instance->GetSize(L"tutorial"); i++) {
+				ButtonManager::instance->AddFunction(L"tutorial", i, [](shared_ptr<SpriteButton>& button) {
+					auto scene = App::GetApp()->GetScene<GameScene>();
+					if (scene->IsClear(button->GetOrder() - 1)) {
+						button->SetActive(true);
+					}
+					else {
+						button->SetActive(false);
+					}
+					});
+			}
 			/*auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 120, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");

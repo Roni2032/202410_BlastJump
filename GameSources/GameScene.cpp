@@ -59,10 +59,11 @@ namespace basecross{
 	void GameScene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
-			if (*stage < 0 || *stage >= m_StageFileNames.size()) {
+			if (*stage < 0 || *stage >= m_StageData.size()) {
 				ResetActiveStage<TitleStage>();
 			}
-			ResetActiveStage<GameStage>(m_StageFileNames[*stage], *stage, 20, 0.0f);
+			auto data = m_StageData[*stage];
+			ResetActiveStage<GameStage>(data.m_FileName, *stage, data.m_BombNum, data.m_ScrollSpeed);
 
 			/*switch (*stage) {
 			case 0:
