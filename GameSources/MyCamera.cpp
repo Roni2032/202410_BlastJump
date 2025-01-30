@@ -35,10 +35,10 @@ namespace basecross{
 					speedBoost = 8.0f;
 				}
 			}
-			if (m_Stage->IsView()) {
+			/*if (m_Stage->IsView()) {
 				speedBoost = 10.0f;
 				if (at.y > stageTop - 2.5f && m_Fade == nullptr) {
-					m_Fade = m_Stage->AddGameObject<BCSprite>(L"FADE_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
+					m_Fade = m_Stage->AddGameObject<Sprite>(L"FADE_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
 					auto fade = m_Fade->AddComponent<SpriteFade>(1.0f);
 					fade->FadeOut();
 				}
@@ -49,7 +49,7 @@ namespace basecross{
 					}
 				}
 
-			}
+			}*/
 			if (m_Stage->GetGameMode() == GameMode::InGame || speedBoost != 1.0f) {
 				at.y += m_ScrollSpeed * speedBoost * elapsed;
 				eye.y = at.y;

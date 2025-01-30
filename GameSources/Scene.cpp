@@ -81,19 +81,25 @@ namespace basecross{
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
 			case 0:
-				ResetActiveStage<GameStage>(L"Stage01.csv",*stage,20,0.0f);
+				ResetActiveStage<GameStage>(L"Tutorial01.csv",*stage,20,0.0f);
 				break;
 			case 1:
-				ResetActiveStage<GameStage>(L"Stage02.csv", *stage,25,0.25f);
+				ResetActiveStage<GameStage>(L"Tutorial02.csv", *stage,25,0.25f);
 				break;
 			case 2:
-				ResetActiveStage<GameStage>(L"Stage03.csv", *stage,30);
+				ResetActiveStage<GameStage>(L"Tutorial03.csv", *stage,30);
 				break;
 			case 3:
-				ResetActiveStage<GameStage>(L"Stage04.csv", *stage, 30);
+				ResetActiveStage<GameStage>(L"Tutorial04.csv", *stage, 30);
+				break;
+			case 4:
+				ResetActiveStage<GameStage>(L"Tutorial05.csv", *stage, 30);
 				break;
 			case 5:
-				ResetActiveStage<GameStage>(L"Stage06.csv", *stage, 99);
+				ResetActiveStage<GameStage>(L"Tutorial06.csv", *stage, 99);
+				break;
+			case 6:
+				ResetActiveStage<GameStage>(L"Tutorial07.csv", *stage, 30);
 				break;
 			default:
 				ResetActiveStage<TitleStage>();
@@ -105,7 +111,8 @@ namespace basecross{
 			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToSelectStage") {
-			ResetActiveStage<SelectStage>();
+			auto mode = static_pointer_cast<wstring>(event->m_Info).get();
+			ResetActiveStage<SelectStage>(L"ToGameStage");
 		}
 	}
 

@@ -233,7 +233,7 @@ namespace basecross {
 		if (IsCanBombCreate() == false) { return; }
 
 		auto getStage = GetStage();
-		getStage->AddGameObject<Bomb>(m_Pos + Vec3(0.0f,0.7f,0), m_BombVec, 3.0f, 3.0f, 18.5f);
+		getStage->AddGameObject<Bomb>(m_Pos + Vec3(0.0f,0.5f,0), m_BombVec, 3.0f, 3.0f, 18.5f);
 
 		SubtractHasBomb(1);
 

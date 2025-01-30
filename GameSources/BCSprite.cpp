@@ -1,5 +1,5 @@
 /*!
-@file BCSprite.cpp
+@file Sprite.cpp
 @brief スプライト
 */
 
@@ -8,7 +8,7 @@
 
 namespace basecross{
 
-	void BCSprite::OnCreate() {
+	void Sprite::OnCreate() {
 		//CutAnimationUv(m_cutUV);
 		for (int y = 0; y < m_cutUV.y; y++) {
 			for (int x = 0; x < m_cutUV.x; x++) {
@@ -63,14 +63,14 @@ namespace basecross{
 
 		SetDrawLayer(3);
 	}
-	void BCSprite::OnUpdate() {
+	void Sprite::OnUpdate() {
 		if (m_IsAnimation) {
 			Animation();
 		}
 		//情報更新
 		m_Pos = m_Transform->GetPosition();
 	}
-	void BCSprite::Animation() {
+	void Sprite::Animation() {
 		float elapsedTime = App::GetApp()->GetElapsedTime();
 		m_AnimationTimer += elapsedTime;
 
@@ -84,7 +84,7 @@ namespace basecross{
 			m_AnimationTimer = 0.0f;
 		}
 	}
-	void BCSprite::NewAnimation() {
+	void Sprite::NewAnimation() {
 		float elapsedTime = App::GetApp()->GetElapsedTime();
 		m_AnimationTimer += elapsedTime;
 
@@ -115,7 +115,7 @@ namespace basecross{
 			m_AnimationTimer = 0.0f;
 		}
 	}
-	void BCSprite::CreateVertex(Vec2 size, vector<Vec2> uv, const bool isCenter) {
+	void Sprite::CreateVertex(Vec2 size, vector<Vec2> uv, const bool isCenter) {
 		if (isCenter) {
 			m_Vertices = {
 				{Vec3(-size.x / 2.0f, size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
@@ -133,7 +133,7 @@ namespace basecross{
 			};
 		}
 	}
-	void BCSprite::UpdateUV(vector<Vec2> uv) {
+	void Sprite::UpdateUV(vector<Vec2> uv) {
 		if (uv.empty()) return;
 		if (m_Draw) {
 			for (int i = 0; i < m_Vertices.size(); i++)
@@ -144,7 +144,7 @@ namespace basecross{
 			m_Draw->UpdateVertices(m_Vertices);
 		}
 	}
-	void BCSprite::CutAnimationUv(Vec2 cut) {
+	void Sprite::CutAnimationUv(Vec2 cut) {
 		for (int i = 0; i < cut.y; i++) {
 			for (int j = 0; j < cut.x; j++) {
 				vector<Vec2> uv = {
@@ -159,10 +159,10 @@ namespace basecross{
 		}
 		m_IsAnimation = true;
 	}
-	void BCSprite::UpdateSize(Vec3 size) {
+	void Sprite::UpdateSize(Vec3 size) {
 		m_Transform->SetScale(size);
 	}
-	void BCSprite::UpdateSize(Vec2 size) {
+	void Sprite::UpdateSize(Vec2 size) {
 		if (m_Draw) {
 			m_Size = size;
 			//CreateVertex(m_Size, m_AnimationUV[m_UseIndex], m_IsUseCenterSprite);
@@ -186,16 +186,16 @@ namespace basecross{
 		}
 	}
 
-	void BCSprite::SetPos(Vec3 pos) {
+	void Sprite::SetPos(Vec3 pos) {
 		m_Transform->SetPosition(pos);
 	}
-	void BCSprite::SetDiffuse(Col4 color) {
+	void Sprite::SetDiffuse(Col4 color) {
 		m_Draw->SetDiffuse(color);
 	}
-	Col4 BCSprite::GetDiffuse() {
+	Col4 Sprite::GetDiffuse() {
 		return m_Draw->GetDiffuse();
 	}
-	void BCSprite::ScreenCenter(const Vec2 diff) {
+	void Sprite::ScreenCenter(const Vec2 diff) {
 		Vec3 newPos = Vec3();
 		if (m_IsUseCenterSprite) {
 
@@ -205,28 +205,28 @@ namespace basecross{
 		}
 		m_Transform->SetPosition(newPos);
 	}
-	void BCSprite::ScreenTop(const Vec2 diff) {
+	void Sprite::ScreenTop(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenTopRight(const Vec2 diff) {
+	void Sprite::ScreenTopRight(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenTopLeft(const Vec2 diff) {
+	void Sprite::ScreenTopLeft(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenBottom(const Vec2 diff) {
+	void Sprite::ScreenBottom(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenBottomRight(const Vec2 diff) {
+	void Sprite::ScreenBottomRight(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenBottomLeft(const Vec2 diff) {
+	void Sprite::ScreenBottomLeft(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenLeft(const Vec2 diff) {
+	void Sprite::ScreenLeft(const Vec2 diff) {
 
 	}
-	void BCSprite::ScreenRight(const Vec2 diff) {
+	void Sprite::ScreenRight(const Vec2 diff) {
 
 	}
 
@@ -235,7 +235,7 @@ namespace basecross{
 		float sizeX = m_Size.x / m_DisplayDigit;
 		m_Numbers.reserve(m_DisplayDigit);
 		for (int i = 0; i < m_DisplayDigit; i++) {
-			shared_ptr<BCSprite> number = GetStage()->AddGameObject<BCSprite>(m_TexKey, Vec3(m_Pos.x + i * sizeX,m_Pos.y,m_Pos.z), Vec2(sizeX, m_Size.y));//ObjectFactory::Create<BCSprite>(GetStage(), m_TexKey, Vec3(0,0,0)/*m_Pos + i * sizeX*/, Vec2(sizeX, m_Size.y));
+			shared_ptr<Sprite> number = GetStage()->AddGameObject<Sprite>(m_TexKey, Vec3(m_Pos.x + i * sizeX,m_Pos.y,m_Pos.z), Vec2(sizeX, m_Size.y));//ObjectFactory::Create<Sprite>(GetStage(), m_TexKey, Vec3(0,0,0)/*m_Pos + i * sizeX*/, Vec2(sizeX, m_Size.y));
 			int singleDigit = m_DisplayNumber / digits % 10;
 			
 			number->UpdateUV(GetUV(singleDigit));
@@ -332,6 +332,92 @@ namespace basecross{
 			}
 			m_Draw->SetDiffuse(color);
 		}
+	}
+	void SpriteButton::OnCreate() {
+		m_SpriteDraw = GetGameObject()->GetComponent<SpriteBaseDraw>();
+		m_UnSelectColor = m_SpriteDraw->GetDiffuse();
+		ButtonManager::instance->Register(m_BelongGroup, GetThis<SpriteButton>());
+	}
+	void SpriteButton::OnUpdate() {
+		
+		if (m_IsSelect) {
+			if (m_SelectedTexture != L"") {
+				m_SpriteDraw->SetTextureResource(m_SelectedTexture);
+			}
+			if (m_SelectedColor != Col4(0, 0, 0, 0)) {
+				m_SpriteDraw->SetDiffuse(m_SelectedColor);
+			}
+		}
+		else {
+			m_SpriteDraw->SetTextureResource(m_UnSelectTexture);
+			m_SpriteDraw->SetDiffuse(m_UnSelectColor);
+		}
+	}
+
+
+	shared_ptr<ButtonManager> ButtonManager::instance = nullptr;
+
+	shared_ptr<Sprite> ButtonManager::Create(shared_ptr<Stage>& stage,const wstring& group,const wstring& defaultTex,const wstring& selectedTex,Vec3 pos,Vec2 size, function<void(shared_ptr<Stage>&)> func) {
+		return ButtonManager::instance->Create(stage, group, defaultTex, selectedTex, Col4(), pos, size,func);
+	}
+	shared_ptr<Sprite> ButtonManager::Create(shared_ptr<Stage>& stage, const wstring& group, const wstring& defaultTex, Col4 selectedColor, Vec3 pos, Vec2 size, function<void(shared_ptr<Stage>&)> func) {
+		return ButtonManager::instance->Create(stage,group,defaultTex,L"",selectedColor,pos,size,func);
+	}
+	shared_ptr<Sprite> ButtonManager::Create(shared_ptr<Stage>& stage, const wstring& group, const wstring& defaultTex, const wstring& selectedTex, Col4 selectedColor, Vec3 pos, Vec2 size, function<void(shared_ptr<Stage>&)> func) {
+		auto sprite = stage->AddGameObject<Sprite>(defaultTex, pos, size, true);
+		shared_ptr<SpriteButton> button = nullptr;
+		if (selectedTex != L"" && button == nullptr) {
+			button = sprite->AddComponent<SpriteButton>(defaultTex, group,selectedTex);
+		}
+		if (selectedColor != Col4() && button == nullptr) {
+			button = sprite->AddComponent<SpriteButton>(defaultTex, group, selectedColor);
+		}
+
+		button->SetFunction(func);
+		return sprite;
+	}
+	void ButtonManager::OnCreate() {
+		instance = GetThis<ButtonManager>();
+	}
+	void ButtonManager::OnUpdate() {
+		if (!m_IsActive) return;
+		if (m_SelectIndexes.size() == 0 && m_ButtonGroup.size() == 0) return;
+
+		auto& inputState = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+
+		for (auto& inputData : m_InputDates[m_UsingGroup]) {
+			if (inputState.wPressedButtons & inputData.m_Input) {
+				if (abs(inputData.m_MoveAmount) > 1) {
+					if (!CheckOverIndex(inputData.m_MoveAmount)) continue;
+				}
+				m_SelectIndexes[m_UsingGroup] += inputData.m_MoveAmount;
+			}
+		}
+		LimitIndex();
+
+		for (int i = 0; i < m_ButtonGroup[m_UsingGroup].size(); i++) {
+			if (i == m_SelectIndexes[m_UsingGroup]) {
+				m_ButtonGroup[m_UsingGroup][i]->Select();
+			}
+			else {
+				m_ButtonGroup[m_UsingGroup][i]->UnSelect();
+			}
+		}
+		if (inputState.wPressedButtons & XINPUT_GAMEPAD_A) {
+			if (m_ClickSound != L"") {
+				SoundManager::Instance().PlaySE(m_ClickSound);
+			}
+			m_ButtonGroup[m_UsingGroup][m_SelectIndexes[m_UsingGroup]]->Func();
+			m_IsActive = false;
+		}
+	}
+
+	void ButtonManager::OnDestroy() {
+		instance = nullptr;
+	}
+
+	void ButtonManager::SetSound(const wstring& sound) {
+		m_ClickSound = sound;
 	}
 }
 //end basecross

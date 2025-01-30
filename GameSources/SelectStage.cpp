@@ -22,11 +22,63 @@ namespace basecross {
 
 	void SelectStage::OnCreate() {
 		try {
+			AddGameObject<ButtonManager>();
 			CreateViewLight();
 			CreateResource();
-			AddGameObject<BCSprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
-			auto sprite = AddGameObject<BCSprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 300, 0), Vec2(400, 100),true);
-			auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 120, 0), Vec2(240, 240),1);
+			AddGameObject<Sprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
+			
+			auto sprite = AddGameObject<Sprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 300, 0), Vec2(400, 100), true);
+
+
+			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(-400, 120, 0), Vec2(240, 240),
+				[](shared_ptr<Stage>& stage) {
+					auto currentStage = static_pointer_cast<SelectStage>(stage);
+					currentStage->CreateFade(0);
+				});
+			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(0, 120, 0), Vec2(240, 240),
+				[](shared_ptr<Stage>& stage) {
+					auto currentStage = static_pointer_cast<SelectStage>(stage);
+					currentStage->CreateFade(1);
+				});
+			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(400, 120, 0), Vec2(240, 240),
+				[](shared_ptr<Stage>& stage) {
+					auto currentStage = static_pointer_cast<SelectStage>(stage);
+					currentStage->CreateFade(2);
+				});
+			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(-400, -120, 0), Vec2(240, 240),
+				[](shared_ptr<Stage>& stage) {
+					auto currentStage = static_pointer_cast<SelectStage>(stage);
+					currentStage->CreateFade(3);
+				});
+			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(0, -120, 0), Vec2(240, 240),
+				[](shared_ptr<Stage>& stage) {
+					auto currentStage = static_pointer_cast<SelectStage>(stage);
+					currentStage->CreateFade(4);
+				});
+			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(400, -120, 0), Vec2(240, 240),
+				[](shared_ptr<Stage>& stage) {
+					auto currentStage = static_pointer_cast<SelectStage>(stage);
+					currentStage->CreateFade(5);
+				});
+
+			vector<shared_ptr<Sprite>> difficultySprites = {};
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR_UI", Vec3(-400, 120, 0), Vec2(60, 60), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR2_UI", Vec3(0, 120, 0), Vec2(120, 60), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR3_UI", Vec3(400, 120, 0), Vec2(180, 60), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR4_UI", Vec3(-400, -120, 0), Vec2(120, 120), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR5_UI", Vec3(0, -120, 0), Vec2(180, 120), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR6_UI", Vec3(400, -120, 0), Vec2(180, 120), true));
+
+			for (int i = 0; i < difficultySprites.size(); i++) {
+				ButtonManager::instance->SetFrontSprite(L"tutorial", i, difficultySprites[i]);
+			}
+
+			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_LEFT, -1));
+			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_RIGHT, 1));
+			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_DOWN, 3));
+			ButtonManager::instance->SetInput(L"tutorial", InputData(XINPUT_GAMEPAD_DPAD_UP, -3));
+
+			/*auto button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(-400, 120, 0), Vec2(240, 240),1);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
 			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(0, 120, 0), Vec2(240, 240),2);
@@ -43,11 +95,11 @@ namespace basecross {
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
 			button = AddGameObject<SelectButton>(L"STAGESELECT_FALSE_UI", Vec3(400, -120, 0), Vec2(240, 240), 6);
 			button->AddSelectEffect(SelectEffect::ChangeSprite);
-			button->SetSelectTex(L"STAGESELECT_TRUE_UI");
+			button->SetSelectTex(L"STAGESELECT_TRUE_UI");*/
 
-			sprite = AddGameObject<BCSprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(281.6f, 140.8f), true);
+			AddGameObject<Sprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(281.6f, 140.8f), true);
 
-			SoundManager::Instance().PlayBGM(L"SELECT_BGM",1.0f);
+			SoundManager::Instance().PlayBGM(L"SELECT_BGM", 1.0f);
 		}
 		catch (...) {
 			throw;
@@ -60,7 +112,7 @@ namespace basecross {
 		if (m_IsCanNextSelect < 1.0f) {
 			m_IsCanNextSelect += elapse / 0.5f;
 		}
-		if (ctrl.bConnected && m_Fade == nullptr) {
+		/*if (ctrl.bConnected && m_Fade == nullptr) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
 				m_Select--;
 			}
@@ -103,17 +155,21 @@ namespace basecross {
 				m_Fade = AddGameObject<Fade>(1.0f);
 			}
 		}
-		Button::SelectButton(m_Select);
+		Button::SelectButton(m_Select);*/
 
 		if (m_Fade != nullptr) {
 			if (m_Fade->IsFinished()) {
 				auto stage = make_shared<int>(m_Select);
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToGameStage",stage);
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), gameMode, stage);
 			}
 		}
 	}
 	void SelectStage::OnDestroy() {
 		SoundManager::Instance().StopAll();
+	}
+	void SelectStage::CreateFade(int select) {
+		m_Fade = AddGameObject<Fade>(1.0f);
+		m_Select = select;
 	}
 	void SelectStage::CreateResource() {
 		auto& app = App::GetApp();
@@ -149,24 +205,24 @@ namespace basecross {
 		Vec3 startPos = Vec3();
 
 		if (m_Difficulty == 1) {
-			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
+			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
 		}
-		else if(m_Difficulty == 2){
-			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
+		else if (m_Difficulty == 2) {
+			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
 		}
-		else if(m_Difficulty == 3){
-			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR3_UI", centerPos, Vec2(180, 60), true));
+		else if (m_Difficulty == 3) {
+			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR3_UI", centerPos, Vec2(180, 60), true));
 		}
 		else if (m_Difficulty == 4) {
-			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR4_UI", centerPos, Vec2(120, 120), true));
+			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR4_UI", centerPos, Vec2(120, 120), true));
 		}
 		else if (m_Difficulty == 5) {
-			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR5_UI", centerPos, Vec2(180, 120), true));
+			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR5_UI", centerPos, Vec2(180, 120), true));
 		}
 		else {
-			AddLockSprite(GetStage()->AddGameObject<BCSprite>(L"STAR6_UI", centerPos, Vec2(180, 120), true));
+			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR6_UI", centerPos, Vec2(180, 120), true));
 		}
-		
+
 	}
 	void SelectButton::OnUpdate() {
 		Button::OnUpdate();

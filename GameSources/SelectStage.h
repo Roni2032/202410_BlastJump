@@ -9,7 +9,7 @@
 
 namespace basecross {
 	class Fade;
-	class BCSprite;
+	class Sprite;
 
 	const static int MAX_STAGE = 6;
 
@@ -17,13 +17,15 @@ namespace basecross {
 		int m_Select;
 		float m_IsCanNextSelect;
 		shared_ptr<Fade> m_Fade;
+		wstring gameMode;
 	public:
-		SelectStage() : m_Select(0),m_IsCanNextSelect(1.0f){}
+		SelectStage(const wstring& mode) : m_Select(0),m_IsCanNextSelect(1.0f),gameMode(mode){}
 		virtual ~SelectStage() {}
 		//ÉrÉÖÅ[ÇÃçÏê¨
 		void CreateViewLight();
 		void CreateResource();
 
+		void CreateFade(int select);
 		virtual void OnCreate()override;
 
 		virtual void OnUpdate()override;
@@ -33,7 +35,7 @@ namespace basecross {
 	class SelectButton : public Button {
 	public:
 		int m_Difficulty;
-		shared_ptr<BCSprite> m_BackGroundSprite;
+		shared_ptr<Sprite> m_BackGroundSprite;
 		SelectButton(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,int difficulty) :
 			Button(ptr,texKey,pos,size),m_Difficulty(difficulty)
 		{}

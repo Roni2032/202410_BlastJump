@@ -9,7 +9,7 @@
 namespace basecross{
 
 	void Fade::OnCreate() {
-		m_Sprite = GetStage()->AddGameObject<BCSprite>(L"FADE_TEX", Vec3(-640, 400, 0), Vec2(1280, 800));
+		m_Sprite = GetStage()->AddGameObject<Sprite>(L"FADE_TEX", Vec3(-640, 400, 0), Vec2(1280, 800));
 		if (m_IsFadeOut) {
 			m_FadeColor = Col4(1, 1, 1, 0);
 		}

@@ -17,8 +17,8 @@ namespace basecross{
 	class Button : public GameObject {
 
 		function<void(shared_ptr<Stage>& stage)> m_Func;
-		shared_ptr<BCSprite> m_Sprite;
-		vector<shared_ptr<BCSprite>> m_InterLockSprite;
+		shared_ptr<Sprite> m_Sprite;
+		vector<shared_ptr<Sprite>> m_InterLockSprite;
 		vector<Vec2> m_InterLockedSpriteSize;
 		wstring m_TexKey;
 		wstring m_SelectTexKey;
@@ -51,7 +51,7 @@ namespace basecross{
 		void SetFunction(function<void(shared_ptr<Stage>& stage)> func) {
 			m_Func = func;
 		}
-		shared_ptr<BCSprite> GetSprite() {
+		shared_ptr<Sprite> GetSprite() {
 			return m_Sprite;
 		}
 		shared_ptr<PCTSpriteDraw> GetDrawComponent() {
@@ -60,7 +60,7 @@ namespace basecross{
 		void AddSelectEffect(SelectEffect mode) {
 			m_Effect.push_back(mode);
 		}
-		void AddLockSprite(shared_ptr<BCSprite> sprite) {
+		void AddLockSprite(shared_ptr<Sprite> sprite) {
 			m_InterLockSprite.push_back(sprite);
 		}
 		void NotSelect() {
@@ -83,7 +83,7 @@ namespace basecross{
 				button->GetDrawComponent()->SetDrawActive(flag);
 			}
 		}
-		static void CheckOverIndex(int& select) {
+		static void LimitIndex(int& select) {
 			if (select < 0) {
 				select = 0;
 			}

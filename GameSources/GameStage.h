@@ -98,7 +98,6 @@ namespace basecross {
 		shared_ptr<GameObject> CreateBlock(Vec2 mapIndex, Vec3 pos);
 
 		shared_ptr<Player> m_Player;
-		void Test(shared_ptr<Stage>& stage);
 
 		void InitializeStage();
 		void SetRespawnBomb(float num) {

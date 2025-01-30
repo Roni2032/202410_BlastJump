@@ -87,7 +87,6 @@ namespace basecross{
 	void ExplodeCollider::OnCreate() {
 		auto col = AddComponent<CollisionSphere>();
 		col->SetAfterCollision(AfterCollision::None);
-		//col->SetDrawActive(true);
 		auto trans = GetComponent<Transform>();
 
 		trans->SetPosition(m_Pos);
@@ -146,7 +145,7 @@ namespace basecross{
 		return sqrtf(static_cast<float>(pow(diff.x, 2) + pow(diff.y, 2)));
 	}
 	Vec3 ExplodeCollider::GetDirection(shared_ptr<GameObject>& other) {
-		Vec3 otherPos = other->GetComponent<Transform>()->GetWorldPosition();
+		Vec3 otherPos = other->GetComponent<Transform>()->GetWorldPosition() + Vec3(0,0.5f,0);
 		Vec3 ExplodeCorePos = GetComponent<Transform>()->GetWorldPosition();
 
 		return otherPos - ExplodeCorePos;

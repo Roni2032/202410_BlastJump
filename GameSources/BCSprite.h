@@ -1,5 +1,5 @@
 /*!
-@file BCSprite.h
+@file Sprite.h
 @brief スプライト
 */
 
@@ -59,7 +59,7 @@ namespace basecross{
 	//	画像表示クラス						
 	//																																
 	//----------------------------------------------------------
-	class BCSprite : public GameObject {
+	class Sprite : public GameObject {
 		//テクスチャキー
 		wstring m_TexKey;
 		//サイズ
@@ -101,8 +101,8 @@ namespace basecross{
 		void Animation();
 		void NewAnimation();
 	public:
-		BCSprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,const bool useCenter = false) : BCSprite(ptr,texKey,pos,size,{1,1},useCenter,1,-1,false) {}
-		BCSprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size, Vec2 cutUV, const bool useCenter = false, const float changeTime = 0.5f, const int useIndex = -1, const bool isAnimation = true) :
+		Sprite(const shared_ptr<Stage>& ptr,const wstring& texKey,Vec3 pos,Vec2 size,const bool useCenter = false) : Sprite(ptr,texKey,pos,size,{1,1},useCenter,1,-1,false) {}
+		Sprite(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size, Vec2 cutUV, const bool useCenter = false, const float changeTime = 0.5f, const int useIndex = -1, const bool isAnimation = true) :
 			GameObject(ptr),
 			m_TexKey(texKey),
 			m_Pos(pos), m_Size(size),
@@ -113,7 +113,7 @@ namespace basecross{
 			m_AnimationChangeTime(changeTime), m_AnimationTimer(0.0f),
 			m_ScreenSize(0, 0)
 			{}
-		virtual ~BCSprite(){}
+		virtual ~Sprite(){}
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
@@ -220,7 +220,7 @@ namespace basecross{
 	//																																
 	//----------------------------------------------------------
 	class BCNumber : public GameObject {
-		vector<shared_ptr<BCSprite>> m_Numbers;
+		vector<shared_ptr<Sprite>> m_Numbers;
 		int m_CutNum;
 		int m_DisplayNumber;
 		int m_DisplayDigit;
@@ -367,8 +367,75 @@ namespace basecross{
 	//	ボタン																		
 	//																																
 	//----------------------------------------------------------
-	class SpriteButton : SpriteAction {
+	class SpriteButton : public SpriteAction {
+		shared_ptr<SpriteBaseDraw> m_SpriteDraw;
+		function<void(shared_ptr<Stage>&)> m_Function;
+		bool m_IsSelect;
+		wstring m_BelongGroup;
 
+		shared_ptr<Sprite> m_FrontSprite;
+
+		wstring m_UnSelectTexture;
+		wstring m_SelectedTexture;
+		Col4 m_UnSelectColor;
+		Col4 m_SelectedColor;
+
+		SpriteButton(shared_ptr<GameObject>& ptr, const wstring& defaultTexture, const wstring& group, const wstring& selectedTexture,Col4 selectedColor) :
+			SpriteAction(ptr),
+			m_BelongGroup(group),
+			m_UnSelectTexture(defaultTexture),m_UnSelectColor(Col4()),
+			m_SelectedTexture(selectedTexture), m_SelectedColor(selectedColor),
+			m_IsSelect(false)
+		{}
+	public:
+
+		SpriteButton(shared_ptr<GameObject>& ptr, const wstring& defaultTexture,const wstring& group,const wstring& selectedTexture) :
+			SpriteButton(ptr,defaultTexture,group,selectedTexture,Col4(0,0,0,0))
+		{}
+		SpriteButton(shared_ptr<GameObject>& ptr, const wstring& defaultTexture, const wstring& group, Col4 selectedColor) :
+			SpriteButton(ptr,defaultTexture,group,L"",selectedColor)
+		{}
+		virtual ~SpriteButton(){}
+
+		virtual void OnCreate()override;
+		virtual void OnUpdate()override;
+
+		void SetFrontSprite(shared_ptr<Sprite>& sprite) {
+			m_FrontSprite = sprite;
+			m_FrontSprite->GetComponent<Transform>()->SetParent(GetGameObject());
+		}
+		void SetFunction(function<void(shared_ptr<Stage>&)> func) {
+			m_Function = func;
+		}
+		void Func() {
+			m_Function(GetStage());
+		}
+		void Select() {
+			m_IsSelect = true;
+		}
+		void UnSelect() {
+			m_IsSelect = false;
+		}
+		void Open() {
+			SetUpdateActive(true);
+			m_SpriteDraw->SetDrawActive(true);
+		}
+		void Close() {
+			SetUpdateActive(false);
+			m_SpriteDraw->SetDrawActive(false);
+			UnSelect();
+		}
+	};
+	//----------------------------------------------------------
+	//																																
+	//	ボタン入力データ																							
+	//																																
+	//----------------------------------------------------------
+	struct InputData {
+		int m_Input;
+		int m_MoveAmount;
+
+		InputData(int input,int amount) : m_Input(input),m_MoveAmount(amount){}
 	};
 	//----------------------------------------------------------
 	//																																
@@ -376,14 +443,145 @@ namespace basecross{
 	//																																
 	//----------------------------------------------------------
 
-	class ButtonManager : GameObject{
-		map<wstring, vector<SpriteButton>> m_ButtonMap;
+	class ButtonManager : public GameObject{
+		
+		map<wstring, vector<shared_ptr<SpriteButton>>> m_ButtonGroup;
+		map<wstring, int> m_SelectIndexes;
+		map<wstring, vector<InputData>> m_InputDates;
+
+		wstring m_UsingGroup;
+
+		wstring m_ClickSound;
+
+		bool m_IsActive;
+
 	public:
-		ButtonManager(const shared_ptr<Stage>& ptr) : GameObject(ptr){}
+		static shared_ptr<ButtonManager> instance;
+
+		ButtonManager(const shared_ptr<Stage>& ptr) : 
+			GameObject(ptr),
+			m_IsActive(true),m_UsingGroup(L""),m_ClickSound(L"")
+		{}
 		virtual ~ButtonManager(){}
+
+		static shared_ptr<Sprite> Create(shared_ptr<Stage>& stage, const wstring& group, const wstring& defaultTex, const wstring& selectedTex, Vec3 pos, Vec2 size,function<void(shared_ptr<Stage>&)> func);
+		static shared_ptr<Sprite> Create(shared_ptr<Stage>& stage, const wstring& group, const wstring& defaultTex, Col4 selectedColor, Vec3 pos, Vec2 size,function<void(shared_ptr<Stage>&)> func);
+		shared_ptr<Sprite> Create(shared_ptr<Stage>& stage, const wstring& group, const wstring& defaultTex, const wstring& selectedTex,Col4 selectedColor, Vec3 pos, Vec2 size, function<void(shared_ptr<Stage>&)> func);
 
 		virtual void OnCreate()override;
 		virtual void OnUpdate()override;
+		virtual void OnDestroy()override;
+
+		void SetSound(const wstring& sound);
+
+		void SetInput(const wstring& group,int input,int amount) {
+			SetInput(group, InputData(input, amount));
+		}
+		void SetInput(const wstring& group, InputData data) {
+			if (m_InputDates.find(group) != end(m_InputDates)) {
+				m_InputDates[group].push_back(data);
+			}
+			else {
+				vector<InputData> dates = {};
+				dates.push_back(data);
+				m_InputDates.emplace(group, dates);
+			}
+		}
+		void OpenAll() {
+			for (auto& buttons : m_ButtonGroup) {
+				Open(buttons.first);
+			}
+		}
+		void CloseAll() {
+			for (auto& buttons : m_ButtonGroup) {
+				Close(buttons.first);
+			}
+			SetActive(false);
+		}
+		void OpenAndUse(const wstring& group) {
+			Open(group);
+			UseGroup(group);
+		}
+		void Open(const wstring& group) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				for (auto& button : m_ButtonGroup[group]) {
+					button->Open();
+				}
+			}
+			SetActive(true);
+		}
+		void Close(const wstring& group) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				for (auto& button : m_ButtonGroup[group]) {
+					button->Close();
+				}
+				m_SelectIndexes[group] = 0;
+			}
+		}
+		void SetActive(bool flag) {
+			m_IsActive = flag;
+		}
+		bool GetActive() {
+			return m_IsActive;
+		}
+		void LimitIndex() {
+			int maxIndex = m_ButtonGroup[m_UsingGroup].size() - 1;
+			int minIndex = 0;
+			m_SelectIndexes[m_UsingGroup] = max(minIndex, m_SelectIndexes[m_UsingGroup]);
+			m_SelectIndexes[m_UsingGroup] = min(maxIndex, m_SelectIndexes[m_UsingGroup]);
+		}
+		bool CheckOverIndex(int amount) {
+			int index = m_SelectIndexes[m_UsingGroup];
+			index += amount;
+			if (index >= m_ButtonGroup[m_UsingGroup].size() || index < 0) {
+				return false;
+			}
+			return true;
+		}
+		void UseGroup(const wstring& group) {
+			if (m_SelectIndexes.find(group) != end(m_SelectIndexes)) {
+				m_SelectIndexes[m_UsingGroup] = 0;
+				m_UsingGroup = group;
+			}
+		}
+		void Register(const wstring& group, shared_ptr<SpriteButton>& button) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				m_ButtonGroup[group].push_back(button);
+			}
+			else {
+				if (m_ButtonGroup.size() == 0) {
+					m_UsingGroup = group;
+				}
+				vector<shared_ptr<SpriteButton>> buttons = {};
+				buttons.push_back(button);
+				m_ButtonGroup.emplace(group, buttons);
+				m_SelectIndexes.emplace(group, 0);
+			}
+		}
+		void DeleteGroup(const wstring& group) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				m_ButtonGroup.erase(group);
+				m_SelectIndexes.erase(group);
+			}
+		}
+
+		void SetFrontSprite(const wstring& group,int index,shared_ptr<Sprite>& sprite) {
+			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
+				if (m_ButtonGroup[group].size() < index) {
+					m_ButtonGroup[group][index]->SetFrontSprite(sprite);
+				}
+			}
+		}
+	};
+
+	//----------------------------------------------------------
+	//																																
+	//	ボード																						
+	//																																
+	//----------------------------------------------------------
+
+	class Board : public GameObject {
+
 	};
 }
 //end basecross

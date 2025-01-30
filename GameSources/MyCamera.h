@@ -15,7 +15,7 @@ namespace basecross{
 		float m_ScrollSpeed;
 
 		float m_DefaultFovY;
-		shared_ptr<BCSprite> m_Fade;
+		shared_ptr<Sprite> m_Fade;
 
 		Vec3 m_StartAt;
 		Vec3 m_StartEye;
