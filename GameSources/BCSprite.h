@@ -371,6 +371,7 @@ namespace basecross{
 		shared_ptr<SpriteBaseDraw> m_SpriteDraw;
 		function<void(shared_ptr<Stage>&)> m_Function;
 		bool m_IsSelect;
+		bool m_IsActive;
 		wstring m_BelongGroup;
 
 		shared_ptr<Sprite> m_FrontSprite;
@@ -385,7 +386,7 @@ namespace basecross{
 			m_BelongGroup(group),
 			m_UnSelectTexture(defaultTexture),m_UnSelectColor(Col4()),
 			m_SelectedTexture(selectedTexture), m_SelectedColor(selectedColor),
-			m_IsSelect(false)
+			m_IsSelect(false),m_IsActive(true)
 		{}
 	public:
 
@@ -424,6 +425,13 @@ namespace basecross{
 			SetUpdateActive(false);
 			m_SpriteDraw->SetDrawActive(false);
 			UnSelect();
+		}
+
+		void SetActive(bool flag) {
+			m_IsActive = flag;
+		}
+		bool GetActive() {
+			return m_IsActive;
 		}
 	};
 	//----------------------------------------------------------
@@ -574,14 +582,6 @@ namespace basecross{
 		}
 	};
 
-	//----------------------------------------------------------
-	//																																
-	//	É{Å[Éh																						
-	//																																
-	//----------------------------------------------------------
-
-	class Board : public GameObject {
-
-	};
+	
 }
 //end basecross

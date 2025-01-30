@@ -193,39 +193,5 @@ namespace basecross {
 		app->RegisterTexture(L"STAR5_UI", uiPath + L"star_difficulty5.png");
 		app->RegisterTexture(L"STAR6_UI", uiPath + L"star_difficulty6.png");
 	}
-
-
-
-
-	void SelectButton::OnCreate() {
-		Button::OnCreate();
-		m_BackGroundSprite = GetSprite();
-		Vec3 centerPos = m_BackGroundSprite->GetPos();
-		Vec2 backGroundSize = m_BackGroundSprite->GetSize();
-		Vec3 startPos = Vec3();
-
-		if (m_Difficulty == 1) {
-			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR_UI", centerPos, Vec2(60, 60), true));
-		}
-		else if (m_Difficulty == 2) {
-			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR2_UI", centerPos, Vec2(120, 60), true));
-		}
-		else if (m_Difficulty == 3) {
-			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR3_UI", centerPos, Vec2(180, 60), true));
-		}
-		else if (m_Difficulty == 4) {
-			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR4_UI", centerPos, Vec2(120, 120), true));
-		}
-		else if (m_Difficulty == 5) {
-			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR5_UI", centerPos, Vec2(180, 120), true));
-		}
-		else {
-			AddLockSprite(GetStage()->AddGameObject<Sprite>(L"STAR6_UI", centerPos, Vec2(180, 120), true));
-		}
-
-	}
-	void SelectButton::OnUpdate() {
-		Button::OnUpdate();
-	}
 }
 //end basecross

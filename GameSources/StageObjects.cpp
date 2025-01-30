@@ -27,6 +27,8 @@ namespace basecross{
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
 		GetComponent<Transform>()->SetScale(Vec3(2.0f,1.0f,2.0f));
+
+		GetStage()->AddGameObject<Board>(m_Pos, Vec3(2.0f, 2.0f, 1.0f));
 	}
 	void Goal::OnUpdate() {
 		auto draw = GetComponent<PNTBoneModelDraw>();
@@ -75,5 +77,16 @@ namespace basecross{
 
 			SoundManager::Instance().PlaySE(L"CHECKPOINT_SD",1.0f);
 		}
+	}
+
+	void Board::OnCreate() {
+		auto draw = AddComponent<PNTStaticDraw>();
+		draw->SetMeshResource(L"DEFAULT_SQUARE");
+		draw->SetDiffuse(Col4(0, 0, 0, 1));
+		SetAlphaActive(true);
+
+		m_Trans = GetComponent<Transform>();
+		m_Trans->SetPosition(m_StartPos + Vec3(0,0,0.5f));
+		m_Trans->SetScale(m_Size);
 	}
 }

@@ -7,7 +7,6 @@
 #include "Project.h"
 
 namespace basecross {
-
 	class Block;
 	//--------------------------------------------------------------------------------------
 	//	�E�Q�E�[�E��E��E�X�E�e�E�ہE�W�E�N�E��E��E�X�E��E��E��E�
@@ -275,57 +274,6 @@ namespace basecross {
 
 
 		CloseMenu();
-	}
-	void GameStage::CreateFinishButton(bool flag) {
-		Button::Clear();
-		Vec3 drawPos = Vec3();
-		if (flag) {
-			if (m_StageNumber >= MAX_STAGE - 1) {
-				AddGameObject<Sprite>(L"NEXT_TEXT_UI", Vec3(-400.0f, -160.0f, 0.0f), Vec2(300, 60), true);
-			}
-			else {
-				auto button = AddGameObject<Button>(L"NEXT_TEXT_UI", Vec3(-400.0f, -160.0f, 0.0f), Vec2(300, 60));
-				button->AddSelectEffect(SelectEffect::ChangeSprite);
-
-				button->SetFunction([](shared_ptr<Stage> stage) {
-					auto currentStage = static_pointer_cast<GameStage>(stage);
-					auto nextStageNumber = currentStage->GetStageNumPtr().get();
-					currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", make_shared<int>(*nextStageNumber + 1));
-					});
-				button->SetSelectTex(L"NEXT_TEXT_SELECT_UI");
-			}
-		}
-		if (flag) {
-			drawPos = Vec3(0.0f, -160.0f, 0.0f);
-		}
-		else {
-			drawPos = Vec3(-400.0f, -160.0f, 0.0f);
-		}
-		auto button = AddGameObject<Button>(L"TITLE_TEXT_UI", drawPos, Vec2(300, 60));
-		button->AddSelectEffect(SelectEffect::ChangeSprite);
-
-		button->SetFunction([](shared_ptr<Stage> stage) {
-			stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
-			});
-		button->SetSelectTex(L"TITLE_TEXT_SELECT_UI");
-
-		button = AddGameObject<Button>(L"RESTART_TEXT_UI", Vec3(400.0f, -160.0f, 0.0f), Vec2(300, 60));
-		button->AddSelectEffect(SelectEffect::ChangeSprite);
-
-		button->SetFunction([](shared_ptr<Stage> stage) {
-			auto currentStage = static_pointer_cast<GameStage>(stage);
-			if (currentStage->GetGameMode() == GameMode::Clear) {
-				currentStage->PostEvent(0.0f, currentStage, App::GetApp()->GetScene<Scene>(), L"ToGameStage", currentStage->GetStageNumPtr());
-			}
-			else {
-				currentStage->InitializeStage();
-			}
-			});
-		button->SetSelectTex(L"RESTART_TEXT_SELECT_UI");
-
-		if (!flag) return;
-
-		
 	}
 	void GameStage::CreateMap() {
 		
@@ -645,7 +593,6 @@ namespace basecross {
 		PlayerRespawn();
 		CloseMenu();
 		ButtonManager::instance->CloseAll();
-		Button::Clear();
 		CreateMenu();
 		m_MenuSelect = 0;
 

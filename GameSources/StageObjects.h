@@ -35,5 +35,22 @@ namespace basecross{
 
 		virtual void OnCollisionEnter(shared_ptr<GameObject>& Other)override;
 	};
+
+	//----------------------------------------------------------
+	//																																
+	//	É{Å[Éh																						
+	//																																
+	//----------------------------------------------------------
+
+	class Board : public GameObject {
+		shared_ptr<Transform> m_Trans;
+		Vec3 m_StartPos;
+		Vec3 m_Size;
+	public:
+		Board(shared_ptr<Stage>& ptr,Vec3 pos,Vec3 size) : GameObject(ptr),m_StartPos(pos),m_Size(size) {}
+		virtual ~Board() {}
+
+		virtual void OnCreate()override;
+	};
 }
 //end basecross

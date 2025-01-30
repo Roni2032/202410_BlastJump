@@ -5,7 +5,6 @@
 
 #pragma once
 #include "stdafx.h"
-#include "Button.h"
 
 namespace basecross {
 	class Fade;
@@ -32,17 +31,6 @@ namespace basecross {
 		virtual void OnDestroy()override;
 	};
 
-	class SelectButton : public Button {
-	public:
-		int m_Difficulty;
-		shared_ptr<Sprite> m_BackGroundSprite;
-		SelectButton(const shared_ptr<Stage>& ptr, const wstring& texKey, Vec3 pos, Vec2 size,int difficulty) :
-			Button(ptr,texKey,pos,size),m_Difficulty(difficulty)
-		{}
-		virtual ~SelectButton() {}
-
-		virtual void OnCreate() override;
-		virtual void OnUpdate() override;
-	};
+	
 }
 //end basecross

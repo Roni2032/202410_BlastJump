@@ -390,7 +390,12 @@ namespace basecross{
 				if (abs(inputData.m_MoveAmount) > 1) {
 					if (!CheckOverIndex(inputData.m_MoveAmount)) continue;
 				}
-				m_SelectIndexes[m_UsingGroup] += inputData.m_MoveAmount;
+				int checkButton = m_SelectIndexes[m_UsingGroup] + inputData.m_MoveAmount;
+				checkButton = min(m_ButtonGroup[m_UsingGroup].size() - 1, checkButton);
+				checkButton = max(0, checkButton);
+				if (m_ButtonGroup[m_UsingGroup][checkButton]->GetActive()) {
+					m_SelectIndexes[m_UsingGroup] += inputData.m_MoveAmount;
+				}
 			}
 		}
 		LimitIndex();

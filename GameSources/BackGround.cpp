@@ -13,7 +13,7 @@ namespace basecross{
 		draw->SetTextureResource(L"BACKGROUND_TEX");
 		auto trans = GetComponent<Transform>();
 		trans->SetPosition(m_Pos);
-		trans->SetScale(Vec3(15.0f,m_Scale.y,1));
+		trans->SetScale(Vec3(15.0f,m_Scale.y,2));
 
 		SetDrawLayer(0);
 	}

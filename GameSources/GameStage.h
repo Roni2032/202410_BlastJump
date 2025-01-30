@@ -75,7 +75,6 @@ namespace basecross {
 		void CreateParticle();
 		void LoadMap();
 		void CreateMenu();
-		void CreateFinishButton(bool flag);
 		void CreateEnemy();
 		void BlockUpdateActive();
 	public:
@@ -192,6 +191,11 @@ namespace basecross {
 	};
 
 
+	class StageData {
+	public:
+		const static wstring stageFileNames[];
+		static bool isStageClear[];
+	};
 }
 //end basecross
 

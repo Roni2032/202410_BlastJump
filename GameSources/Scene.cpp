@@ -26,28 +26,12 @@ namespace basecross{
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
-			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
-			const auto boneModelIdle = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerIdole.bmf");
-			const auto boneModelMove = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerMove.bmf");
-			const auto boneModelJump = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerJump.bmf");
-			const auto boneModelThrowDefault = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerDefaultThrow.bmf");
-			const auto boneModelThrowUp = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowUp.bmf");
-			const auto boneModelThrowDown = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowDown.bmf");
-			const auto boneModelWin = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerWin.bmf");
-			const auto boneModelLose = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerLose.bmf");
 
+			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
 			const auto boneModelFull = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
 
-			app->RegisterResource(L"PLAYER_MD_IDLE", boneModelIdle);
-			app->RegisterResource(L"PLAYER_MD_MOVE", boneModelMove);
-			app->RegisterResource(L"PLAYER_MD_JUMP", boneModelJump);
-			app->RegisterResource(L"PLAYER_MD_THROW_DEFAULT", boneModelThrowDefault);
-			app->RegisterResource(L"PLAYER_MD_THROW_UP", boneModelThrowUp);
-			app->RegisterResource(L"PLAYER_MD_THROW_DOWN", boneModelThrowDown);
-			app->RegisterResource(L"PLAYER_MD_WIN", boneModelWin);
-			app->RegisterResource(L"PLAYER_MD_LOSE", boneModelLose);
-
 			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"CheckPoint.bmf");
+
 			app->RegisterResource(L"CHECKPOINT_MD", boneModel);
 			app->RegisterTexture(L"CHECKPOINT_TEX", modelPath + L"save.png");
 
@@ -57,12 +41,9 @@ namespace basecross{
 
 			app->RegisterTexture(L"FADE_TEX", texPath + L"fade.png");
 
-			//�N���A����F��ݒ�
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
 			SetClearColor(Col);
-			//�������g�ɃC�x���g�𑗂�
-			//����ɂ��e�X�e�[�W��I�u�W�F�N�g��Create���ɃV�[���ɃA�N�Z�X�ł���
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
 			SoundManager::Instance().RegisterSounds();
@@ -76,7 +57,6 @@ namespace basecross{
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
-		Button::Clear();
 		if (event->m_MsgStr == L"ToGameStage") {
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
