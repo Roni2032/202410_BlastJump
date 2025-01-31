@@ -64,33 +64,6 @@ namespace basecross{
 			}
 			auto data = m_StageData[*stage];
 			ResetActiveStage<GameStage>(data.m_FileName, *stage, data.m_BombNum, data.m_ScrollSpeed);
-
-			/*switch (*stage) {
-			case 0:
-				ResetActiveStage<GameStage>(L"Tutorial01.csv",*stage,20,0.0f);
-				break;
-			case 1:
-				ResetActiveStage<GameStage>(L"Tutorial02.csv", *stage,25,0.25f);
-				break;
-			case 2:
-				ResetActiveStage<GameStage>(L"Tutorial03.csv", *stage,30);
-				break;
-			case 3:
-				ResetActiveStage<GameStage>(L"Tutorial04.csv", *stage, 30);
-				break;
-			case 4:
-				ResetActiveStage<GameStage>(L"Tutorial05.csv", *stage, 30);
-				break;
-			case 5:
-				ResetActiveStage<GameStage>(L"Tutorial06.csv", *stage, 99);
-				break;
-			case 6:
-				ResetActiveStage<GameStage>(L"Tutorial07.csv", *stage, 30);
-				break;
-			default:
-				ResetActiveStage<TitleStage>();
-				break;
-			}*/
 			
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {

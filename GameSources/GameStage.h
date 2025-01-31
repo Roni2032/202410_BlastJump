@@ -73,8 +73,7 @@ namespace basecross {
 		void CreateMap();
 		void CreateParticle();
 		void LoadMap();
-		void CreateMenu();
-		void CreateEnemy();
+		void CreateButton();
 		void BlockUpdateActive();
 	public:
 		//\’z‚Æ”jŠü

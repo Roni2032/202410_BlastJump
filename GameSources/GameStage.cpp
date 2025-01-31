@@ -57,7 +57,7 @@ namespace basecross {
 
 			m_SkipText = AddGameObject<Sprite>(L"SKIP_TEXT_UI", Vec3(450, -310,0), Vec2(150, 50));
 			
-			CreateMenu();
+			CreateButton();
 		}
 		catch (...) {
 			throw;
@@ -175,7 +175,7 @@ namespace basecross {
 		m_CsvMap.ReadCsv();
 	}
 	
-	void GameStage::CreateMenu() {
+	void GameStage::CreateButton() {
 		m_MenuBackGround = AddGameObject<Sprite>(L"MENU_BACKGROUND_UI", Vec3(0, 50, 0), Vec2(800, 950), true);
 		m_MenuText = AddGameObject<Sprite>(L"MENU_TEXT_UI", Vec3(0, 250, 0), Vec2(256, 64), true);
 		m_SendStageNumber = make_shared<int>(m_StageNumber);
@@ -498,7 +498,7 @@ namespace basecross {
 		PlayerRespawn();
 		CloseMenu();
 		ButtonManager::instance->CloseAll();
-		CreateMenu();
+		CreateButton();
 		m_MenuSelect = 0;
 
 		for (auto& object : m_DeleteToRestartObjects) {
