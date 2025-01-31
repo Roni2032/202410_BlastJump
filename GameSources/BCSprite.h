@@ -616,6 +616,24 @@ namespace basecross{
 		
 	};
 
-	
+	//----------------------------------------------------------
+	//																																
+	//	”Âƒ|ƒŠ—p																					
+	//																																
+	//----------------------------------------------------------
+
+	class Board : public GameObject {
+		shared_ptr<PNTStaticDraw> m_Draw;
+		shared_ptr<Transform> m_Trans;
+		Vec3 m_StartPos;
+		Vec3 m_Size;
+
+		wstring m_TexKey;
+	public:
+		Board(shared_ptr<Stage>& ptr, const wstring& key,Vec3 pos, Vec3 size) : GameObject(ptr),m_TexKey(key), m_StartPos(pos), m_Size(size) {}
+		virtual ~Board() {}
+
+		virtual void OnCreate()override;
+	};
 }
 //end basecross

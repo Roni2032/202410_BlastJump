@@ -33,6 +33,7 @@ namespace basecross {
 
 			SoundManager::Instance().PlayBGM(L"BGM_SD",0.2f);
 			AddGameObject<ButtonManager>();
+			ButtonManager::instance->SetSound(L"BUTTON_SD");
 			Block::CollisionObjects.clear();
 			CreateResource();
 			CreateViewLight();
@@ -75,42 +76,6 @@ namespace basecross {
 
 			auto pad = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 			if (pad.bConnected) {
-				//if (IsFinishGame()) {
-
-				//	if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-				//		//���j���[����
-				//		Button::Function(m_MenuSelect);
-				//		SoundManager::Instance().PlaySE(L"BUTTON_SD");
-				//	}
-				//	//�I��
-				//	if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_LEFT) {
-				//		m_MenuSelect--;
-				//	}
-				//	else if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_RIGHT) {
-				//		m_MenuSelect++;
-				//	}
-				//	Button::LimitIndex(m_MenuSelect);
-
-				//	Button::SelectButton(m_MenuSelect);
-
-				//}
-				//else if (IsOpenMenu()) {
-				//	if (pad.wPressedButtons & XINPUT_GAMEPAD_A) {
-				//		//���j���[����
-				//		Button::Function(m_MenuSelect);
-				//		SoundManager::Instance().PlaySE(L"BUTTON_SD");
-				//	}
-				//	//�I��
-				//	if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_UP) {
-				//		m_MenuSelect--;
-				//	}
-				//	else if (pad.wPressedButtons & XINPUT_GAMEPAD_DPAD_DOWN) {
-				//		m_MenuSelect++;
-				//	}
-				//	Button::LimitIndex(m_MenuSelect);
-
-				//	Button::SelectButton(m_MenuSelect);
-				//}
 				if (IsCanActionMenu() && pad.wPressedButtons & XINPUT_GAMEPAD_START) {
 
 					if (IsOpenMenu()) {
@@ -398,14 +363,25 @@ namespace basecross {
 			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,range);
 			break;
 		}
+		case BlockTypes::BOARD: {
+			auto tex = mapData.GetData(L"texture");
+			auto sizeStr = mapData.GetData(L"size");
+			Vec3 size = Vec3(1);
+			if (sizeStr != L"") {
+				size = BlockData::WstrToVec3(sizeStr);
+			}
+			obj = AddGameObject<Board>(tex, pos, size);
+			break;
+		}
 		case BlockTypes::ADDBOMB: {
 			
 			obj = AddGameObject<BombItem>(pos, 3);
+			m_MapData[mapIndex.y][mapIndex.x].m_Id = BlockTypes::AIR;
 			break;
 		}
 		case BlockTypes::GOAL:
 			m_Goal = AddGameObject<Goal>(pos + Vec3(0,0,1));
-			m_MapData[mapIndex.y][mapIndex.x].m_Id = 0;
+			m_MapData[mapIndex.y][mapIndex.x].m_Id = BlockTypes::AIR;
 			break;
 		case BlockTypes::CHECKPOINT:
 			obj = AddGameObject<CheckPoint>(pos);
@@ -452,9 +428,12 @@ namespace basecross {
 	}
 	void GameStage::LoadMap() {
 		auto camera = GetView()->GetTargetCamera();
+		Vec3 at = camera->GetAt();
+		if (at.y == m_BeforeCameraY) return;
+		m_BeforeCameraY = at.y;
 		auto playerTrans = m_Player->GetComponent<Transform>();
 		Vec3 playerPos = playerTrans->GetWorldPosition();
-		Vec3 mapIndex = GetMapIndex(camera->GetAt());
+		Vec3 mapIndex = GetMapIndex(at);
 		int maxLoadIndexY = mapIndex.y + m_LoadStageSize.y;
 		int minLoadIndexY = mapIndex.y - m_LoadStageSize.y;
 		//�v���C���[�̎��ӂ܂ł͍Œ�ł���������
@@ -498,7 +477,6 @@ namespace basecross {
 		PlayerRespawn();
 		CloseMenu();
 		ButtonManager::instance->CloseAll();
-		CreateButton();
 		m_MenuSelect = 0;
 
 		for (auto& object : m_DeleteToRestartObjects) {

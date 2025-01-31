@@ -434,5 +434,20 @@ namespace basecross{
 	void ButtonManager::SetSound(const wstring& sound) {
 		m_ClickSound = sound;
 	}
+
+
+
+	void Board::OnCreate() {		
+		m_Draw = AddComponent<PNTStaticDraw>();
+		m_Draw->SetMeshResource(L"DEFAULT_SQUARE");
+		if (m_TexKey != L"") {
+			m_Draw->SetTextureResource(m_TexKey);
+		}
+		SetAlphaActive(true);
+
+		m_Trans = GetComponent<Transform>();
+		m_Trans->SetPosition(m_StartPos);
+		m_Trans->SetScale(m_Size);
+	}
 }
 //end basecross

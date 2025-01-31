@@ -66,6 +66,7 @@ namespace basecross {
 		Vec3 m_LoadStageSize;
 		Vec3 m_DefaultStartPos;
 
+		float m_BeforeCameraY;
 		vector<shared_ptr<GameObject>> m_DeleteToRestartObjects;
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();
@@ -77,14 +78,14 @@ namespace basecross {
 		void BlockUpdateActive();
 	public:
 		//\’z‚Æ”jŠü
-		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,7,0)),m_DefaultStartPos(Vec3(0)),
+		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10, const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
+			m_LoadStageSize(Vec3(20, 7, 0)), m_DefaultStartPos(Vec3(0)),
 			m_BombNum(bombNum),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
 			m_ScrollSpeed(scrollSpeed),
-			m_Mode(GameMode::View),m_BeforeMode(GameMode::View),
-			m_RespawnBomb(0)
+			m_Mode(GameMode::View), m_BeforeMode(GameMode::View),
+			m_RespawnBomb(0), m_BeforeCameraY(0)
 		{}
 		virtual ~GameStage() {}
 		//‰Šú‰»
