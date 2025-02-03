@@ -375,7 +375,7 @@ namespace basecross{
 		bool m_IsActive;
 		wstring m_BelongGroup;
 
-		shared_ptr<Sprite> m_FrontSprite;
+		vector<shared_ptr<Sprite>> m_FrontSprite;
 
 		wstring m_UnSelectTexture;
 		wstring m_SelectedTexture;
@@ -407,9 +407,18 @@ namespace basecross{
 		void AddFunction(function<void(shared_ptr<SpriteButton>&)> func) {
 			m_AddFunction = func;
 		}
-		void SetFrontSprite(shared_ptr<Sprite>& sprite) {
-			m_FrontSprite = sprite;
-			m_FrontSprite->GetComponent<Transform>()->SetParent(GetGameObject());
+		vector<shared_ptr<Sprite>> GetFrontSprite() {
+			return m_FrontSprite;
+		}
+		shared_ptr<Sprite> GetFrontSprite(int index) {
+			if (m_FrontSprite.size() <= index) {
+				return nullptr;
+			}
+			return m_FrontSprite[index];
+		}
+		void AddFrontSprite(shared_ptr<Sprite>& sprite) {
+			sprite->GetComponent<Transform>()->SetParent(GetGameObject());
+			m_FrontSprite.push_back(sprite);
 		}
 		void SetFunction(function<void(shared_ptr<Stage>&)> func) {
 			m_Function = func;
@@ -466,6 +475,7 @@ namespace basecross{
 		
 		map<wstring, vector<shared_ptr<SpriteButton>>> m_ButtonGroup;
 		map<wstring, int> m_SelectIndexes;
+		map<wstring, Vec3> m_GroupMovementAmount;
 		map<wstring, vector<InputData>> m_InputDates;
 
 		wstring m_UsingGroup;
@@ -497,6 +507,13 @@ namespace basecross{
 			}
 			else {
 				return 0;
+			}
+		}
+		void SetMoveAmount(const wstring& group, Vec3 target);
+
+		Vec3 GetMoveAmount(const wstring& group) {
+			if (m_GroupMovementAmount.find(group) != end(m_GroupMovementAmount)) {
+				return m_GroupMovementAmount[group];
 			}
 		}
 		void SetSound(const wstring& sound);
@@ -565,6 +582,9 @@ namespace basecross{
 			}
 			return true;
 		}
+		wstring GetUseGroup() {
+			return m_UsingGroup;
+		}
 		void UseGroup(const wstring& group) {
 			if (m_SelectIndexes.find(group) != end(m_SelectIndexes)) {
 				m_SelectIndexes[m_UsingGroup] = 0;
@@ -583,6 +603,7 @@ namespace basecross{
 				buttons.push_back(button);
 				m_ButtonGroup.emplace(group, buttons);
 				m_SelectIndexes.emplace(group, 0);
+				m_GroupMovementAmount.emplace(group, Vec3());
 			}
 			button->SetOrder(m_ButtonGroup[group].size() - 1);
 		}
@@ -593,10 +614,10 @@ namespace basecross{
 			}
 		}
 
-		void SetFrontSprite(const wstring& group,int index,shared_ptr<Sprite>& sprite) {
+		void AddFrontSprite(const wstring& group,int index,shared_ptr<Sprite>& sprite) {
 			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
-				if (m_ButtonGroup[group].size() < index) {
-					m_ButtonGroup[group][index]->SetFrontSprite(sprite);
+				if (m_ButtonGroup[group].size() > index) {
+					m_ButtonGroup[group][index]->AddFrontSprite(sprite);
 				}
 			}
 		}
