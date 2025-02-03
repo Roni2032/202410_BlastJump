@@ -50,8 +50,9 @@ namespace basecross{
 
 	void BombThrowOrbit::OnUpdate() {
 		auto draw = GetComponent<PNTStaticInstanceDraw>();
-
 		draw->ClearMatrixVec();
+		if (GetTypeStage<GameStage>()->IsFinishGame()) return;
+
 		float renderTime = 1.0f / m_OrbitNum;
 		Vec3 bombGravity = Vec3(0, - 9.8f,0);
 		auto player = m_player.lock();

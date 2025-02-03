@@ -425,6 +425,24 @@ namespace basecross{
 			m_ButtonGroup[m_UsingGroup][m_SelectIndexes[m_UsingGroup]]->Func();
 			m_IsActive = false;
 		}
+		for (auto& groupMovementAmount : m_GroupMovementAmount) {
+			Vec3 movementAmount = groupMovementAmount.second;
+			if (movementAmount.length() != 0) {
+				movementAmount = movementAmount.normalize();
+				movementAmount *= 30.0f;
+				if (groupMovementAmount.second.length() < movementAmount.length()) {
+					movementAmount = groupMovementAmount.second;
+				}
+				for (auto& button : m_ButtonGroup[groupMovementAmount.first]) {
+					auto trans = button->GetGameObject()->GetComponent<Transform>();
+					Vec3 pos = trans->GetPosition();
+					pos += movementAmount;
+					trans->SetPosition(pos);
+				}
+				groupMovementAmount.second -= movementAmount;
+			}
+		}
+		
 	}
 
 	void ButtonManager::OnDestroy() {
@@ -434,7 +452,13 @@ namespace basecross{
 	void ButtonManager::SetSound(const wstring& sound) {
 		m_ClickSound = sound;
 	}
-
+	void ButtonManager::SetMoveAmount(const wstring& group, Vec3 target) {
+		if (m_GroupMovementAmount.find(group) != end(m_GroupMovementAmount)) {
+			if (m_GroupMovementAmount[group].length() == 0) {
+				m_GroupMovementAmount[group] = target;
+			}
+		}
+	}
 
 
 	void Board::OnCreate() {		
@@ -449,5 +473,7 @@ namespace basecross{
 		m_Trans->SetPosition(m_StartPos);
 		m_Trans->SetScale(m_Size);
 	}
+
+	
 }
 //end basecross
