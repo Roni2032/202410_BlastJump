@@ -30,7 +30,7 @@ namespace basecross{
 			Vec3 playerPos = playerTransform->GetWorldPosition();
 
 			float speedBoost = 1.0f;
-			if (m_Stage->IsFinishGame()) {
+			if (m_Stage->GetGameMode() == GameMode::Clear) {
 				if (at.y < stageTop) {
 					speedBoost = 8.0f;
 				}

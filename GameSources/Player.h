@@ -150,6 +150,7 @@ namespace basecross {
 		Vec3 GetBombVec() { return m_BombVec; }
 		void AddHasBomb(const uint8_t n) { m_HasBomb += n; }
 		void SubtractHasBomb(const uint8_t n) { m_HasBomb -= n; }
+		void Respawn() { m_IsDead = false; }
 		void PlayerStun(float time);
 	};
 

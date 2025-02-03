@@ -27,7 +27,7 @@ namespace basecross {
 			CreateResource();
 			AddGameObject<Sprite>(L"BACKGROUND_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
 			
-			m_Tab = AddGameObject<Sprite>(L"DIFFICULTY_TEXT_UI", Vec3(0, 300, 0), Vec2(400, 100), true);
+			m_Tab = AddGameObject<Sprite>(L"TUTORIAL_TAB_UI", Vec3(0, 300, 0), Vec2(400, 100), true);
 			Vec3 firstPos = Vec3(-400, 120, 0);
 
 			ButtonManager::Create(GetThis<Stage>(), L"tutorial", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(-400, 120, 0), Vec2(240, 240),
@@ -61,7 +61,7 @@ namespace basecross {
 					currentStage->CreateFade(5);
 				});
 
-			ButtonManager::Create(GetThis<Stage>(), L"stage", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(840, 120, 0), Vec2(240, 240),
+			ButtonManager::Create(GetThis<Stage>(), L"stage", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(880, 120, 0), Vec2(240, 240),
 				[](shared_ptr<Stage>& stage) {
 					auto currentStage = static_pointer_cast<SelectStage>(stage);
 					currentStage->CreateFade(6);
@@ -76,7 +76,7 @@ namespace basecross {
 					auto currentStage = static_pointer_cast<SelectStage>(stage);
 					currentStage->CreateFade(8);
 				});
-			ButtonManager::Create(GetThis<Stage>(), L"stage", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(840, -120, 0), Vec2(240, 240),
+			ButtonManager::Create(GetThis<Stage>(), L"stage", L"STAGESELECT_FALSE_UI", L"STAGESELECT_TRUE_UI", Vec3(880, -120, 0), Vec2(240, 240),
 				[](shared_ptr<Stage>& stage) {
 					auto currentStage = static_pointer_cast<SelectStage>(stage);
 					currentStage->CreateFade(9);
@@ -103,10 +103,10 @@ namespace basecross {
 				ButtonManager::instance->AddFrontSprite(L"tutorial", i, difficultySprites[i]);
 			}
 			difficultySprites.clear();
-			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR_UI", Vec3(840, 120, 0), Vec2(60, 60), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR_UI", Vec3(880, 120, 0), Vec2(60, 60), true));
 			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR2_UI", Vec3(1280, 120, 0), Vec2(120, 60), true));
 			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR3_UI", Vec3(1680, 120, 0), Vec2(180, 60), true));
-			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR4_UI", Vec3(840, -120, 0), Vec2(120, 120), true));
+			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR4_UI", Vec3(880, -120, 0), Vec2(120, 120), true));
 			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR5_UI", Vec3(1280, -120, 0), Vec2(180, 120), true));
 			difficultySprites.push_back(AddGameObject<Sprite>(L"STAR6_UI", Vec3(1680, -120, 0), Vec2(180, 120), true));
 			
@@ -189,6 +189,9 @@ namespace basecross {
 			button->SetSelectTex(L"STAGESELECT_TRUE_UI");*/
 
 			AddGameObject<Sprite>(L"DPAD_UI", Vec3(0, -300, 0), Vec2(281.6f, 140.8f), true);
+			m_LArrow = AddGameObject<Sprite>(L"LB_PUSH", Vec3(-566, 0, 0), Vec2(128, 128), true);
+			m_RArrow = AddGameObject<Sprite>(L"RB_PUSH", Vec3(566, 0, 0), Vec2(128, 128), true);
+
 
 			SoundManager::Instance().PlayBGM(L"SELECT_BGM", 1.0f);
 		}
@@ -260,10 +263,25 @@ namespace basecross {
 		else {
 			m_Tab->SetDrawActive(true);
 		}
+		if (ButtonManager::instance->CompareUseGroup(L"stage")) {
+			m_LArrow->SetDrawActive(true);
+			m_RArrow->SetDrawActive(false);
+
+			m_Tab->GetComponent<SpriteBaseDraw>()->SetTextureResource(L"STAGESELECT_TAB_UI");
+		}
+		else if (ButtonManager::instance->CompareUseGroup(L"tutorial")) {
+			m_LArrow->SetDrawActive(false);
+			m_RArrow->SetDrawActive(true);
+			m_Tab->GetComponent<SpriteBaseDraw>()->SetTextureResource(L"TUTORIAL_TAB_UI");
+		}
+		if (ButtonManager::instance->GetMoveAmount(L"stage").length() != 0 || ButtonManager::instance->GetMoveAmount(L"tutorial").length() != 0) {
+			m_LArrow->SetDrawActive(false);
+			m_RArrow->SetDrawActive(false);
+		}
 
 		if (ctrl.bConnected) {
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_LEFT_SHOULDER) {
-				if (ButtonManager::instance->GetUseGroup() == L"stage") {
+				if (ButtonManager::instance->CompareUseGroup(L"stage")) {
 					
 					ButtonManager::instance->SetMoveAmount(L"stage", Vec3(1280, 0, 0));
 					ButtonManager::instance->SetMoveAmount(L"tutorial", Vec3(1280, 0, 0));
@@ -273,7 +291,7 @@ namespace basecross {
 				}
 			}
 			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_RIGHT_SHOULDER) {
-				if (ButtonManager::instance->GetUseGroup() == L"tutorial") {
+				if (ButtonManager::instance->CompareUseGroup(L"tutorial")) {
 					ButtonManager::instance->SetMoveAmount(L"stage", Vec3(-1280, 0, 0));
 					ButtonManager::instance->SetMoveAmount(L"tutorial", Vec3(-1280, 0, 0));
 					if (ButtonManager::instance->GetMoveAmount(L"stage") == Vec3(-1280, 0, 0)) {
@@ -300,6 +318,8 @@ namespace basecross {
 		app->RegisterTexture(L"TITLE_UI", uiPath + L"Title.png");
 		app->RegisterTexture(L"PUSH_A_UI", uiPath + L"PushA.png");
 		app->RegisterTexture(L"DIFFICULTY_TEXT_UI", uiPath + L"Diffuculty.png");
+		app->RegisterTexture(L"TUTORIAL_TAB_UI", uiPath + L"TutorialTab.png");
+		app->RegisterTexture(L"STAGESELECT_TAB_UI", uiPath + L"StageSelectTab.png");
 
 		app->RegisterTexture(L"STAGESELECT_FALSE_UI", uiPath + L"Noselect.png");
 		app->RegisterTexture(L"STAGESELECT_TRUE_UI", uiPath + L"Yesselect.png");
@@ -314,6 +334,9 @@ namespace basecross {
 
 		app->RegisterTexture(L"ROCK_UI", uiPath + L"Rock.png");
 		app->RegisterTexture(L"ROCK2_UI", uiPath + L"Rock2.png");
+
+		app->RegisterTexture(L"RB_PUSH", uiPath + L"RB_moveStage.png");
+		app->RegisterTexture(L"LB_PUSH", uiPath + L"LB_moveTutorial.png");
 	}
 }
 //end basecross

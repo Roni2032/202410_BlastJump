@@ -29,8 +29,9 @@ namespace basecross{
 		float diffY = goalPos.y - playerPos.y;
 
 		float percent = (m_StageLength - diffY) / m_StageLength;
-
-		m_PlayerSprite->SetPos(Vec3(525.0f,BAR_MIN_POSITION_Y + m_BarLength * percent,0));
+		if (percent >= 0) {
+			m_PlayerSprite->SetPos(Vec3(525.0f, BAR_MIN_POSITION_Y + m_BarLength * percent, 0));
+		}
 	}
 }
 //end basecross

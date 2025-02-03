@@ -20,6 +20,8 @@ namespace basecross {
 		wstring gameMode;
 
 		shared_ptr<Sprite> m_Tab;
+		shared_ptr<Sprite> m_LArrow;
+		shared_ptr<Sprite> m_RArrow;
 	public:
 		SelectStage(const wstring& mode) : m_Select(0),m_IsCanNextSelect(1.0f),gameMode(mode){}
 		virtual ~SelectStage() {}
