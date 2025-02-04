@@ -15,7 +15,7 @@ namespace basecross{
 		NORMAL,
 		UNBREAK,
 		EXPLODE,
-		NONE,
+		BOARD,
 		ADDBOMB,
 		GOAL,
 		CHECKPOINT,

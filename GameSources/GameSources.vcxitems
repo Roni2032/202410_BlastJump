@@ -22,11 +22,11 @@
     <ClInclude Include="$(MSBuildThisFileDirectory)Bomb.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BombItem.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BombThrowArrow.h" />
-    <ClInclude Include="$(MSBuildThisFileDirectory)Button.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Character.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Blocks.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)EnemyState.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)Fadeout.h" />
+    <ClInclude Include="$(MSBuildThisFileDirectory)GameScene.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStage.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)BCSprite.h" />
     <ClInclude Include="$(MSBuildThisFileDirectory)GameStageH.h" />
@@ -56,11 +56,11 @@
     <ClCompile Include="$(MSBuildThisFileDirectory)Bomb.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BombItem.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BombThrowArrow.cpp" />
-    <ClCompile Include="$(MSBuildThisFileDirectory)Button.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Character.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Blocks.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)EnemyState.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)Fadeout.cpp" />
+    <ClCompile Include="$(MSBuildThisFileDirectory)GameScene.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStage.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)BCSprite.cpp" />
     <ClCompile Include="$(MSBuildThisFileDirectory)GameStageH.cpp" />

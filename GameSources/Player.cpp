@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief E½vE½E½E½CE½E½E½[E½È‚Çï¿½E½E½
+@brief ï¿½Eï¿½vï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½Cï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½[ï¿½Eï¿½È‚Çï¿½ï¿½Eï¿½ï¿½Eï¿½
 */
 
 #include "stdafx.h"
@@ -16,7 +16,7 @@ namespace basecross {
 	void Player::OnCreate()
 	{
 		PlayerInitDraw();
-		PlayerInitBCGravity(true); //d—Í‚ğæ‚É“Ç‚İ‚Ü‚¹‚é‚±‚Æ
+		PlayerInitBCGravity(true); //ï¿½dï¿½Í‚ï¿½ï¿½É“Ç‚İï¿½ï¿½Ü‚ï¿½ï¿½é‚±ï¿½ï¿½
 		PlayerInitBCCollObb();
 		PlayerInitTransform(Vec3(3.0f, 2.0f, 0.0f), Vec3(0.5f, 0.5f, 0.5f));
 
@@ -92,30 +92,33 @@ namespace basecross {
 	void Player::PlayerInitDraw()
 	{
 		m_Draw = AddComponent<PNTBoneModelDraw>();
-		m_Draw->SetMeshResource(m_PlayerModelIdle);
+		m_Draw->SetMeshResource(m_PlayerModelFull);
 		m_Draw->SetTextureResource(m_PlayerModelTex);
 		m_ModelSpanMat.affineTransformation
 		(
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransIdle
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
-		const uint8_t useFps = 60;
+		const uint8_t animationFrameLength = 60;
+		const float useFps = 60.0f;
 
-		m_Draw->AddAnimation(m_PlayerModelAnimIdle, 0, useFps, false, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimMove, 0, useFps, true, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimJump, 0, useFps, false, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, 0, useFps, false, 150);
-		m_Draw->AddAnimation(m_PlayerModelAnimThrowUp, 0, useFps, false, 150);
-		m_Draw->AddAnimation(m_PlayerModelAnimThrowDown, 0, useFps, false, 120);
-		m_Draw->AddAnimation(m_PlayerModelAnimWin, 0, useFps, true, 60);
-		m_Draw->AddAnimation(m_PlayerModelAnimLose, 0, useFps, false, 60);
+
+		m_Draw->AddAnimation(m_PlayerModelAnimIdle,         m_StartAnimationFrame[ModelAnimation::Idle], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimMove,         m_StartAnimationFrame[ModelAnimation::Move], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimJump,         m_StartAnimationFrame[ModelAnimation::Jump], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimThrowDefault, m_StartAnimationFrame[ModelAnimation::ThrowDefault], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimThrowUp,      m_StartAnimationFrame[ModelAnimation::ThrowUp], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimThrowDown,    m_StartAnimationFrame[ModelAnimation::ThrowDown], animationFrameLength, false, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimWin,          m_StartAnimationFrame[ModelAnimation::Win], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimLose,         m_StartAnimationFrame[ModelAnimation::Lose], animationFrameLength, true, useFps);
+		m_Draw->AddAnimation(m_PlayerModelAnimStun,         m_StartAnimationFrame[ModelAnimation::Stun], animationFrameLength, false, useFps);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimIdle);
-		m_Draw->SetMeshResource(m_PlayerModelIdle);
+		m_Draw->SetMeshResource(m_PlayerModelFull);
 	}
 	
 	void Player::PlayerInitBCCollObb()
@@ -156,16 +159,20 @@ namespace basecross {
 
 		if (GetIsInGame() == false) { return; }
 		
-		if (m_IsStun) {
-			if (m_StunTime > 0) {
+		if (m_IsStun) 
+		{
+			if (m_StunTime > 0) 
+			{
 				m_StunTime -= deltaTime;
 			}
-			else {
+			else 
+			{
 				m_StunTime = 0.0f;
 				m_IsStun = false;
 			}
 			return;
 		}
+
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		float smoothWalkSpeed = cntlMoveVec.x * m_WalkSpeed;
 		float smoothWalkSpeedAir = m_AirLateralMovementSave * m_WalkSpeed;
@@ -226,7 +233,7 @@ namespace basecross {
 		if (IsCanBombCreate() == false) { return; }
 
 		auto getStage = GetStage();
-		getStage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.5f);
+		getStage->AddGameObject<Bomb>(m_Pos + Vec3(0.0f,0.5f,0), m_BombVec, 3.0f, 3.0f, 18.5f);
 
 		SubtractHasBomb(1);
 
@@ -272,7 +279,7 @@ namespace basecross {
 
 		if (m_IsDead) 
 		{ 
-			GetTypeStage<GameStage>()->GameOver(); 
+			GetTypeStage<GameStage>()->GameOver();
 			PlayerAnimationChangeDeath();
 		}
 	}
@@ -285,7 +292,7 @@ namespace basecross {
 
 	bool Player::GetIsInGame()
 	{
-		if (GetTypeStage<GameStage>()->IsInGame()) { return true; }
+		if (GetTypeStage<GameStage>()->IsPlaying()) { return true; }
 		return false;
 	}
 
@@ -294,15 +301,21 @@ namespace basecross {
 		float deltaTime = App::GetApp()->GetElapsedTime();
 		m_Draw->UpdateAnimation(deltaTime);
 
+		//ï¿½Êíï¿½Å‚È‚ï¿½ï¿½ï¿½ÎIï¿½ï¿½
 		if (GetIsClear() == true) { return; }
 		if (GetIsInGame() == false) { return; }
 
+		//ï¿½Xï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Iï¿½ï¿½
+		if (m_IsStun) { return; }
+
 		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
+		//ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		if (cntlMoveVec.x > 0.0f) { m_ModelRotVec.y = -XM_PIDIV2; }
 		if (cntlMoveVec.x < 0.0f) { m_ModelRotVec.y = XM_PIDIV2; }
 
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ÄAï¿½ï¿½ï¿½eï¿½ğ“Š‚ï¿½ï¿½Ä‚ï¿½ï¿½ç‚¸ï¿½Aï¿½nï¿½ï¿½É‚ï¿½ï¿½é
 		if (m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
@@ -310,24 +323,24 @@ namespace basecross {
 				m_ModelScale,
 				m_ModelRotOrigin,
 				m_ModelRotVec,
-				m_ModelTransMove
+				m_ModelTrans
 			);
 			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 			if (getCurrentAnim == m_PlayerModelAnimMove) { return; }
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimMove);
-			m_Draw->SetMeshResource(m_PlayerModelMove);
 
 		}
 
-		if (!m_IsMoving && !m_IsBombCreate && !m_IsJumping)
+		//ï¿½~ï¿½Ü‚ï¿½ï¿½Ä‚ï¿½ï¿½ÄAï¿½ï¿½ï¿½eï¿½ğ“Š‚ï¿½ï¿½Ä‚ï¿½ï¿½ç‚¸ï¿½Aï¿½nï¿½ï¿½É‚ï¿½ï¿½é
+		if (!m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
 			(
 				m_ModelScale,
 				m_ModelRotOrigin,
 				m_ModelRotVec,
-				m_ModelTransIdle
+				m_ModelTrans
 			);
 			m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
@@ -336,7 +349,6 @@ namespace basecross {
 
 			if (getCurrentAnim == m_PlayerModelAnimIdle) { return; }
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimIdle);
-			m_Draw->SetMeshResource(m_PlayerModelIdle);
 		}
 
 	}
@@ -351,12 +363,11 @@ namespace basecross {
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransJump
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimJump);
-		m_Draw->SetMeshResource(m_PlayerModelJump);
 	}
 
 	void Player::PlayerAnimationChangeThrow(const Vec2 cntlBombVec)
@@ -374,36 +385,31 @@ namespace basecross {
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransThrow
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 		if (cntlBombVec.y == 0.0f)
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDown);
-			m_Draw->SetMeshResource(m_PlayerModelThrowDown);
 		}
 		else if (cntlBombVec.y <= neutralZoneLine && cntlBombVec.y >= -neutralZoneLine)
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDefault);
-			m_Draw->SetMeshResource(m_PlayerModelThrowDefault);
 		}
 		else if (cntlBombVec.y > neutralZoneLine)
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowUp);
-			m_Draw->SetMeshResource(m_PlayerModelThrowUp);
 		}
 		else if ((cntlBombVec.y < -neutralZoneLine))
 		{
 			m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimThrowDown);
-			m_Draw->SetMeshResource(m_PlayerModelThrowDown);
 		}
 	}
 
 	void Player::PlayerAnimationChangeDeath()
 	{
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimLose);
-		m_Draw->SetMeshResource(m_PlayerModelLose);
 	}
 
 	void Player::PlayerAnimationChangeClear()
@@ -418,26 +424,31 @@ namespace basecross {
 			m_ModelScale,
 			m_ModelRotOrigin,
 			m_ModelRotVec,
-			m_ModelTransWin
+			m_ModelTrans
 		);
 		m_Draw->SetMeshToTransformMatrix(m_ModelSpanMat);
 
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimWin);
-		m_Draw->SetMeshResource(m_PlayerModelWin);
+	}
+
+	void Player::PlayerAnimationChangeStun()
+	{
+		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
+
+		//if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
+		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimStun);
 	}
 
 	void Player::PlayEffectGoal()
 	{
-		// ãŒÀ‚É’B‚µ‚½‚çˆ—I—¹
+		//ï¿½ï¿½ï¿½ï¿½É’Bï¿½ï¿½ï¿½ï¿½ï¿½çˆï¿½ï¿½ï¿½Iï¿½ï¿½
 		if (m_EffectGoalCount >= 8) { return; }
 
-		// Œo‰ßŠÔ‚ğæ“¾
 		float deltaTime = App::GetApp()->GetElapsedTime();
 
-		// Œ»İ‚Ìƒ[ƒ‹ƒhÀ•W‚ğæ“¾
 		Vec3 getWorldPosition = GetComponent<Transform>()->GetWorldPosition();
 
-		// ƒN[ƒ‹ƒ^ƒCƒ€‚ªƒ[ƒˆÈ‰º‚Ìê‡Aƒp[ƒeƒBƒNƒ‹‚ğÄ¶
+		//ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½È‰ï¿½ï¿½Ìê‡ï¿½Aï¿½pï¿½[ï¿½eï¿½Bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½
 		if (m_EffectCoolTime <= 0.0f)
 		{
 			const int8_t xRndMin = -4;
@@ -451,23 +462,25 @@ namespace basecross {
 			m_GameStage->PlayParticle<ParticleGoal>(L"PCL_GOAL",
 				Vec3(getWorldPosition.x + static_cast<float>(xRnd), getWorldPosition.y + static_cast<float>(yRnd), getWorldPosition.z));
 
-			// ƒJƒEƒ“ƒg‚ğƒCƒ“ƒNƒŠƒƒ“ƒg
 			m_EffectGoalCount++;
 
-			// ƒN[ƒ‹ƒ^ƒCƒ€‚ğƒŠƒZƒbƒg
+			//ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g
 			m_EffectCoolTime = 0.25f;
 		}
 
-		// ƒN[ƒ‹ƒ^ƒCƒ€‚ğŒ¸­‚³‚¹‚é
+		//ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (m_EffectCoolTime > 0.0f)
 		{
 			m_EffectCoolTime -= m_EffectCoolTimeSpeed * deltaTime;
 		}
 	}
-	void Player::Stun(float time) {
+
+	void Player::PlayerStun(float time) {
 		m_IsStun = true;
 		m_StunTime = time;
+		PlayerAnimationChangeStun();
 	}
+
 	void Player::PlayerInitDebugString()
 	{
 		m_String = AddComponent<StringSprite>();

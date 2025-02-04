@@ -29,14 +29,8 @@ namespace basecross {
 	private:
 
 		shared_ptr<PNTBoneModelDraw> m_Draw;
-		const wstring m_PlayerModelIdle = L"PLAYER_MD_IDLE";
-		const wstring m_PlayerModelMove = L"PLAYER_MD_MOVE";
-		const wstring m_PlayerModelJump = L"PLAYER_MD_JUMP";
-		const wstring m_PlayerModelThrowDefault = L"PLAYER_MD_THROW_DEFAULT";
-		const wstring m_PlayerModelThrowUp = L"PLAYER_MD_THROW_UP";
-		const wstring m_PlayerModelThrowDown = L"PLAYER_MD_THROW_DOWN";
-		const wstring m_PlayerModelWin = L"PLAYER_MD_WIN";
-		const wstring m_PlayerModelLose = L"PLAYER_MD_LOSE";
+
+		const wstring m_PlayerModelFull = L"PLAYER_MD_FULL";
 
 		const wstring m_PlayerModelTex = L"PLAYER_MD_TEX";
 
@@ -48,16 +42,27 @@ namespace basecross {
 		const wstring m_PlayerModelAnimThrowDown = L"PLAYER_ANIM_THROW_DOWN";
 		const wstring m_PlayerModelAnimWin = L"PLAYER_ANIM_WIN";
 		const wstring m_PlayerModelAnimLose = L"PLAYER_ANIM_LOSE";
+		const wstring m_PlayerModelAnimStun = L"PLAYER_ANIM_STUN";
+
+		vector<unsigned int> m_StartAnimationFrame = { 0,61,122,183,244,305,366,427,488 };
+		enum ModelAnimation
+		{
+			Idle = 0,
+			Move,
+			Jump,
+			ThrowDefault,
+			ThrowUp,
+			ThrowDown,
+			Win,
+			Lose,
+			Stun,
+		};
 
 		Mat4x4 m_ModelSpanMat;
 		Vec3 m_ModelScale = Vec3(0.45f);
 		const Vec3 m_ModelRotOrigin = Vec3(0.0f);
 		Vec3 m_ModelRotVec = Vec3(0.0f);
-		const Vec3 m_ModelTransIdle = Vec3(0.0f, -1.0f, 0.0f);
-		const Vec3 m_ModelTransMove = Vec3(0.0f, -2.0f, 0.0f);
-		const Vec3 m_ModelTransJump = Vec3(0.0f, -1.0f, 0.0f);
-		const Vec3 m_ModelTransThrow = Vec3(0.0f, -1.0f, 0.0f);
-		const Vec3 m_ModelTransWin = Vec3(0.0f, -1.0f, 0.0f);
+		const Vec3 m_ModelTrans = Vec3(0.0f, -1.0f, 0.0f);
 		void PlayerInitDraw();
 
 		shared_ptr<BCCollisionObb> m_BCCollObb;
@@ -84,11 +89,11 @@ namespace basecross {
 
 		bool m_IsBlownAway = false;
 
+		bool m_IsStun = false;
+		float m_StunTime = 0.0f;
+
 		bool m_IsBombCreate = false;
 
-		bool m_IsStun = false;
-
-		float m_StunTime = 0.0f;
 		float m_ThrowCoolTime = 0.0f;
 		const float m_ThrowCoolTimeSpeed = 0.1f;
 
@@ -127,6 +132,8 @@ namespace basecross {
 
 		void PlayerAnimationChangeClear();
 
+		void PlayerAnimationChangeStun();
+
 		uint8_t m_EffectGoalCount = 0;
 		float m_EffectCoolTime = 0.0f;
 		const float m_EffectCoolTimeSpeed = 1.0f;
@@ -143,7 +150,8 @@ namespace basecross {
 		Vec3 GetBombVec() { return m_BombVec; }
 		void AddHasBomb(const uint8_t n) { m_HasBomb += n; }
 		void SubtractHasBomb(const uint8_t n) { m_HasBomb -= n; }
-		void Stun(float time);
+		void Respawn() { m_IsDead = false; }
+		void PlayerStun(float time);
 	};
 
 

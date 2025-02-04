@@ -12,7 +12,7 @@ namespace basecross{
 	//--------------------------------------------------------------------------------------
 	///	�Q�[���V�[��
 	//--------------------------------------------------------------------------------------
-	void Scene::OnCreate(){
+	void GameScene::OnCreate(){
 		try {
 			auto& app = App::GetApp();
 			wstring path = app->GetDataDirWString();
@@ -53,38 +53,17 @@ namespace basecross{
 		}
 	}
 
-	Scene::~Scene() {
+	GameScene::~GameScene() {
 	}
 
-	void Scene::OnEvent(const shared_ptr<Event>& event) {
+	void GameScene::OnEvent(const shared_ptr<Event>& event) {
 		if (event->m_MsgStr == L"ToGameStage") {
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
-			switch (*stage) {
-			case 0:
-				ResetActiveStage<GameStage>(L"Tutorial01.csv",*stage,20,0.0f);
-				break;
-			case 1:
-				ResetActiveStage<GameStage>(L"Tutorial02.csv", *stage,25,0.25f);
-				break;
-			case 2:
-				ResetActiveStage<GameStage>(L"Tutorial03.csv", *stage,30);
-				break;
-			case 3:
-				ResetActiveStage<GameStage>(L"Tutorial04.csv", *stage, 30);
-				break;
-			case 4:
-				ResetActiveStage<GameStage>(L"Tutorial05.csv", *stage, 30);
-				break;
-			case 5:
-				ResetActiveStage<GameStage>(L"Tutorial06.csv", *stage, 99);
-				break;
-			case 6:
-				ResetActiveStage<GameStage>(L"Tutorial07.csv", *stage, 30);
-				break;
-			default:
+			if (*stage < 0 || *stage >= m_StageData.size()) {
 				ResetActiveStage<TitleStage>();
-				break;
 			}
+			auto data = m_StageData[*stage];
+			ResetActiveStage<GameStage>(data.m_FileName, *stage, data.m_BombNum, data.m_ScrollSpeed);
 			
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {

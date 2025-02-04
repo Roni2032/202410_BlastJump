@@ -54,24 +54,6 @@ namespace basecross{
 				if (map[y][x].GetIsLoaded()) continue;
 				map[y][x].SetIsLoaded(true);
 
-
-				/*bool isCollider = false;
-				Vec2 aroundMap[] = {
-					Vec2(x + 1,y),
-					Vec2(x - 1,y),
-					Vec2(x,y + 1),
-					Vec2(x,y - 1)
-				};
-				for (Vec2 around : aroundMap) {
-					if (around.x < 0 || around.x >= map[y].size()) continue;
-					if (around.y < 0 || around.y >= map.size()) continue;
-
-					if (map[static_cast<int>(around.y)][static_cast<int>(around.x)].GetID() != 2) {
-						isCollider = true;
-						break;
-					}
-				}*/
-
 				if (CheckExposedBlock(map, Vec2(x, y))) {
 					auto obj = GetStage()->AddGameObject<Block>(L"", stage->GetWorldPosition(Vec2(x,y)), Vec3(1.0f));
 					GetTypeStage<GameStage>()->RegisterBlock(Vec2(x, y), obj);
@@ -81,6 +63,7 @@ namespace basecross{
 
 		for (int y = 0; y < map.size(); y++) {
 			for (int x = 0; x < map[y].size(); x++) {
+				if (map[y][x].GetID() != BlockTypes::UNBREAK) continue;
 				if (!map[y][x].GetIsLoaded()) continue;
 
 				if (y < drawIndexMinY || y > drawIndexMaxY) {
@@ -284,7 +267,6 @@ namespace basecross{
 		CheckDurability();
 		if (m_Durability <= 0) {
 			GetTypeStage<GameStage>()->DestroyBlock(GetComponent<Transform>()->GetPosition(), GetThis<GameObject>());
-			//GetTypeStage<GameStage>()->PlayParticle<BlockDestroyParticle>(L"DESTROY_BLOCK_PCL", GetComponent<Transform>()->GetPosition());
 		}
 	}
 
@@ -370,10 +352,9 @@ namespace basecross{
 			stage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition() + diff);
 
 			SoundManager::Instance().PlaySE(L"BOMB_SD", 0.1f);
-
 			//プレイヤーをスタン状態にする
 			auto player = static_pointer_cast<Player>(Other);
-			player->Stun(1.0f);
+			player->PlayerStun(1.0f);
 		}
 	}
 

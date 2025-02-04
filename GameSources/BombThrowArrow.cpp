@@ -50,8 +50,9 @@ namespace basecross{
 
 	void BombThrowOrbit::OnUpdate() {
 		auto draw = GetComponent<PNTStaticInstanceDraw>();
-
 		draw->ClearMatrixVec();
+		if (GetTypeStage<GameStage>()->IsFinishGame()) return;
+
 		float renderTime = 1.0f / m_OrbitNum;
 		Vec3 bombGravity = Vec3(0, - 9.8f,0);
 		auto player = m_player.lock();
@@ -73,7 +74,7 @@ namespace basecross{
 
 				float rad = atan2f(-diff.x, diff.y);
 
-				Vec3 worldPos = pos + player->GetComponent<Transform>()->GetWorldPosition();
+				Vec3 worldPos = pos + player->GetComponent<Transform>()->GetWorldPosition() + Vec3(0.0f,0.5f,0.0f);
 				Mat4x4 matrix;
 				matrix.affineTransformation(
 					Vec3(0.1f),

@@ -7,10 +7,10 @@
 #include "stdafx.h"
 
 namespace basecross{
-	class BCSprite;
+	class Sprite;
 
 	class Fade : public GameObject {
-		shared_ptr<BCSprite> m_Sprite;
+		shared_ptr<Sprite> m_Sprite;
 		Col4 m_FadeColor;
 		float m_Alpha;
 		float m_FadeOutSpeed;

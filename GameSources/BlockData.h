@@ -23,6 +23,18 @@ namespace basecross{
 		shared_ptr<GameObject> m_Obj;
 		map<wstring, wstring> m_Data;
 
+		inline BlockData& operator =(const BlockData& other) {
+			
+			m_Id = other.m_Id;
+			m_IsLoaded = other.m_IsLoaded;
+			m_Obj = other.m_Obj;
+			m_Data.clear();
+			for (auto& newData : other.m_Data) {
+				m_Data.insert(pair<wstring, wstring>(newData.first, newData.second));
+			}
+
+			return *this;
+		}
 		BlockData(int id,const wstring& data = L""):
 			m_Id(id),
 			m_IsLoaded(false),
@@ -95,18 +107,6 @@ namespace basecross{
 
 			return vec;
 		}
-		/*wstring& GetData(const wstring& dataName) {
-			vector<wstring> strData;
-			Util::WStrToTokenVector(strData, m_AllData, L'.');
-			for (auto d : strData) {
-				vector<wstring> data;
-				Util::WStrToTokenVector(data, d, L':');
-				if (data[0] == dataName) {
-					return data[1];
-				}
-			}
-			return ;
-		}*/
 	};
 }
 //end basecross
