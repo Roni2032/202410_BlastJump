@@ -16,7 +16,7 @@ namespace basecross{
 		draw->SetSamplerState(SamplerState::LinearWrap);
 		Mat4x4 matrix;
 		matrix.affineTransformation(
-			Vec3(0.3f,0.45f,0.3f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,-0.6f,0.0f)
+			Vec3(0.6f,0.45f,0.3f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,0.0f,0.0f),Vec3(0.0f,-0.6f,0.0f)
 		);
 		draw->SetMeshToTransformMatrix(matrix);
 		draw->AddAnimation(L"OPEN_ANIM", 0, 60, false, 60.0f);
@@ -26,9 +26,9 @@ namespace basecross{
 		AddTag(L"Item");
 
 		GetComponent<Transform>()->SetPosition(m_Pos);
-		GetComponent<Transform>()->SetScale(Vec3(2.0f,1.0f,2.0f));
+		GetComponent<Transform>()->SetScale(Vec3(1.0f,1.0f,2.0f));
 
-		GetStage()->AddGameObject<Board>(L"",m_Pos, Vec3(2.0f, 2.0f, 1.0f));
+		GetStage()->AddGameObject<Board>(L"",m_Pos + Vec3(0,0,1.0f), Vec3(1.5f, 2.0f, 1.0f));
 	}
 	void Goal::OnUpdate() {
 		auto draw = GetComponent<PNTBoneModelDraw>();

@@ -591,6 +591,9 @@ namespace basecross{
 				m_UsingGroup = group;
 			}
 		}
+		bool CompareUseGroup(const wstring& group) {
+			return m_UsingGroup == group;
+		}
 		void Register(const wstring& group, shared_ptr<SpriteButton>& button) {
 			if (m_ButtonGroup.find(group) != end(m_ButtonGroup)) {
 				m_ButtonGroup[group].push_back(button);

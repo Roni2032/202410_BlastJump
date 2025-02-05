@@ -63,17 +63,10 @@ namespace basecross {
 	{
 		if (Other->FindTag(L"Stage"))
 		{
-			auto block = Other->GetComponent<Transform>();
-			auto blockPosition = block->GetPosition();
-			auto blockScale = block->GetScale();
+			auto col = GetComponent<BCCollisionObb>();
+			auto data = col->GetCollisionData(Other);
 
-			auto player = GetComponent<Transform>();
-			auto playerPosition = player->GetWorldPosition();
-			auto playerScale = player->GetScale();
-
-			if ((playerPosition.y > blockPosition.y) && ((playerPosition.x + playerScale.x * 0.5f) > blockPosition.x) &&
-				((playerPosition.x + playerScale.x * 0.5f) < (blockPosition.x + blockScale.x)))
-			{
+			if (data.hitDir == HitDir::Up) {
 				m_IsJumping = false;
 				m_IsBlownAway = false;
 				ResetAirBombLimit();

@@ -145,6 +145,7 @@ namespace basecross {
 		void PlayerRespawn() {
 			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition + Vec3(0,0.2f,0));
 			m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
+			m_Player->Respawn();
 			m_Player->PlayerInitHasBomb(m_RespawnBomb);
 			ChangeMode(GameMode::NotBomb);
 		}
