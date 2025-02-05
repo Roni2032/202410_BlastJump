@@ -29,7 +29,7 @@ namespace basecross{
 		//--------------------------------------------------------------------------------------
 		GameScene() :Scene(){
 			m_StageData = {
-				StageData(L"Tutorial01.csv",20,0.0f),
+				StageData(L"S-K-FINAL.csv",8,0.25f),
 				StageData(L"Tutorial02.csv",25,0.25f),
 				StageData(L"Tutorial03.csv",20,0.25f),
 				StageData(L"Tutorial04.csv",20,0.25f),
