@@ -475,8 +475,8 @@ namespace basecross {
 			}
 		}
 		LoadMap();
-		PlayerRespawn();
 		CloseMenu();
+		PlayerRespawn();
 		ButtonManager::instance->CloseAll();
 		m_MenuSelect = 0;
 
