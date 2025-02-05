@@ -184,8 +184,11 @@ namespace basecross {
 		ButtonManager::instance->SetInput(L"clear", InputData(XINPUT_GAMEPAD_DPAD_RIGHT, 1));
 		ButtonManager::instance->SetInput(L"clear", InputData(XINPUT_GAMEPAD_DPAD_LEFT, -1));
 
-		
-		ButtonManager::Create(GetThis<Stage>(), L"failed", L"RESTART_TEXT_UI", L"RESTART_TEXT_SELECT_UI", Vec3(-400.0f, -160.0f, 0.0f), Vec2(300, 60),
+		ButtonManager::Create(GetThis<Stage>(), L"failed", L"TITLE_TEXT_UI", L"TITLE_TEXT_SELECT_UI", Vec3(-400.0f, -160.0f, 0.0f), Vec2(300, 60),
+			[](shared_ptr<Stage> stage) {
+				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
+			});
+		ButtonManager::Create(GetThis<Stage>(), L"failed", L"RESTART_TEXT_UI", L"RESTART_TEXT_SELECT_UI", Vec3(400.0f, -160.0f, 0.0f), Vec2(300, 60),
 			[](shared_ptr<Stage> stage) {
 				auto currentStage = static_pointer_cast<GameStage>(stage);
 				if (currentStage->GetGameMode() == GameMode::Clear) {
@@ -194,10 +197,6 @@ namespace basecross {
 				else {
 					currentStage->InitializeStage();
 				}
-			});
-		ButtonManager::Create(GetThis<Stage>(), L"failed", L"TITLE_TEXT_UI", L"TITLE_TEXT_SELECT_UI", Vec3(400.0f, -160.0f, 0.0f), Vec2(300, 60),
-			[](shared_ptr<Stage> stage) {
-				stage->PostEvent(0.0f, stage, App::GetApp()->GetScene<Scene>(), L"ToTitleStage");
 			});
 		ButtonManager::instance->SetInput(L"failed", InputData(XINPUT_GAMEPAD_DPAD_RIGHT, 1));
 		ButtonManager::instance->SetInput(L"failed", InputData(XINPUT_GAMEPAD_DPAD_LEFT, -1));
