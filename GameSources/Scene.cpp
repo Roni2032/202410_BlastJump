@@ -61,7 +61,7 @@ namespace basecross{
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
 			case 0:
-				ResetActiveStage<GameStage>(L"Tutorial01.csv",*stage,20,0.0f);
+				ResetActiveStage<GameStage>(L"StageK-1.csv",*stage,20,0.0f);
 				break;
 			case 1:
 				ResetActiveStage<GameStage>(L"Tutorial02.csv", *stage,25,0.25f);
