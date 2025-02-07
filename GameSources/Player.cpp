@@ -189,11 +189,11 @@ namespace basecross {
 		m_BombVec = cntlBombVec * m_BombShotSpeed;
 
 		bool cntlL = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_LEFT_SHOULDER);
-		if (cntlL && (IsPlayerOnAir() == false))
+		/*if (cntlL && (IsPlayerOnAir() == false))
 		{
 			PlayerJump();
 			PlayerAnimationChangeJump();
-		}
+		}*/
 
 		bool cntlR = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		if (cntlR && (IsCanBombCreate() == true))
