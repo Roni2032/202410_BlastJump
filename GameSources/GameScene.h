@@ -41,7 +41,7 @@ namespace basecross{
 				StageData(L"Stage03.csv",20,0.25f),
 				StageData(L"Stage04.csv",20,0.25f),
 				StageData(L"Tutorial05.csv",99,0.25f),
-				StageData(L"Stage06.csv",99,0.25f),
+				StageData(L"Stage06.csv",10,0.25f),
 			};
 		}
 		//--------------------------------------------------------------------------------------
