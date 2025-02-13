@@ -15,7 +15,7 @@ namespace basecross{
 		map<wstring, shared_ptr<SoundItem>> m_PlayingSE;
 
 		float m_SoundVolume;
-		SoundManager() : m_SoundVolume(0.1f) {}
+		SoundManager() : m_SoundVolume(1.0f) {}
 	public:
 		
 		virtual ~SoundManager(){}

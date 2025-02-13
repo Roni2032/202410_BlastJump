@@ -27,14 +27,14 @@ namespace basecross {
 		m_GameStage = GetTypeStage<GameStage>();
 		m_EffectGoalCount = 0;
 
-		PlayerInitDebugString();
+		//PlayerInitDebugString();
 	}
 
 	void Player::OnUpdate()
 	{
 		UpdateInputDevice();
 
-		PlayerShowDebugLog();
+		//PlayerShowDebugLog();
 
 		m_Pos = m_Transform->GetWorldPosition();
 
