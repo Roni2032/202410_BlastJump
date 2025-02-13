@@ -82,28 +82,50 @@ namespace basecross{
 				return L"";
 			}
 		}
-		static float WstrToFloat(const wstring& data) {
+		static bool IsFloat(const wstring& data) {
+			for (auto& str : data) {
+				if (!isdigit(str) && str != '.') {
+					return false;
+				}
+			}
+			return true;
+		}
+		static float WstrToFloat(const wstring& data,const float initData = 0.0f) {
+			if (data == L"") return initData;
+			if (!IsFloat(data)) {
+				return initData;
+			}
 			return stof(data);
 		}
-		static int WstrToInt(const wstring& data) {
+		static int WstrToInt(const wstring& data,const int initData = 0) {
+			if (data == L"") return initData;
+			if (!all_of(data.cbegin(), data.cend(), isdigit)) {
+				return initData;
+			}
 			return stoi(data);
 		}
-		static Vec2 WstrToVec2(const wstring& data) {
+		static Vec2 WstrToVec2(const wstring& data,const Vec2 initData = Vec2()) {
 			vector<wstring> numStr;
 			Util::WStrToTokenVector(numStr, data, L'^');
-			Vec2 vec = Vec2();
-			vec.x = stoi(numStr[0]);
-			vec.y = stoi(numStr[1]);
-
+			Vec2 vec = initData;
+			for (int i = 0; i < numStr.size(); i++) {
+				if (numStr[i] == L"") continue;
+				if (all_of(numStr[i].cbegin(), numStr[i].cend(), isdigit)) {
+					vec[i] = stoi(numStr[i]);
+				}
+			}
 			return vec;
 		}
-		static Vec3 WstrToVec3(const wstring& data) {
+		static Vec3 WstrToVec3(const wstring& data,const Vec3 initData = Vec3()) {
 			vector<wstring> numStr;
 			Util::WStrToTokenVector(numStr, data, L'^');
-			Vec3 vec = Vec3();
-			vec.x = stoi(numStr[0]);
-			vec.y = stoi(numStr[1]);
-			vec.z = stoi(numStr[2]);
+			Vec3 vec = initData;
+			for (int i = 0; i < numStr.size(); i++) {
+				if (numStr[i] == L"") continue;
+				if (all_of(numStr[i].cbegin(), numStr[i].cend(), isdigit)) {
+					vec[i] = stoi(numStr[i]);
+				}
+			}
 
 			return vec;
 		}

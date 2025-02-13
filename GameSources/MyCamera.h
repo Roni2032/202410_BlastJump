@@ -15,6 +15,7 @@ namespace basecross{
 		float m_ScrollSpeed;
 
 		float m_DefaultFovY;
+		float m_SkipY;
 		shared_ptr<Sprite> m_Fade;
 
 		Vec3 m_StartAt;
@@ -32,7 +33,8 @@ namespace basecross{
 			m_ScrollSpeed(scrollSpeed),
 			m_StartAt(0.0f),
 			m_StartEye(0.0f),
-			m_DefaultFovY(15.0f)
+			m_DefaultFovY(15.0f),
+			m_SkipY(0.0f)
 		{}
 		virtual ~MyCamera(){}
 
