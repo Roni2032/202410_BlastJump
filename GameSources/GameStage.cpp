@@ -137,6 +137,10 @@ namespace basecross {
 		app->RegisterTexture(L"DPAD_NEXT_UI", uiPath + L"NextGame_Oparation.png");
 
 		app->RegisterTexture(L"GOAL_BACK_TEX", texPath + L"GoalBackGround.png");
+		app->RegisterTexture(L"HINT_BOMB", texPath + L"HintThrow2.png");
+		app->RegisterTexture(L"HINT_BREAK_WALL", texPath + L"HintThrowBomb2.png");
+		app->RegisterTexture(L"HINT_WARNING", texPath + L"HintWarning.png");
+
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
 	}
@@ -239,6 +243,7 @@ namespace basecross {
 
 				if (blockTypeStr == L"") continue;
 
+				Vec3 worldPos = GetWorldPosition(Vec2(x, y));
 				if (all_of(blockTypeStr.cbegin(), blockTypeStr.cend(), isdigit)) {
 					int blockType = stoi(blockTypeStr);
 					m_MapData[y].push_back(BlockData(blockType, blockArgumentStr));
@@ -249,7 +254,7 @@ namespace basecross {
 						m_Walls->AddBlock(y, blockType);
 						break;
 					case BlockTypes::GOAL:
-						CreateBlock(Vec2(x, y), GetWorldPosition(Vec2(x,y)));
+						CreateBlock(Vec2(x, y), worldPos);
 						break;
 					}
 				}
@@ -257,8 +262,8 @@ namespace basecross {
 					if (blockTypeStr == L"s") {
 						m_Player->GetComponent<Transform>()->SetPosition(GetWorldPosition(Vec2(x, y)));
 						m_Walls->AddBlock(y, BlockTypes::AIR);
-						NewRespawnPosition(GetWorldPosition(Vec2(x, y)));
-						m_DefaultStartPos = GetWorldPosition(Vec2(x, y));
+						m_DefaultStartPos = worldPos;
+						NewRespawnPosition(m_DefaultStartPos);
 						m_MapData[y].push_back(BlockData(BlockTypes::AIR));
 						m_InitMapData[y].push_back(BlockData(BlockTypes::AIR));
 					}
@@ -273,64 +278,6 @@ namespace basecross {
 		float mapHeight = mapVec.size() - 1;
 		LoadMap();
 		AddGameObject<StageLengthBar>(mapHeight, m_Player, m_Goal);
-		/*auto& mapVec = m_CsvMap.GetCsvVec();
-		m_Walls = AddGameObject<InstanceBlock>(L"TEST_TEX", mapVec.size() - 1);
-		vector<wstring> cells;
-		Vec2 startPos;
-
-		for (int y = 0; y < mapVec.size() - 1; y++) {
-			m_MapData.push_back({});
-			cells.clear();
-			Util::WStrToTokenVector(cells, mapVec[y + 1], L',');
-			startPos = Vec2(static_cast<float>(cells.size()) / -2.0f, mapVec.size() - 2);
-			if (y == 0) {
-				m_MapLeftTop = startPos;
-				m_MapRightBottom = Vec3(cells.size() / 2.0f - 1, -0.5f, 0.0f);
-			}
-			for (int x = 0; x < cells.size(); x++) {
-				vector<wstring> numStr;
-				Util::WStrToTokenVector(numStr, cells[x], L'>');
-				if (numStr[0] == L"") {
-					continue;
-				}
-				if (all_of(numStr[0].cbegin(), numStr[0].cend(), isdigit)) {
-					int cell = stoi(numStr[0]);
-
-					if (numStr.size() >= 2) {
-						m_MapData[y].push_back(BlockData(cell, numStr[1]));
-					}
-					else {
-						m_MapData[y].push_back(BlockData(cell));
-					}
-
-					if (cell == BlockTypes::UNBREAK) {
-						m_Walls->AddBlock(y, cell);
-					}
-					else if (cell == BlockTypes::GOAL) {
-						CreateBlock(Vec2(x, y), Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-					}
-					else {
-						m_Walls->AddBlock(y, 0);
-					}
-
-				}
-				else {
-					if (numStr[0] == L"s") {
-						m_Player->GetComponent<Transform>()->SetPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-						m_Walls->AddBlock(y, 0);
-						NewRespawnPosition(Vec3(m_MapLeftTop.x + x, m_MapLeftTop.y - y, 0));
-						m_MapData[y].push_back(BlockData(0));
-					}
-				}
-			}
-		}
-		m_Walls->SetStartPos((Vec2)m_MapLeftTop);
-		auto camera = GetView()->GetTargetCamera();
-		float atY = camera->GetAt().y;
-
-		Vec2 mapSize = Vec2(cells.size(), mapVec.size() - 1);
-		LoadMap();
-		AddGameObject<StageLengthBar>(mapSize.y, m_Player, m_Goal);*/
 	}
 	void GameStage::RegisterBlock(Vec2 mapIndex, const shared_ptr<GameObject>& obj) {
 		if (m_MapData[mapIndex.y][mapIndex.x].GetBlock() == nullptr) {
@@ -343,35 +290,23 @@ namespace basecross {
 		switch (mapData.GetID()) {
 		case BlockTypes::NORMAL: {
 			auto durabilityStr = mapData.GetData(L"hp");
-			float durability = 100;
-			if (durabilityStr != L"") {
-				durability = BlockData::WstrToFloat(durabilityStr);
-			}
+			float durability = BlockData::WstrToFloat(durabilityStr,100);
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, durability);
 			break;
 		}
 		case BlockTypes::EXPLODE: {
 			auto rangeStr = mapData.GetData(L"range");
 			auto powerStr = mapData.GetData(L"power");
-			float range = 0;
-			float power = 0;
+			float range = BlockData::WstrToFloat(rangeStr);
+			float power = BlockData::WstrToFloat(powerStr);
 
-			if (rangeStr != L"") {
-				range = BlockData::WstrToFloat(rangeStr);
-			}
-			if (powerStr != L"") {
-				power = BlockData::WstrToFloat(powerStr);
-			}
 			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,5);
 			break;
 		}
 		case BlockTypes::BOARD: {
 			auto tex = mapData.GetData(L"texture");
 			auto sizeStr = mapData.GetData(L"size");
-			Vec3 size = Vec3(1);
-			if (sizeStr != L"") {
-				size = BlockData::WstrToVec3(sizeStr);
-			}
+			Vec3 size = BlockData::WstrToVec3(sizeStr,Vec3(1,1,1));
 			obj = AddGameObject<Board>(tex, pos, size);
 			break;
 		}
@@ -393,24 +328,11 @@ namespace basecross {
 			auto rangeStr = mapData.GetData(L"range");
 			auto startStr = mapData.GetData(L"start");
 			auto endStr = mapData.GetData(L"end");
-			float speed = 0;
-			Vec3 range = Vec3();
-			Vec3 start = Vec3();
-			Vec3 end = Vec3();
+			float speed = BlockData::WstrToFloat(speedStr);
+			Vec3 range = BlockData::WstrToVec3(rangeStr);
+			Vec3 start = BlockData::WstrToVec3(startStr);
+			Vec3 end = BlockData::WstrToVec3(endStr);
 			
-			if (speedStr != L"") {
-				speed = BlockData::WstrToFloat(speedStr);
-			}
-			if (rangeStr != L"") {
-				range = BlockData::WstrToVec3(rangeStr);
-			}
-			if (startStr != L"") {
-				start = BlockData::WstrToVec3(startStr);
-			}
-			if (endStr != L"") {
-				end = BlockData::WstrToVec3(endStr);
-			}
-
 			if (start == Vec3() && end == Vec3()) {
 				obj = AddGameObject<MoveBlock>(L"TEST_MOVE_TEX", pos, speed, range);
 			}

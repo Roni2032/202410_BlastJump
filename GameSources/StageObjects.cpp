@@ -28,7 +28,7 @@ namespace basecross{
 		GetComponent<Transform>()->SetPosition(m_Pos);
 		GetComponent<Transform>()->SetScale(Vec3(1.0f,1.0f,2.0f));
 
-		GetStage()->AddGameObject<Board>(L"GOAL_BACK_TEX",m_Pos + Vec3(0.1f,0,1.0f), Vec3(1.5f, 2.5f, 1.0f));
+		GetStage()->AddGameObject<Board>(L"GOAL_BACK_TEX",m_Pos + Vec3(-0.0f,0.0f,0.5f), Vec3(1.4f, 2.5f, 1.0f));
 	}
 	void Goal::OnUpdate() {
 		auto draw = GetComponent<PNTBoneModelDraw>();

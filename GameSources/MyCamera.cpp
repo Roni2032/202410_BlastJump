@@ -24,7 +24,7 @@ namespace basecross{
 
 		float stageBottom = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
 		float stageTop = m_Stage->GetLeftTop().y - m_CameraHight / 2.0f;
-
+		auto device = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 		float elapsed = App::GetApp()->GetElapsedTime();
 		Vec3 eye = GetEye();
 		Vec3 at = GetAt();
@@ -42,7 +42,7 @@ namespace basecross{
 			if (InputController::GetInstance().InputButton(0, InputController::buttonPush, XINPUT_GAMEPAD_A) &&
 				m_Stage->GetGameMode() == GameMode::InGame)
 			{
-				if (at.y < stageTop) 
+				if (at.y < stageTop)
 				{
 					speedBoost = 8.0f;
 				}
@@ -92,7 +92,7 @@ namespace basecross{
 			}
 
 			if (m_Stage->IsView()) {
-				auto device = App::GetApp()->GetInputDevice().GetControlerVec()[0];
+				
 
 				if (device.bConnected) {
 					if (device.wPressedButtons & XINPUT_GAMEPAD_A) {
