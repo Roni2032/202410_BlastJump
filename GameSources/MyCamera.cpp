@@ -17,6 +17,9 @@ namespace basecross{
 		m_PlayerPosArrow = m_Stage->AddGameObject<OutOfCameraPlayerPos>();
 	}
 	void MyCamera::OnUpdate() {
+		auto cntlState = App::GetApp()->GetInputDevice().GetControlerVec();
+		InputController::GetInstance().UpdateCntlState(cntlState);
+
 		if (m_Stage == nullptr) return;
 
 		float stageBottom = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
@@ -30,26 +33,21 @@ namespace basecross{
 			Vec3 playerPos = playerTransform->GetWorldPosition();
 
 			float speedBoost = 1.0f;
-			if (m_Stage->GetGameMode() == GameMode::Clear) {
+			if (m_Stage->GetGameMode() == GameMode::Clear || speedBoost != 1.0f) {
 				if (at.y < stageTop) {
 					speedBoost = 8.0f;
 				}
 			}
-			/*if (m_Stage->IsView()) {
-				speedBoost = 10.0f;
-				if (at.y > stageTop - 2.5f && m_Fade == nullptr) {
-					m_Fade = m_Stage->AddGameObject<Sprite>(L"FADE_TEX", Vec3(0, 0, 0), Vec2(1280, 800), true);
-					auto fade = m_Fade->AddComponent<SpriteFade>(1.0f);
-					fade->FadeOut();
-				}
-				if (m_Fade != nullptr) {
-					auto fade = m_Fade->GetComponent<SpriteFade>();
-					if (fade->IsFinish()) {
-						fade->FadeIn();
-					}
-				}
 
-			}*/
+			if (InputController::GetInstance().InputButton(0, InputController::buttonPush, XINPUT_GAMEPAD_A) &&
+				m_Stage->GetGameMode() == GameMode::InGame)
+			{
+				if (at.y < stageTop) 
+				{
+					speedBoost = 8.0f;
+				}
+			}
+
 			if (m_Stage->GetGameMode() == GameMode::InGame || speedBoost != 1.0f) {
 				at.y += m_ScrollSpeed * speedBoost * elapsed;
 				eye.y = at.y;
@@ -59,15 +57,6 @@ namespace basecross{
 			at.y = max(stageBottom, at.y);
 
 			eye.y = at.y;
-
-			/*if (at.y - m_CameraHight / 2.0f < m_Stage->GetRightBottom().y) {
-				at.y = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
-				eye.y = m_Stage->GetRightBottom().y + m_CameraHight / 2.0f;
-			}
-			if (at.y + m_CameraHight / 2.0f < m_Stage->GetRightBottom().y) {
-				at.y = m_Stage->GetRightBottom().y - m_CameraHight / 2.0f - 0.5f;
-				eye.y = m_Stage->GetRightBottom().y - m_CameraHight / 2.0f - 0.5f;
-			}*/
 
 			SetEye(eye);
 			SetAt(at);
