@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief E½vE½E½E½CE½E½E½[E½È‚Çï¿½E½E½
+@brief ï¿½Eï¿½vï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½Cï¿½Eï¿½ï¿½Eï¿½ï¿½Eï¿½[ï¿½Eï¿½È‚Çï¿½ï¿½Eï¿½ï¿½Eï¿½
 */
 
 #include "stdafx.h"
@@ -16,7 +16,7 @@ namespace basecross {
 	void Player::OnCreate()
 	{
 		PlayerInitDraw();
-		PlayerInitBCGravity(true); //d—Í‚ğæ‚É“Ç‚İ‚Ü‚¹‚é‚±‚Æ
+		PlayerInitBCGravity(true); //ï¿½dï¿½Í‚ï¿½ï¿½É“Ç‚İï¿½ï¿½Ü‚ï¿½ï¿½é‚±ï¿½ï¿½
 		PlayerInitBCCollObb();
 		PlayerInitTransform(Vec3(3.0f, 2.0f, 0.0f), Vec3(0.5f, 0.5f, 0.5f));
 
@@ -27,14 +27,14 @@ namespace basecross {
 		m_GameStage = GetTypeStage<GameStage>();
 		m_EffectGoalCount = 0;
 
-		PlayerInitDebugString();
+		//PlayerInitDebugString();
 	}
 
 	void Player::OnUpdate()
 	{
 		UpdateInputDevice();
 
-		PlayerShowDebugLog();
+		//PlayerShowDebugLog();
 
 		m_Pos = m_Transform->GetWorldPosition();
 
@@ -63,17 +63,10 @@ namespace basecross {
 	{
 		if (Other->FindTag(L"Stage"))
 		{
-			auto block = Other->GetComponent<Transform>();
-			auto blockPosition = block->GetPosition();
-			auto blockScale = block->GetScale();
+			auto col = GetComponent<BCCollisionObb>();
+			auto data = col->GetCollisionData(Other);
 
-			auto player = GetComponent<Transform>();
-			auto playerPosition = player->GetWorldPosition();
-			auto playerScale = player->GetScale();
-
-			if ((playerPosition.y > blockPosition.y) && ((playerPosition.x + playerScale.x * 0.5f) > blockPosition.x) &&
-				((playerPosition.x + playerScale.x * 0.5f) < (blockPosition.x + blockScale.x)))
-			{
+			if (data.hitDir == HitDir::Up) {
 				m_IsJumping = false;
 				m_IsBlownAway = false;
 				ResetAirBombLimit();
@@ -105,6 +98,7 @@ namespace basecross {
 
 		const uint8_t animationFrameLength = 60;
 		const float useFps = 60.0f;
+
 
 		m_Draw->AddAnimation(m_PlayerModelAnimIdle,         m_StartAnimationFrame[ModelAnimation::Idle], animationFrameLength, true, useFps);
 		m_Draw->AddAnimation(m_PlayerModelAnimMove,         m_StartAnimationFrame[ModelAnimation::Move], animationFrameLength, true, useFps);
@@ -163,7 +157,6 @@ namespace basecross {
 			if (m_StunTime > 0) 
 			{
 				m_StunTime -= deltaTime;
-				PlayerAnimationChangeStun();
 			}
 			else 
 			{
@@ -196,11 +189,11 @@ namespace basecross {
 		m_BombVec = cntlBombVec * m_BombShotSpeed;
 
 		bool cntlL = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_LEFT_SHOULDER);
-		if (cntlL && (IsPlayerOnAir() == false))
+		/*if (cntlL && (IsPlayerOnAir() == false))
 		{
 			PlayerJump();
 			PlayerAnimationChangeJump();
-		}
+		}*/
 
 		bool cntlR = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		if (cntlR && (IsCanBombCreate() == true))
@@ -233,7 +226,7 @@ namespace basecross {
 		if (IsCanBombCreate() == false) { return; }
 
 		auto getStage = GetStage();
-		getStage->AddGameObject<Bomb>(m_Pos, m_BombVec, 3.0f, 3.0f, 18.5f);
+		getStage->AddGameObject<Bomb>(m_Pos + Vec3(0.0f,0.5f,0), m_BombVec, 3.0f, 3.0f, 18.5f);
 
 		SubtractHasBomb(1);
 
@@ -292,7 +285,7 @@ namespace basecross {
 
 	bool Player::GetIsInGame()
 	{
-		if (GetTypeStage<GameStage>()->IsInGame()) { return true; }
+		if (GetTypeStage<GameStage>()->IsPlaying()) { return true; }
 		return false;
 	}
 
@@ -301,21 +294,21 @@ namespace basecross {
 		float deltaTime = App::GetApp()->GetElapsedTime();
 		m_Draw->UpdateAnimation(deltaTime);
 
-		//’Êí‚Å‚È‚¯‚ê‚ÎI—¹
+		//ï¿½Êíï¿½Å‚È‚ï¿½ï¿½ï¿½ÎIï¿½ï¿½
 		if (GetIsClear() == true) { return; }
 		if (GetIsInGame() == false) { return; }
 
-		//ƒXƒ^ƒ“‚µ‚Ä‚½‚çI—¹
+		//ï¿½Xï¿½^ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Iï¿½ï¿½
 		if (m_IsStun) { return; }
 
 		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
-		//ƒ‚ƒfƒ‹‚ÌŒü‚«‚ğŒˆ‚ß‚é
+		//ï¿½ï¿½ï¿½fï¿½ï¿½ï¿½ÌŒï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ß‚ï¿½
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		if (cntlMoveVec.x > 0.0f) { m_ModelRotVec.y = -XM_PIDIV2; }
 		if (cntlMoveVec.x < 0.0f) { m_ModelRotVec.y = XM_PIDIV2; }
 
-		//“®‚¢‚Ä‚¢‚ÄA”š’e‚ğ“Š‚°‚Ä‚¨‚ç‚¸A’nã‚É‚¢‚é
+		//ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ÄAï¿½ï¿½ï¿½eï¿½ğ“Š‚ï¿½ï¿½Ä‚ï¿½ï¿½ç‚¸ï¿½Aï¿½nï¿½ï¿½É‚ï¿½ï¿½é
 		if (m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
@@ -332,7 +325,7 @@ namespace basecross {
 
 		}
 
-		//~‚Ü‚Á‚Ä‚¢‚ÄA”š’e‚ğ“Š‚°‚Ä‚¨‚ç‚¸A’nã‚É‚¢‚é
+		//ï¿½~ï¿½Ü‚ï¿½ï¿½Ä‚ï¿½ï¿½ÄAï¿½ï¿½ï¿½eï¿½ğ“Š‚ï¿½ï¿½Ä‚ï¿½ï¿½ç‚¸ï¿½Aï¿½nï¿½ï¿½É‚ï¿½ï¿½é
 		if (!m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
@@ -435,20 +428,20 @@ namespace basecross {
 	{
 		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
 
-		if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
+		//if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimStun);
 	}
 
 	void Player::PlayEffectGoal()
 	{
-		//ãŒÀ‚É’B‚µ‚½‚çˆ—I—¹
+		//ï¿½ï¿½ï¿½ï¿½É’Bï¿½ï¿½ï¿½ï¿½ï¿½çˆï¿½ï¿½ï¿½Iï¿½ï¿½
 		if (m_EffectGoalCount >= 8) { return; }
 
 		float deltaTime = App::GetApp()->GetElapsedTime();
 
 		Vec3 getWorldPosition = GetComponent<Transform>()->GetWorldPosition();
 
-		//ƒN[ƒ‹ƒ^ƒCƒ€‚ªƒ[ƒˆÈ‰º‚Ìê‡Aƒp[ƒeƒBƒNƒ‹‚ğÄ¶
+		//ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½È‰ï¿½ï¿½Ìê‡ï¿½Aï¿½pï¿½[ï¿½eï¿½Bï¿½Nï¿½ï¿½ï¿½ï¿½ï¿½Äï¿½
 		if (m_EffectCoolTime <= 0.0f)
 		{
 			const int8_t xRndMin = -4;
@@ -464,11 +457,11 @@ namespace basecross {
 
 			m_EffectGoalCount++;
 
-			//ƒN[ƒ‹ƒ^ƒCƒ€‚ğƒŠƒZƒbƒg
+			//ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½bï¿½g
 			m_EffectCoolTime = 0.25f;
 		}
 
-		//ƒN[ƒ‹ƒ^ƒCƒ€‚ğŒ¸­‚³‚¹‚é
+		//ï¿½Nï¿½[ï¿½ï¿½ï¿½^ï¿½Cï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 		if (m_EffectCoolTime > 0.0f)
 		{
 			m_EffectCoolTime -= m_EffectCoolTimeSpeed * deltaTime;
@@ -478,6 +471,7 @@ namespace basecross {
 	void Player::PlayerStun(float time) {
 		m_IsStun = true;
 		m_StunTime = time;
+		PlayerAnimationChangeStun();
 	}
 
 	void Player::PlayerInitDebugString()

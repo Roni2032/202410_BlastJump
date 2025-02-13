@@ -16,8 +16,8 @@ namespace basecross{
 		weak_ptr<GameObject> m_Player;
 		weak_ptr<GameObject> m_Goal;
 		
-		shared_ptr<BCSprite> m_PlayerSprite;
-		shared_ptr<BCSprite> m_GoalSprite;
+		shared_ptr<Sprite> m_PlayerSprite;
+		shared_ptr<Sprite> m_GoalSprite;
 		wstring m_BarTexKey;
 		wstring m_PlayerTexKey;
 		wstring m_GoalTexKey;

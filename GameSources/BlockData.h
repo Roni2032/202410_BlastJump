@@ -23,6 +23,18 @@ namespace basecross{
 		shared_ptr<GameObject> m_Obj;
 		map<wstring, wstring> m_Data;
 
+		inline BlockData& operator =(const BlockData& other) {
+			
+			m_Id = other.m_Id;
+			m_IsLoaded = other.m_IsLoaded;
+			m_Obj = other.m_Obj;
+			m_Data.clear();
+			for (auto& newData : other.m_Data) {
+				m_Data.insert(pair<wstring, wstring>(newData.first, newData.second));
+			}
+
+			return *this;
+		}
 		BlockData(int id,const wstring& data = L""):
 			m_Id(id),
 			m_IsLoaded(false),
@@ -70,43 +82,53 @@ namespace basecross{
 				return L"";
 			}
 		}
-		static float WstrToFloat(const wstring& data) {
-			return stof(data);
-		}
-		static int WstrToInt(const wstring& data) {
-			return stoi(data);
-		}
-		static Vec2 WstrToVec2(const wstring& data) {
-			vector<wstring> numStr;
-			Util::WStrToTokenVector(numStr, data, L'^');
-			Vec2 vec = Vec2();
-			vec.x = stoi(numStr[0]);
-			vec.y = stoi(numStr[1]);
-
-			return vec;
-		}
-		static Vec3 WstrToVec3(const wstring& data) {
-			vector<wstring> numStr;
-			Util::WStrToTokenVector(numStr, data, L'^');
-			Vec3 vec = Vec3();
-			vec.x = stoi(numStr[0]);
-			vec.y = stoi(numStr[1]);
-			vec.z = stoi(numStr[2]);
-
-			return vec;
-		}
-		/*wstring& GetData(const wstring& dataName) {
-			vector<wstring> strData;
-			Util::WStrToTokenVector(strData, m_AllData, L'.');
-			for (auto d : strData) {
-				vector<wstring> data;
-				Util::WStrToTokenVector(data, d, L':');
-				if (data[0] == dataName) {
-					return data[1];
+		static bool IsFloat(const wstring& data) {
+			for (auto& str : data) {
+				if (!isdigit(str) && str != '.') {
+					return false;
 				}
 			}
-			return ;
-		}*/
+			return true;
+		}
+		static float WstrToFloat(const wstring& data,const float initData = 0.0f) {
+			if (data == L"") return initData;
+			if (!IsFloat(data)) {
+				return initData;
+			}
+			return stof(data);
+		}
+		static int WstrToInt(const wstring& data,const int initData = 0) {
+			if (data == L"") return initData;
+			if (!all_of(data.cbegin(), data.cend(), isdigit)) {
+				return initData;
+			}
+			return stoi(data);
+		}
+		static Vec2 WstrToVec2(const wstring& data,const Vec2 initData = Vec2()) {
+			vector<wstring> numStr;
+			Util::WStrToTokenVector(numStr, data, L'^');
+			Vec2 vec = initData;
+			for (int i = 0; i < numStr.size(); i++) {
+				if (numStr[i] == L"") continue;
+				if (all_of(numStr[i].cbegin(), numStr[i].cend(), isdigit)) {
+					vec[i] = stoi(numStr[i]);
+				}
+			}
+			return vec;
+		}
+		static Vec3 WstrToVec3(const wstring& data,const Vec3 initData = Vec3()) {
+			vector<wstring> numStr;
+			Util::WStrToTokenVector(numStr, data, L'^');
+			Vec3 vec = initData;
+			for (int i = 0; i < numStr.size(); i++) {
+				if (numStr[i] == L"") continue;
+				if (all_of(numStr[i].cbegin(), numStr[i].cend(), isdigit)) {
+					vec[i] = stoi(numStr[i]);
+				}
+			}
+
+			return vec;
+		}
 	};
 }
 //end basecross

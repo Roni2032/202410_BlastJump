@@ -199,5 +199,10 @@ namespace basecross{
 		}
 		return CollisionData();
 	}
+
+
+	void BCCollisionObb::OnDraw() {
+
+	}
 }
 //end basecross

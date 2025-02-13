@@ -140,7 +140,7 @@ int MainLoop(HINSTANCE hInstance, HWND hWnd, bool isFullScreen, int iClientWidth
 		App::CreateApp(hInstance, hWnd, isFullScreen, iClientWidth, iClientHeight);
 		//�V�[���̍쐬
 		//�߂�l��ScenePtr�͔ėp�I�Ɏg����
-		auto ScenePtr = App::GetApp()->CreateScene<Scene>();
+		auto ScenePtr = App::GetApp()->CreateScene<GameScene>();
 		//���b�Z�[�W���[�v
 		MSG msg = { 0 };
 		//�L�[�{�[�h���͗p

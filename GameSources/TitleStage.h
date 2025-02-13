@@ -10,8 +10,9 @@ namespace basecross{
 	class Fade;
 	class TitleStage : public Stage {
 		shared_ptr<Fade> m_Fade;
+		wstring m_SelectMode;
 	public:
-		TitleStage(){}
+		TitleStage() : m_SelectMode(L"") {}
 		virtual ~TitleStage(){}
 		//ƒrƒ…[‚Ìì¬
 		void CreateViewLight();

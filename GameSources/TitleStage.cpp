@@ -24,11 +24,11 @@ namespace basecross{
 		try {
 			CreateViewLight();
 			CreateResource();
-			auto sprite = AddGameObject<BCSprite>(L"BACKGROUND", Vec3(0, 0, 0), Vec2(1280, 800), true);
-			sprite = AddGameObject<BCSprite>(L"TITLE_UI", Vec3(0, 100, 0), Vec2(700, 700),true);
-			sprite = AddGameObject<BCSprite>(L"PUSH_A_UI", Vec3(0,-300,0), Vec2(300, 120),true);
+			auto sprite = AddGameObject<Sprite>(L"BACKGROUND", Vec3(0, 0, 0), Vec2(1280, 800), true);
+			sprite = AddGameObject<Sprite>(L"TITLE_UI", Vec3(0, 100, 0), Vec2(700, 700),true);
+			sprite = AddGameObject<Sprite>(L"PUSH_A_UI", Vec3(0,-300,0), Vec2(300, 120),true);
 			sprite->AddComponent<SpriteFlash>(1.0f);
-			SoundManager::Instance().PlayBGM(L"TITLE_BGM",0.05f);
+			SoundManager::Instance().PlayBGM(L"TITLE_BGM",0.2f);
 		}
 		catch (...) {
 			throw;
@@ -38,14 +38,15 @@ namespace basecross{
 	void TitleStage::OnUpdate() {
 		auto ctrl = App::GetApp()->GetInputDevice().GetControlerVec()[0];
 		if (ctrl.bConnected) {
-			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A) {
+			if (ctrl.wPressedButtons & XINPUT_GAMEPAD_A && !m_Fade) {
 				SoundManager::Instance().PlaySE(L"BUTTON_SD");
 				m_Fade = AddGameObject<Fade>(1.0f);
+				m_SelectMode = L"ToTutorialStage";
 			}
 		}
 		if (m_Fade != nullptr) {
 			if (m_Fade->IsFinished()) {
-				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage");
+				PostEvent(0.0f, GetThis<ObjectInterface>(), App::GetApp()->GetScene<Scene>(), L"ToSelectStage",make_shared<wstring>(m_SelectMode));
 			}
 		}
 	}

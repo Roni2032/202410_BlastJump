@@ -1,7 +1,7 @@
 
 /*!
 @file Scene.cpp
-@brief ƒV[ƒ“À‘Ì
+@brief ï¿½Vï¿½[ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 */
 
 #include "stdafx.h"
@@ -10,7 +10,7 @@
 namespace basecross{
 
 	//--------------------------------------------------------------------------------------
-	///	ƒQ[ƒ€ƒV[ƒ“
+	///	ï¿½Qï¿½[ï¿½ï¿½ï¿½Vï¿½[ï¿½ï¿½
 	//--------------------------------------------------------------------------------------
 	void Scene::OnCreate(){
 		try {
@@ -26,35 +26,24 @@ namespace basecross{
 			auto model = MeshResource::CreateStaticModelMesh(modelPath, L"Bomb.bmf");
 			app->RegisterResource(L"BOMB_MD", model);
 			app->RegisterTexture(L"BOMB_MD_TEX", modelPath + L"bomb.png");
-			const auto boneModelIdle = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerIdole.bmf");
-			const auto boneModelMove = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerMove.bmf");
-			const auto boneModelJump = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerJump.bmf");
-			const auto boneModelThrowDefault = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerDefaultThrow.bmf");
-			const auto boneModelThrowUp = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowUp.bmf");
-			const auto boneModelThrowDown = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerThrowDown.bmf");
-			const auto boneModelWin = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerWin.bmf");
-			const auto boneModelLose = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerLose.bmf");
+
+			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
 			const auto boneModelFull = MeshResource::CreateBoneModelMesh(modelPath, L"PlayerFullAnimation.bmf");
-			app->RegisterResource(L"PLAYER_MD_IDLE", boneModelIdle);
-			app->RegisterResource(L"PLAYER_MD_MOVE", boneModelMove);
-			app->RegisterResource(L"PLAYER_MD_JUMP", boneModelJump);
-			app->RegisterResource(L"PLAYER_MD_THROW_DEFAULT", boneModelThrowDefault);
-			app->RegisterResource(L"PLAYER_MD_THROW_UP", boneModelThrowUp);
-			app->RegisterResource(L"PLAYER_MD_THROW_DOWN", boneModelThrowDown);
-			app->RegisterResource(L"PLAYER_MD_WIN", boneModelWin);
-			app->RegisterResource(L"PLAYER_MD_LOSE", boneModelLose);
+
+			boneModel = MeshResource::CreateBoneModelMesh(modelPath, L"CheckPoint.bmf");
+
+			app->RegisterResource(L"CHECKPOINT_MD", boneModel);
+			app->RegisterTexture(L"CHECKPOINT_TEX", modelPath + L"save.png");
+
 			app->RegisterResource(L"PLAYER_MD_FULL", boneModelFull);
 
 			app->RegisterTexture(L"PLAYER_MD_TEX", modelPath + L"chara.png");
 
 			app->RegisterTexture(L"FADE_TEX", texPath + L"fade.png");
 
-			//ƒNƒŠƒA‚·‚éF‚ğİ’è
 			Col4 Col;
 			Col.set(31.0f / 255.0f, 30.0f / 255.0f, 71.0f / 255.0f, 255.0f / 255.0f);
 			SetClearColor(Col);
-			//©•ª©g‚ÉƒCƒxƒ“ƒg‚ğ‘—‚é
-			//‚±‚ê‚É‚æ‚èŠeƒXƒe[ƒW‚âƒIƒuƒWƒFƒNƒg‚ªCreate‚ÉƒV[ƒ“‚ÉƒAƒNƒZƒX‚Å‚«‚é
 			PostEvent(0.0f, GetThis<ObjectInterface>(), GetThis<Scene>(), L"ToTitleStage");
 
 			SoundManager::Instance().RegisterSounds();
@@ -68,29 +57,42 @@ namespace basecross{
 	}
 
 	void Scene::OnEvent(const shared_ptr<Event>& event) {
-		Button::Clear();
 		if (event->m_MsgStr == L"ToGameStage") {
 			auto stage = static_pointer_cast<int>(event->m_Info).get();
 			switch (*stage) {
 			case 0:
-				ResetActiveStage<GameStage>(L"Stage01.csv",*stage,20,0.0f);
+				ResetActiveStage<GameStage>(L"StageK-1.csv",*stage,20,0.0f);
 				break;
 			case 1:
-				ResetActiveStage<GameStage>(L"Stage02.csv", *stage,25,0.25f);
+				ResetActiveStage<GameStage>(L"Tutorial02.csv", *stage,25,0.25f);
 				break;
 			case 2:
-				ResetActiveStage<GameStage>(L"Stage04.csv", *stage,30);
+				ResetActiveStage<GameStage>(L"Tutorial03.csv", *stage,30);
+				break;
+			case 3:
+				ResetActiveStage<GameStage>(L"Tutorial04.csv", *stage, 30);
+				break;
+			case 4:
+				ResetActiveStage<GameStage>(L"Tutorial05.csv", *stage, 30);
+				break;
+			case 5:
+				ResetActiveStage<GameStage>(L"Tutorial06.csv", *stage, 99);
+				break;
+			case 6:
+				ResetActiveStage<GameStage>(L"Tutorial07.csv", *stage, 30);
 				break;
 			default:
 				ResetActiveStage<TitleStage>();
 				break;
 			}
+			
 		}
 		else if (event->m_MsgStr == L"ToTitleStage") {
 			ResetActiveStage<TitleStage>();
 		}
 		else if (event->m_MsgStr == L"ToSelectStage") {
-			ResetActiveStage<SelectStage>();
+			auto mode = static_pointer_cast<wstring>(event->m_Info).get();
+			ResetActiveStage<SelectStage>(L"ToGameStage");
 		}
 	}
 

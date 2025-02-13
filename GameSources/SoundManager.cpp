@@ -23,6 +23,7 @@ namespace basecross{
 		RegisterSound(L"BOMB_GET_SD", L"BombGet.wav");
 		RegisterSound(L"BUTTON_SD", L"Determinant.wav");
 		RegisterSound(L"SELECT_BGM", L"SelectSceneBGM.wav");
+		RegisterSound(L"CHECKPOINT_SD", L"CheckPoint.wav");
 	}
 	void SoundManager::RegisterSound(const wstring& key, const wstring& fileName) {
 		wstring path = App::GetApp()->GetDataDirWString() + L"Sounds/";
@@ -49,7 +50,7 @@ namespace basecross{
 			m_Audio = App::GetApp()->GetXAudio2Manager();
 		}
 		if (find(m_SoundKeys.begin(), m_SoundKeys.end(), key) != m_SoundKeys.end()) {
-			auto se = m_Audio->Start(key, 0, volume);
+			auto se = m_Audio->Start(key, 0, volume * m_SoundVolume);
 			m_PlayingSE.insert(pair<wstring, shared_ptr<SoundItem>>(key, se));
 			return se;
 		}
@@ -65,7 +66,7 @@ namespace basecross{
 			if (m_Bgm != nullptr) {
 				StopBGM();
 			}
-			m_Bgm = m_Audio->Start(key, XAUDIO2_LOOP_INFINITE, volume);
+			m_Bgm = m_Audio->Start(key, XAUDIO2_LOOP_INFINITE, volume * m_SoundVolume);
 		}
 		else {
 			int result = MessageBox(NULL, L"Key Not Found. key : ", L"ERROR", MB_OK);

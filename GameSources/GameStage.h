@@ -18,29 +18,31 @@ namespace basecross {
 		BetWeen(float high,float low):m_High(high),m_Low(low){}
 	};
 
-	
+	enum GameMode {
+		View,
+		NotBomb,
+		InGame,
+		Menu,
+		Clear,
+		Over
+	};
 	//--------------------------------------------------------------------------------------
 	//	ゲームステージクラス
 	//--------------------------------------------------------------------------------------
 	class GameStage : public Stage{
 	public:
-		enum GameMode {
-			View,
-			NotBomb,
-			InGame,
-			Menu,
-			Clear,
-			Over
-		};
+		
 	private:
 		shared_ptr<InstanceBlock> m_Walls;
 		shared_ptr<GameObject> m_Goal;
 		shared_ptr<GameObject> m_MenuBackGround;
 		shared_ptr<GameObject> m_MenuText;
 		shared_ptr<GameObject> m_SkipText;
+
 		int m_LoadedMaxHeight = 0;
 		float m_CameraAtY = 0;
 		vector<vector<BlockData>> m_MapData;
+		vector<vector<BlockData>> m_InitMapData;
 		Vec3 m_MapLeftTop;
 		Vec3 m_MapRightBottom;
 
@@ -56,33 +58,35 @@ namespace basecross {
 		shared_ptr<int> m_SendStageNumber;
 
 		shared_ptr<BCNumber> m_PlayerHasBombs;
-
+		shared_ptr<Sprite> m_BombUI;
 
 		int m_MenuSelect;
 		
-
 		Vec3 m_RespawnPosition;
+		float m_RespawnBomb;
 		Vec3 m_LoadStageSize;
+		Vec3 m_DefaultStartPos;
+
+		float m_BeforeCameraY;
+		vector<shared_ptr<GameObject>> m_DeleteToRestartObjects;
 		//ビューの作成
 		void CreateViewLight();
 		void CreateResource();
 		void CreateMap();
 		void CreateParticle();
 		void LoadMap();
-		void InitializeStage();
-		void CreateMenu();
-		void CreateFinishButton(bool flag);
-		void CreateEnemy();
+		void CreateButton();
 		void BlockUpdateActive();
 	public:
 		//構築と破棄
-		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10,const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
-			m_LoadStageSize(Vec3(20,48,0)),
+		GameStage(const wstring& mapName, const int stageNumber = 0, const int bombNum = 10, const float scrollSpeed = 0.25f) :Stage(), m_MapName(mapName),
+			m_LoadStageSize(Vec3(20, 7, 0)), m_DefaultStartPos(Vec3(0)),
 			m_BombNum(bombNum),
 			m_StageNumber(stageNumber),
 			m_MenuSelect(0),
 			m_ScrollSpeed(scrollSpeed),
-			m_Mode(GameMode::View),m_BeforeMode(GameMode::View)
+			m_Mode(GameMode::View), m_BeforeMode(GameMode::View),
+			m_RespawnBomb(0), m_BeforeCameraY(0)
 		{}
 		virtual ~GameStage() {}
 		//初期化
@@ -93,6 +97,11 @@ namespace basecross {
 		shared_ptr<GameObject> CreateBlock(Vec2 mapIndex, Vec3 pos);
 
 		shared_ptr<Player> m_Player;
+
+		void InitializeStage();
+		void SetRespawnBomb(float num) {
+			m_RespawnBomb = num;
+		}
 
 		template<typename particleType>
 		void PlayParticle(const wstring& key, Vec3 pos) const{
@@ -135,8 +144,11 @@ namespace basecross {
 			return m_RespawnPosition;
 		}
 		void PlayerRespawn() {
-			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition);
-			ChangeMode(GameMode::InGame);
+			m_Player->GetComponent<Transform>()->SetPosition(m_RespawnPosition + Vec3(0,0.2f,0));
+			m_Player->GetComponent<BCGravity>()->SetVelocity(Vec3(0));
+			m_Player->Respawn();
+			m_Player->PlayerInitHasBomb(m_RespawnBomb);
+			ChangeMode(GameMode::NotBomb);
 		}
 		shared_ptr<int> GetStageNumPtr() {
 			return m_SendStageNumber;
@@ -157,7 +169,7 @@ namespace basecross {
 		void GameStart() {
 			ChangeMode(GameMode::NotBomb);
 		}
-		bool IsInGame() {
+		bool IsPlaying() {
 			return m_Mode == GameMode::InGame || m_Mode == GameMode::NotBomb;
 		}
 		bool IsFinishGame() {
@@ -172,11 +184,12 @@ namespace basecross {
 		bool IsCanMovePlayer() {
 			return !IsView() && !IsOpenMenu();
 		}
+		bool IsCanActionMenu() {
+			return IsPlaying() || IsOpenMenu();
+		}
 		void OpenMenu();
 		void CloseMenu();
 	};
-
-
 }
 //end basecross
 
