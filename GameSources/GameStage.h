@@ -58,6 +58,7 @@ namespace basecross {
 		shared_ptr<int> m_SendStageNumber;
 
 		shared_ptr<BCNumber> m_PlayerHasBombs;
+		shared_ptr<Sprite> m_BombUI;
 
 		int m_MenuSelect;
 		

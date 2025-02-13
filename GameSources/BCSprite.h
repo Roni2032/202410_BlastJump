@@ -245,6 +245,11 @@ namespace basecross{
 		virtual void OnUpdate();
 		
 		void UpdateNumber(int number);
+		void SetActive(bool flag) {
+			for (auto& number : m_Numbers) {
+				number->SetDrawActive(flag);
+			}
+		}
 	};
 
 	//----------------------------------------------------------

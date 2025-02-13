@@ -52,7 +52,7 @@ namespace basecross {
 			auto camera = static_pointer_cast<MyCamera>(GetView()->GetTargetCamera());
 			camera->SetPlayer(m_Player);
 
-			AddGameObject<Sprite>(L"BOMBNUM_UI", Vec3(430.0f, -250.0f, 0.0f), Vec2(100, 100));
+			m_BombUI = AddGameObject<Sprite>(L"BOMBNUM_UI", Vec3(430.0f, -250.0f, 0.0f), Vec2(100, 100));
 			m_PlayerHasBombs =  AddGameObject<BCNumber>(L"NUMBER_TEX", Vec3(530.0f, -205.0f, 0.0f), Vec2(80, 250), 2);
 			m_PlayerHasBombs->UpdateNumber(m_Player->GetHasBomb());
 
@@ -136,6 +136,7 @@ namespace basecross {
 		app->RegisterTexture(L"SKIP_TEXT_UI", uiPath + L"SkipText.png");
 		app->RegisterTexture(L"DPAD_NEXT_UI", uiPath + L"NextGame_Oparation.png");
 
+		app->RegisterTexture(L"GOAL_BACK_TEX", texPath + L"GoalBackGround.png");
 		m_CsvMap.SetFileName(mapPath + m_MapName);
 		m_CsvMap.ReadCsv();
 	}
@@ -361,7 +362,7 @@ namespace basecross {
 			if (powerStr != L"") {
 				power = BlockData::WstrToFloat(powerStr);
 			}
-			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,range);
+			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,5);
 			break;
 		}
 		case BlockTypes::BOARD: {
@@ -488,7 +489,8 @@ namespace basecross {
 		auto myCamera = static_pointer_cast<MyCamera>(camera);
 		myCamera->RespawnCamera();
 
-		
+		SoundManager::Instance().StopAll();
+		SoundManager::Instance().PlayBGM(L"BGM_SD", 0.2f);
 	}
 	void GameStage::BlockUpdateActive() {
 		for (auto& blockObject : GetGameObjectVec()) {
@@ -581,7 +583,8 @@ namespace basecross {
 		ButtonManager::instance->OpenAndUse(L"clear");
 		
 		m_DeleteToRestartObjects.push_back(AddGameObject<Sprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f)));
-
+		m_PlayerHasBombs->SetActive(false);
+		m_BombUI->SetDrawActive(false);
 		ChangeMode(GameMode::Clear);
 
 		App::GetApp()->GetScene<GameScene>()->Clear(m_StageNumber);
@@ -594,6 +597,8 @@ namespace basecross {
 		m_DeleteToRestartObjects.push_back(AddGameObject<Sprite>(L"GAMEOVER_TEX", Vec3(-250, 50, 0), Vec2(500, 100)));
 		ButtonManager::instance->OpenAndUse(L"failed");
 		m_DeleteToRestartObjects.push_back(AddGameObject<Sprite>(L"DPAD_NEXT_UI", Vec3(338.4f, -230, 0), Vec2(281.6f, 140.8f)));
+		m_PlayerHasBombs->SetActive(false);
+		m_BombUI->SetDrawActive(false);
 
 		ChangeMode(GameMode::Over);
 

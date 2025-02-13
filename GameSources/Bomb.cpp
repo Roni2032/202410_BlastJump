@@ -61,11 +61,9 @@ namespace basecross{
 		
 		m_GameStage->PlayParticle<ExplodeParticle>(L"EXPLODE_PCL", GetComponent<Transform>()->GetWorldPosition());
 
-		
-		
 		m_GameStage->RemoveGameObject<Bomb>(GetThis<Bomb>());
 
-		SoundManager::Instance().PlaySE(L"BOMB_SD",0.7f);
+		SoundManager::Instance().PlaySE(L"BOMB_SD",1.0f);
 
 		if (m_GameStage->GetGameMode() == GameMode::NotBomb) {
 			m_GameStage->ChangeMode(GameMode::InGame);
