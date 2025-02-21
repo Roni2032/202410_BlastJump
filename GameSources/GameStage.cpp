@@ -400,6 +400,8 @@ namespace basecross {
 		LoadMap();
 		CloseMenu();
 		PlayerRespawn();
+		m_PlayerHasBombs->SetActive(true);
+		m_BombUI->SetDrawActive(true);
 		ButtonManager::instance->CloseAll();
 		m_MenuSelect = 0;
 
