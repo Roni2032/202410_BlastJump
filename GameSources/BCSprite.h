@@ -132,7 +132,7 @@ namespace basecross{
 		void SetDiffuse(Col4 color);
 		Col4 GetDiffuse();
 
-		void CreateVertex(Vec2 size, vector<Vec2> uv,const bool isCenter = false);
+		void CreateVertex(Vec2 size, vector<Vec2> uv);
 		//----------------------------------------------------------
 		//
 		//	UVëÄçÏ		

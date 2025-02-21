@@ -290,24 +290,15 @@ namespace basecross {
 		switch (mapData.GetID()) {
 		case BlockTypes::NORMAL: {
 			auto durabilityStr = mapData.GetData(L"hp");
-			float durability = 100;
-			if (durabilityStr != L"") {
-				durability = BlockData::WstrToFloat(durabilityStr, 100);
-			}
+			float durability = BlockData::WstrToFloat(durabilityStr, 100);
 			obj = AddGameObject<FloorBlock>(L"TEST_TEX", pos, durability);
 			break;
 		}
 		case BlockTypes::EXPLODE: {
 			auto rangeStr = mapData.GetData(L"range");
 			auto powerStr = mapData.GetData(L"power");
-			float range = 0;
-			float power = 0;
-			if (rangeStr != L"") {
-				range = BlockData::WstrToFloat(rangeStr);
-			}
-			if (powerStr != L"") {
-				power = BlockData::WstrToFloat(powerStr);
-			}
+			float range = BlockData::WstrToFloat(rangeStr);
+			float power = power = BlockData::WstrToFloat(powerStr);
 
 			obj = AddGameObject<ExplodeBlock>(L"EXPLODE_BLOCK_TEX",pos, power,5);
 			break;
@@ -337,10 +328,7 @@ namespace basecross {
 			auto rangeStr = mapData.GetData(L"range");
 			auto startStr = mapData.GetData(L"start");
 			auto endStr = mapData.GetData(L"end");
-			float speed = 0;
-			if (speedStr != L"") {
-				speed = BlockData::WstrToFloat(speedStr);
-			}
+			float speed = BlockData::WstrToFloat(speedStr);
 			Vec3 range = BlockData::WstrToVec3(rangeStr);
 			Vec3 start = BlockData::WstrToVec3(startStr);
 			Vec3 end = BlockData::WstrToVec3(endStr);
