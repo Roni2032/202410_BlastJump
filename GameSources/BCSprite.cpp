@@ -24,8 +24,8 @@ namespace basecross{
 		if (m_UseIndex == -1 || m_UseIndex >= m_AnimationUV.size()) {
 			m_UseIndex = static_cast<int>(m_AnimationUV.size()) - 1;
 		}
-		//CreateVertex(m_Size, m_AnimationUV[0], m_IsUseCenterSprite);
-		if (m_IsUseCenterSprite) {
+		//CreateVertex(m_Size, m_AnimationUV[0]);
+		/*if (m_IsUseCenterSprite) {
 			m_Vertices = {
 				{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
 				{Vec3(m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
@@ -40,7 +40,8 @@ namespace basecross{
 				{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
 				{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
 			};
-		}
+		}*/
+		CreateVertex(m_Size, m_AnimationUV[0]);
 		vector<uint16_t> indices = { 
 			0, 1, 2,
 			2, 1, 3
@@ -115,21 +116,21 @@ namespace basecross{
 			m_AnimationTimer = 0.0f;
 		}
 	}
-	void Sprite::CreateVertex(Vec2 size, vector<Vec2> uv, const bool isCenter) {
-		if (isCenter) {
+	void Sprite::CreateVertex(Vec2 size, vector<Vec2> uv) {
+		if (m_IsUseCenterSprite) {
 			m_Vertices = {
 				{Vec3(-size.x / 2.0f, size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
-				{Vec3(size.x / 2.0f, size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
-				{Vec3(-size.x / 2.0f, -size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]},
-				{Vec3(size.x / 2.0f, -size.y / 2.0f, 0),Col4(1,1,1,1), uv[0]}
+				{Vec3(size.x / 2.0f, size.y / 2.0f, 0),Col4(1,1,1,1), uv[1]},
+				{Vec3(-size.x / 2.0f, -size.y / 2.0f, 0),Col4(1,1,1,1), uv[2]},
+				{Vec3(size.x / 2.0f, -size.y / 2.0f, 0),Col4(1,1,1,1), uv[3]}
 			};
 		}
 		else {
 			m_Vertices = {
 				{Vec3(0, 0, 0),Col4(1,1,1,1), uv[0]},
-				{Vec3(size.x, 0, 0),Col4(1,1,1,1), uv[0]},
-				{Vec3(0, -size.y, 0),Col4(1,1,1,1), uv[0]},
-				{Vec3(size.x, -size.y, 0),Col4(1,1,1,1), uv[0]}
+				{Vec3(size.x, 0, 0),Col4(1,1,1,1), uv[1]},
+				{Vec3(0, -size.y, 0),Col4(1,1,1,1), uv[2]},
+				{Vec3(size.x, -size.y, 0),Col4(1,1,1,1), uv[3]}
 			};
 		}
 	}
@@ -163,10 +164,10 @@ namespace basecross{
 		m_Transform->SetScale(size);
 	}
 	void Sprite::UpdateSize(Vec2 size) {
-		if (m_Draw) {
+		if (m_Draw) { 
 			m_Size = size;
-			//CreateVertex(m_Size, m_AnimationUV[m_UseIndex], m_IsUseCenterSprite);
-			if (m_IsUseCenterSprite) {
+			//CreateVertex(m_Size, m_AnimationUV[m_UseIndex]);
+			/*if (m_IsUseCenterSprite) {
 				m_Vertices = {
 					{Vec3(-m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][0]},
 					{Vec3(m_Size.x / 2.0f, m_Size.y / 2.0f, 0),Col4(1,1,1,1), m_AnimationUV[0][1]},
@@ -181,6 +182,12 @@ namespace basecross{
 					{Vec3(0, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][2]},
 					{Vec3(m_Size.x, -m_Size.y, 0),Col4(1,1,1,1), m_AnimationUV[0][3]}
 				};
+			}*/
+			if (m_IsAnimation) {
+				CreateVertex(m_Size, m_AnimationUV[m_CurrentAnimation.m_OrderCount]);
+			}
+			else {
+				CreateVertex(m_Size, m_AnimationUV[0]);
 			}
 			m_Draw->UpdateVertices(m_Vertices);
 		}

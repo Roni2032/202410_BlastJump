@@ -91,17 +91,11 @@ namespace basecross{
 			return true;
 		}
 		static float WstrToFloat(const wstring& data,const float initData = 0.0f) {
-			//if (data == L"") return initData;
-			/*if (!IsFloat(data)) {
-				return initData;
-			}*/
+			if (data == L"") return initData;
 			return stof(data);
 		}
 		static int WstrToInt(const wstring& data,const int initData = 0) {
 			if (data == L"") return initData;
-			/*if (!all_of(data.cbegin(), data.cend(), isdigit)) {
-				return initData;
-			}*/
 			return stoi(data);
 		}
 		static Vec2 WstrToVec2(const wstring& data,const Vec2 initData = Vec2()) {
@@ -110,9 +104,7 @@ namespace basecross{
 			Vec2 vec = initData;
 			for (int i = 0; i < numStr.size(); i++) {
 				if (numStr[i] == L"") continue;
-				if (true/*all_of(numStr[i].cbegin(), numStr[i].cend(), isdigit)*/) {
-					vec[i] = stoi(numStr[i]);
-				}
+				vec[i] = stoi(numStr[i]);
 			}
 			return vec;
 		}
@@ -122,11 +114,8 @@ namespace basecross{
 			Vec3 vec = initData;
 			for (int i = 0; i < numStr.size(); i++) {
 				if (numStr[i] == L"") continue;
-				if (true/*all_of(numStr[i].cbegin(), numStr[i].cend(), isdigit)*/) {
-					vec[i] = stoi(numStr[i]);
-				}
+				vec[i] = stoi(numStr[i]);
 			}
-
 			return vec;
 		}
 	};
