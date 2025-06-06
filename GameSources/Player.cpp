@@ -1,6 +1,6 @@
 /*!
 @file Player.cpp
-@brief �E�v�E��E��E�C�E��E��E�[�E�Ȃǎ��E��E�
+@brief Playerオブジェクトの実体
 */
 
 #include "stdafx.h"
@@ -16,7 +16,7 @@ namespace basecross {
 	void Player::OnCreate()
 	{
 		PlayerInitDraw();
-		PlayerInitBCGravity(true); //�d�͂��ɓǂݍ��܂��邱��
+		PlayerInitBCGravity(true); //重力をつける
 		PlayerInitBCCollObb();
 		PlayerInitTransform(Vec3(3.0f, 2.0f, 0.0f), Vec3(0.5f, 0.5f, 0.5f));
 
@@ -45,10 +45,6 @@ namespace basecross {
 		PlayerAnimationUpdateMove();
 		ThrowCoolTimeUpdate();
 		PlayerDeathLogicUpdate();
-
-		if (InputKeyboard::GetInstance().InputKey(InputKeyboard::keyPressed, 'Z'))
-		{
-		}
 	}
 
 	void Player::OnCollisionEnter(shared_ptr<GameObject>& Other)
@@ -124,10 +120,10 @@ namespace basecross {
 
 	void Player::UpdateInputDevice()
 	{
-		auto keyState = App::GetApp()->GetInputDevice().GetKeyState();
+		auto& keyState = App::GetApp()->GetInputDevice().GetKeyState();
 		InputKeyboard::GetInstance().UpdateKeyState(keyState);
 
-		auto cntlState = App::GetApp()->GetInputDevice().GetControlerVec();
+		auto& cntlState = App::GetApp()->GetInputDevice().GetControlerVec();
 		InputController::GetInstance().UpdateCntlState(cntlState);
 	}
 
@@ -189,11 +185,6 @@ namespace basecross {
 		m_BombVec = cntlBombVec * m_BombShotSpeed;
 
 		bool cntlL = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_LEFT_SHOULDER);
-		//if (cntlL && (IsPlayerOnAir() == false))
-		//{
-		//	PlayerJump();
-		//	PlayerAnimationChangeJump();
-		//}
 
 		bool cntlR = InputController::GetInstance().InputButton(0, InputController::buttonPressed, XINPUT_GAMEPAD_RIGHT_SHOULDER);
 		if (cntlR && (IsCanBombCreate() == true))
@@ -294,21 +285,21 @@ namespace basecross {
 		float deltaTime = App::GetApp()->GetElapsedTime();
 		m_Draw->UpdateAnimation(deltaTime);
 
-		//�ʏ펞�łȂ���ΏI��
+		//クリアしてるならば処理しない
 		if (GetIsClear() == true) { return; }
 		if (GetIsInGame() == false) { return; }
 
-		//�X�^�����Ă���I��
+		//スタン中は動けない
 		if (m_IsStun) { return; }
 
-		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
+		const auto& getCurrentAnim = m_Draw->GetCurrentAnimation();
 
-		//���f���̌��������߂�
+		//スティックに合わせてモデルの向き調整
 		Vec2 cntlMoveVec = InputController::GetInstance().InputStick(0, 1);
 		if (cntlMoveVec.x > 0.0f) { m_ModelRotVec.y = -XM_PIDIV2; }
 		if (cntlMoveVec.x < 0.0f) { m_ModelRotVec.y = XM_PIDIV2; }
 
-		//�����Ă��āA���e�𓊂��Ă��炸�A�n��ɂ��鎞
+		//歩いている時歩きモーションにする
 		if (m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
@@ -325,7 +316,7 @@ namespace basecross {
 
 		}
 
-		//�~�܂��Ă��āA���e�𓊂��Ă��炸�A�n��ɂ��鎞
+		//止まっている時止まっているアニメーションにする
 		if (!m_IsMoving && !m_IsBombCreate && (IsPlayerOnAir() == false))
 		{
 			m_ModelSpanMat.affineTransformation
@@ -407,7 +398,7 @@ namespace basecross {
 
 	void Player::PlayerAnimationChangeClear()
 	{
-		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
+		const auto& getCurrentAnim = m_Draw->GetCurrentAnimation();
 
 		m_ModelRotVec.y = 0.0f;
 
@@ -426,22 +417,21 @@ namespace basecross {
 
 	void Player::PlayerAnimationChangeStun()
 	{
-		const auto getCurrentAnim = m_Draw->GetCurrentAnimation();
+		const auto& getCurrentAnim = m_Draw->GetCurrentAnimation();
 
-		//if (getCurrentAnim == m_PlayerModelAnimStun) { return; }
 		m_Draw->ChangeCurrentAnimation(m_PlayerModelAnimStun);
 	}
 
 	void Player::PlayEffectGoal()
 	{
-		//����ɒB�����珈���I��
+		//花火が打ちあがる上限数を設定
 		if (m_EffectGoalCount >= 8) { return; }
 
 		float deltaTime = App::GetApp()->GetElapsedTime();
 
 		Vec3 getWorldPosition = GetComponent<Transform>()->GetWorldPosition();
 
-		//�N�[���^�C�����[���ȉ��̏ꍇ�A�p�[�e�B�N�����Đ�
+		//花火をランダムな所に打ち上げる
 		if (m_EffectCoolTime <= 0.0f)
 		{
 			const int8_t xRndMin = -4;
@@ -457,11 +447,11 @@ namespace basecross {
 
 			m_EffectGoalCount++;
 
-			//�N�[���^�C�������Z�b�g
+			//花火の間隔を設定
 			m_EffectCoolTime = 0.25f;
 		}
 
-		//�N�[���^�C��������������
+		//花火を間隔空けて打ち上げる
 		if (m_EffectCoolTime > 0.0f)
 		{
 			m_EffectCoolTime -= m_EffectCoolTimeSpeed * deltaTime;
