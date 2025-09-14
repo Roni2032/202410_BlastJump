@@ -52,7 +52,7 @@ namespace basecross{
 		}
 
 		Vec3 rot = GetComponent<Transform>()->GetRotation();
-		rot += rotateSpeed * elapsedTime;
+		rot += m_RotateSpeed * elapsedTime;
 		GetComponent<Transform>()->SetRotation(rot);
 	}
 

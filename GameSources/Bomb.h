@@ -17,7 +17,7 @@ namespace basecross{
 
 	};
 	class Bomb : public GameObject {
-		Vec3 rotateSpeed;
+		Vec3 m_RotateSpeed;
 		float m_ExplodeTime;
 		float m_ExplodeTimer;
 
@@ -43,7 +43,6 @@ namespace basecross{
 		Bomb(const shared_ptr<Stage>& ptr, Vec3 pos, Vec3 velocity, float explodeTime, float explodeRange, float explodePower) :
 			GameObject(ptr),
 			m_ExplodeTime(explodeTime), m_ExplodeTimer(0.0f),
-			//m_ExplodeRange(explodeRange), m_ExplodePower(explodePower),
 			m_ExplodeStatus(Explosion(explodePower,explodeRange)),
 			m_Pos(pos), m_ThrowVelocity(velocity)
 		{}
